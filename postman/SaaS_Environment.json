@@ -1,0 +1,93 @@
+{
+  "id": "f7e9b2a1-c6d5-4e3f-b2a1-c6d54e3fb2a1",
+  "name": "SaaS API Environment",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "organizationId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "username",
+      "value": "admin",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "email",
+      "value": "admin@example.com",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "roleId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "permissionId1",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "permissionId2",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "permissionId3",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "apiKeyId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "organizationCode",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "parentOrgId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-04-07T12:00:00.000Z",
+  "_postman_exported_using": "Postman/10.15.0"
+}

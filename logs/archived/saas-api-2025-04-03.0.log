@@ -1,0 +1,620 @@
+2025-04-03 10:59:42.581 [restartedMain] ERROR o.s.boot.SpringApplication - requestId= username= organizationId= ip= - Application run failed
+java.lang.IllegalStateException: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for conversion word [wEx]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - [wEx] is not a valid conversion word
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:347)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initialize(LoggingApplicationListener.java:298)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEnvironmentPreparedEvent(LoggingApplicationListener.java:246)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEvent(LoggingApplicationListener.java:223)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:185)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:178)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:156)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:138)
+	at org.springframework.boot.context.event.EventPublishingRunListener.multicastInitialEvent(EventPublishingRunListener.java:136)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:81)
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$2(SpringApplicationRunListeners.java:64)
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:118)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:112)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:63)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:369)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:329)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343)
+	at com.devolution.saas.SaasApplication.main(SaasApplication.java:18)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+Caused by: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - Failed to create converter for [%clr] keyword
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - There is no conversion class registered for conversion word [wEx]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@2b0c4ef - [wEx] is not a valid conversion word
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.reportConfigurationErrorsIfNecessary(LogbackLoggingSystem.java:277)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:255)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initializeWithConventions(AbstractLoggingSystem.java:81)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initialize(AbstractLoggingSystem.java:61)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.initialize(LogbackLoggingSystem.java:189)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:332)
+	... 22 common frames omitted
+2025-04-03 11:07:40.919 [restartedMain] ERROR o.s.boot.SpringApplication - requestId= username= organizationId= ip= - Application run failed
+java.lang.IllegalStateException: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@d86e90a - There is no conversion class registered for conversion word [wEx]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@d86e90a - [wEx] is not a valid conversion word
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:347)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initialize(LoggingApplicationListener.java:298)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEnvironmentPreparedEvent(LoggingApplicationListener.java:246)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEvent(LoggingApplicationListener.java:223)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:185)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:178)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:156)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:138)
+	at org.springframework.boot.context.event.EventPublishingRunListener.multicastInitialEvent(EventPublishingRunListener.java:136)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:81)
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$2(SpringApplicationRunListeners.java:64)
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:118)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:112)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:63)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:369)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:329)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343)
+	at com.devolution.saas.SaasApplication.main(SaasApplication.java:18)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+Caused by: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@d86e90a - There is no conversion class registered for conversion word [wEx]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@d86e90a - [wEx] is not a valid conversion word
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.reportConfigurationErrorsIfNecessary(LogbackLoggingSystem.java:277)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:255)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initializeWithConventions(AbstractLoggingSystem.java:81)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initialize(AbstractLoggingSystem.java:61)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.initialize(LogbackLoggingSystem.java:189)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:332)
+	... 22 common frames omitted
+2025-04-03 11:09:36.216 [background-preinit] INFO  o.h.validator.internal.util.Version - requestId= username= organizationId= ip= - HV000001: Hibernate Validator 8.0.1.Final
+2025-04-03 11:09:36.265 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Starting SaasApplication using Java 21.0.4 with PID 31244 (E:\project\method\Saas\build\classes\java\main started by cyrkakou in E:\project\method\Saas)
+2025-04-03 11:09:36.265 [restartedMain] DEBUG com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Running with Spring Boot v3.2.3, Spring v6.1.4
+2025-04-03 11:09:36.265 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - The following 1 profile is active: "dev"
+2025-04-03 11:09:36.324 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-04-03 11:09:36.324 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-04-03 11:09:37.559 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - requestId= username= organizationId= ip= - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'taskExecutor' defined in class path resource [com/devolution/saas/infrastructure/config/AsyncConfig.class]: Cannot register bean definition [Root bean: class [null]; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=asyncConfig; factoryMethodName=taskExecutor; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in class path resource [com/devolution/saas/infrastructure/config/AsyncConfig.class]] for bean 'taskExecutor' since there is already [Root bean: class [null]; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=reactiveConfig; factoryMethodName=taskExecutor; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in class path resource [com/devolution/saas/common/config/ReactiveConfig.class]] bound.
+2025-04-03 11:09:37.586 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - requestId= username= organizationId= ip= - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-04-03 11:09:37.618 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId= username= organizationId= ip= - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'taskExecutor', defined in class path resource [com/devolution/saas/infrastructure/config/AsyncConfig.class], could not be registered. A bean with that name has already been defined in class path resource [com/devolution/saas/common/config/ReactiveConfig.class] and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2025-04-03 11:11:02.069 [background-preinit] INFO  o.h.validator.internal.util.Version - requestId= username= organizationId= ip= - HV000001: Hibernate Validator 8.0.1.Final
+2025-04-03 11:11:02.114 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Starting SaasApplication using Java 21.0.6 with PID 28892 (E:\project\method\Saas\build\classes\java\main started by cyrkakou in E:\project\method\Saas)
+2025-04-03 11:11:02.116 [restartedMain] DEBUG com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Running with Spring Boot v3.2.3, Spring v6.1.4
+2025-04-03 11:11:02.116 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - The following 1 profile is active: "dev"
+2025-04-03 11:11:02.180 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-04-03 11:11:02.180 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-04-03 11:11:03.311 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - requestId= username= organizationId= ip= - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'taskExecutor' defined in class path resource [com/devolution/saas/infrastructure/config/AsyncConfig.class]: Cannot register bean definition [Root bean: class [null]; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=asyncConfig; factoryMethodName=taskExecutor; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in class path resource [com/devolution/saas/infrastructure/config/AsyncConfig.class]] for bean 'taskExecutor' since there is already [Root bean: class [null]; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=reactiveConfig; factoryMethodName=taskExecutor; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in class path resource [com/devolution/saas/common/config/ReactiveConfig.class]] bound.
+2025-04-03 11:11:03.326 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - requestId= username= organizationId= ip= - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-04-03 11:11:03.343 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId= username= organizationId= ip= - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'taskExecutor', defined in class path resource [com/devolution/saas/infrastructure/config/AsyncConfig.class], could not be registered. A bean with that name has already been defined in class path resource [com/devolution/saas/common/config/ReactiveConfig.class] and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2025-04-03 11:12:10.237 [background-preinit] INFO  o.h.validator.internal.util.Version - requestId= username= organizationId= ip= - HV000001: Hibernate Validator 8.0.1.Final
+2025-04-03 11:12:10.273 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Starting SaasApplication using Java 21.0.6 with PID 17472 (E:\project\method\Saas\build\classes\java\main started by cyrkakou in E:\project\method\Saas)
+2025-04-03 11:12:10.273 [restartedMain] DEBUG com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Running with Spring Boot v3.2.3, Spring v6.1.4
+2025-04-03 11:12:10.273 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - The following 1 profile is active: "dev"
+2025-04-03 11:12:10.334 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-04-03 11:12:10.335 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-04-03 11:12:11.365 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - requestId= username= organizationId= ip= - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'transactionManager' defined in class path resource [com/devolution/saas/infrastructure/config/DatabaseConfig.class]: Cannot register bean definition [Root bean: class [null]; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=databaseConfig; factoryMethodName=transactionManager; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in class path resource [com/devolution/saas/infrastructure/config/DatabaseConfig.class]] for bean 'transactionManager' since there is already [Generic bean: class [com.devolution.saas.infrastructure.persistence.transaction.TransactionManager]; scope=singleton; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodNames=null; destroyMethodNames=null; defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\infrastructure\persistence\transaction\TransactionManager.class]] bound.
+2025-04-03 11:12:11.384 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - requestId= username= organizationId= ip= - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-04-03 11:12:11.420 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId= username= organizationId= ip= - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'transactionManager', defined in class path resource [com/devolution/saas/infrastructure/config/DatabaseConfig.class], could not be registered. A bean with that name has already been defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\infrastructure\persistence\transaction\TransactionManager.class] and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2025-04-03 11:13:30.233 [background-preinit] INFO  o.h.validator.internal.util.Version - requestId= username= organizationId= ip= - HV000001: Hibernate Validator 8.0.1.Final
+2025-04-03 11:13:30.330 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Starting SaasApplication using Java 21.0.6 with PID 24084 (E:\project\method\Saas\build\classes\java\main started by cyrkakou in E:\project\method\Saas)
+2025-04-03 11:13:30.334 [restartedMain] DEBUG com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Running with Spring Boot v3.2.3, Spring v6.1.4
+2025-04-03 11:13:30.335 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - The following 1 profile is active: "dev"
+2025-04-03 11:13:30.431 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-04-03 11:13:30.431 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-04-03 11:13:31.320 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - requestId= username= organizationId= ip= - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'jpaAuditingHandler' defined in null: Cannot register bean definition [Root bean: class [org.springframework.data.auditing.AuditingHandler]; scope=; abstract=false; lazyInit=null; autowireMode=2; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=from; initMethodNames=null; destroyMethodNames=null] for bean 'jpaAuditingHandler' since there is already [Root bean: class [org.springframework.data.auditing.AuditingHandler]; scope=; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=from; initMethodNames=null; destroyMethodNames=null] bound.
+2025-04-03 11:13:31.333 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - requestId= username= organizationId= ip= - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-04-03 11:13:31.352 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId= username= organizationId= ip= - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'jpaAuditingHandler' could not be registered. A bean with that name has already been defined and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2025-04-03 11:14:46.907 [background-preinit] INFO  o.h.validator.internal.util.Version - requestId= username= organizationId= ip= - HV000001: Hibernate Validator 8.0.1.Final
+2025-04-03 11:14:46.975 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Starting SaasApplication using Java 21.0.6 with PID 32016 (E:\project\method\Saas\build\classes\java\main started by cyrkakou in E:\project\method\Saas)
+2025-04-03 11:14:46.975 [restartedMain] DEBUG com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Running with Spring Boot v3.2.3, Spring v6.1.4
+2025-04-03 11:14:46.976 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - The following 1 profile is active: "dev"
+2025-04-03 11:14:47.074 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-04-03 11:14:47.076 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-04-03 11:14:48.726 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - requestId= username= organizationId= ip= - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-03 11:14:48.920 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - requestId= username= organizationId= ip= - Finished Spring Data repository scanning in 181 ms. Found 5 JPA repository interfaces.
+2025-04-03 11:14:50.193 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - requestId= username= organizationId= ip= - Tomcat initialized with port 8080 (http)
+2025-04-03 11:14:50.198 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - requestId= username= organizationId= ip= - Initializing ProtocolHandler ["http-nio-8080"]
+2025-04-03 11:14:50.198 [restartedMain] INFO  o.a.catalina.core.StandardService - requestId= username= organizationId= ip= - Starting service [Tomcat]
+2025-04-03 11:14:50.198 [restartedMain] INFO  o.a.catalina.core.StandardEngine - requestId= username= organizationId= ip= - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2025-04-03 11:14:50.262 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - requestId= username= organizationId= ip= - Initializing Spring embedded WebApplicationContext
+2025-04-03 11:14:50.262 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - requestId= username= organizationId= ip= - Root WebApplicationContext: initialization completed in 3185 ms
+2025-04-03 11:14:51.364 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - Flyway Community Edition 9.22.3 by Redgate
+2025-04-03 11:14:51.364 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - See release notes here: https://rd.gt/416ObMi
+2025-04-03 11:14:51.364 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - 
+2025-04-03 11:14:51.458 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - requestId= username= organizationId= ip= - Database: jdbc:postgresql://localhost:5432/saas (PostgreSQL 17.2)
+2025-04-03 11:14:51.471 [restartedMain] WARN  o.f.c.i.database.base.Database - requestId= username= organizationId= ip= - Flyway upgrade recommended: PostgreSQL 17.2 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 15.
+2025-04-03 11:14:51.621 [restartedMain] INFO  o.f.core.internal.command.DbValidate - requestId= username= organizationId= ip= - Successfully validated 0 migrations (execution time 00:00.051s)
+2025-04-03 11:14:51.621 [restartedMain] WARN  o.f.core.internal.command.DbValidate - requestId= username= organizationId= ip= - No migrations found. Are your locations set up correctly?
+2025-04-03 11:14:51.679 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - requestId= username= organizationId= ip= - Current version of schema "public": << Empty Schema >>
+2025-04-03 11:14:51.679 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - requestId= username= organizationId= ip= - Schema "public" is up to date. No migration necessary.
+2025-04-03 11:14:51.768 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - requestId= username= organizationId= ip= - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-03 11:14:51.847 [restartedMain] INFO  org.hibernate.Version - requestId= username= organizationId= ip= - HHH000412: Hibernate ORM core version 6.4.4.Final
+2025-04-03 11:14:51.898 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - requestId= username= organizationId= ip= - HHH000026: Second-level cache disabled
+2025-04-03 11:14:52.749 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - requestId= username= organizationId= ip= - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-03 11:14:52.904 [restartedMain] WARN  org.hibernate.orm.deprecation - requestId= username= organizationId= ip= - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-04-03 11:14:54.882 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - requestId= username= organizationId= ip= - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-03 11:14:55.139 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    create table organizations (
+        id uuid not null,
+        created_by varchar(255),
+        created_date timestamp(6) not null,
+        last_modified_by varchar(255),
+        last_modified_date timestamp(6),
+        organization_id uuid,
+        version bigint,
+        active boolean not null,
+        address varchar(255),
+        city varchar(255),
+        country varchar(255),
+        description varchar(255),
+        email varchar(255),
+        logo varchar(255),
+        name varchar(255) not null,
+        parent_id uuid,
+        phone varchar(255),
+        postal_code varchar(255),
+        state varchar(255),
+        tax_id varchar(255),
+        type varchar(255) not null,
+        website varchar(255),
+        primary key (id)
+    )
+2025-04-03 11:14:55.224 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    create table permissions (
+        id uuid not null,
+        created_by varchar(255),
+        created_date timestamp(6) not null,
+        last_modified_by varchar(255),
+        last_modified_date timestamp(6),
+        organization_id uuid,
+        version bigint,
+        action varchar(255) not null,
+        description varchar(255),
+        name varchar(255) not null,
+        resource varchar(255) not null,
+        system_defined boolean not null,
+        primary key (id)
+    )
+2025-04-03 11:14:55.229 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    create table refresh_tokens (
+        id uuid not null,
+        created_by varchar(255),
+        created_date timestamp(6) not null,
+        last_modified_by varchar(255),
+        last_modified_date timestamp(6),
+        organization_id uuid,
+        version bigint,
+        expiry_date timestamp(6) not null,
+        revoked boolean not null,
+        token varchar(255) not null,
+        user_id uuid not null,
+        primary key (id)
+    )
+2025-04-03 11:14:55.234 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    create table role_permissions (
+        role_id uuid not null,
+        permission_id uuid not null,
+        primary key (role_id, permission_id)
+    )
+2025-04-03 11:14:55.239 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    create table roles (
+        id uuid not null,
+        created_by varchar(255),
+        created_date timestamp(6) not null,
+        last_modified_by varchar(255),
+        last_modified_date timestamp(6),
+        organization_id uuid,
+        version bigint,
+        description varchar(255),
+        name varchar(255) not null,
+        system_defined boolean not null,
+        primary key (id)
+    )
+2025-04-03 11:14:55.244 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    create table user_roles (
+        user_id uuid not null,
+        role_id uuid not null,
+        primary key (user_id, role_id)
+    )
+2025-04-03 11:14:55.249 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    create table users (
+        id uuid not null,
+        created_by varchar(255),
+        created_date timestamp(6) not null,
+        last_modified_by varchar(255),
+        last_modified_date timestamp(6),
+        organization_id uuid,
+        version bigint,
+        account_non_expired boolean not null,
+        account_non_locked boolean not null,
+        credentials_non_expired boolean not null,
+        email varchar(255) not null,
+        enabled boolean not null,
+        first_name varchar(255) not null,
+        last_name varchar(255) not null,
+        last_password_change_date timestamp(6),
+        password varchar(255) not null,
+        username varchar(255) not null,
+        primary key (id)
+    )
+2025-04-03 11:14:55.257 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists permissions 
+       drop constraint if exists UK_pnvtwliis6p05pn6i3ndjrqt2
+2025-04-03 11:14:55.266 [restartedMain] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - requestId= username= organizationId= ip= - SQL Warning Code: 0, SQLState: 00000
+2025-04-03 11:14:55.266 [restartedMain] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - requestId= username= organizationId= ip= - la contrainte « uk_pnvtwliis6p05pn6i3ndjrqt2 » de la relation « permissions » n'existe pas, ignore
+2025-04-03 11:14:55.266 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists permissions 
+       add constraint UK_pnvtwliis6p05pn6i3ndjrqt2 unique (name)
+2025-04-03 11:14:55.269 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists refresh_tokens 
+       drop constraint if exists UK_ghpmfn23vmxfu3spu3lfg4r2d
+2025-04-03 11:14:55.271 [restartedMain] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - requestId= username= organizationId= ip= - SQL Warning Code: 0, SQLState: 00000
+2025-04-03 11:14:55.271 [restartedMain] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - requestId= username= organizationId= ip= - la contrainte « uk_ghpmfn23vmxfu3spu3lfg4r2d » de la relation « refresh_tokens » n'existe pas, ignore
+2025-04-03 11:14:55.271 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists refresh_tokens 
+       add constraint UK_ghpmfn23vmxfu3spu3lfg4r2d unique (token)
+2025-04-03 11:14:55.272 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists users 
+       drop constraint if exists UK_6dotkott2kjsp8vw4d0m25fb7
+2025-04-03 11:14:55.275 [restartedMain] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - requestId= username= organizationId= ip= - SQL Warning Code: 0, SQLState: 00000
+2025-04-03 11:14:55.275 [restartedMain] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - requestId= username= organizationId= ip= - la contrainte « uk_6dotkott2kjsp8vw4d0m25fb7 » de la relation « users » n'existe pas, ignore
+2025-04-03 11:14:55.275 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists users 
+       add constraint UK_6dotkott2kjsp8vw4d0m25fb7 unique (email)
+2025-04-03 11:14:55.279 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists users 
+       drop constraint if exists UK_r43af9ap4edm43mmtq01oddj6
+2025-04-03 11:14:55.279 [restartedMain] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - requestId= username= organizationId= ip= - SQL Warning Code: 0, SQLState: 00000
+2025-04-03 11:14:55.279 [restartedMain] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - requestId= username= organizationId= ip= - la contrainte « uk_r43af9ap4edm43mmtq01oddj6 » de la relation « users » n'existe pas, ignore
+2025-04-03 11:14:55.279 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists users 
+       add constraint UK_r43af9ap4edm43mmtq01oddj6 unique (username)
+2025-04-03 11:14:55.285 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists role_permissions 
+       add constraint FKegdk29eiy7mdtefy5c7eirr6e 
+       foreign key (permission_id) 
+       references permissions
+2025-04-03 11:14:55.305 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists role_permissions 
+       add constraint FKn5fotdgk8d1xvo8nav9uv3muc 
+       foreign key (role_id) 
+       references roles
+2025-04-03 11:14:55.305 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists user_roles 
+       add constraint FKh8ciramu9cc9q3qcqiv4ue8a6 
+       foreign key (role_id) 
+       references roles
+2025-04-03 11:14:55.305 [restartedMain] DEBUG org.hibernate.SQL - requestId= username= organizationId= ip= - 
+    alter table if exists user_roles 
+       add constraint FKhfh9dx7w3ubf1co1vdev94g3f 
+       foreign key (user_id) 
+       references users
+2025-04-03 11:14:55.311 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - requestId= username= organizationId= ip= - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-03 11:14:56.008 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - requestId= username= organizationId= ip= - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-04-03 11:14:56.677 [restartedMain] ERROR o.s.b.w.e.tomcat.TomcatStarter - requestId= username= organizationId= ip= - Error starting Tomcat context. Exception: org.springframework.beans.factory.UnsatisfiedDependencyException. Message: Error creating bean with name 'jwtAuthenticationFilter' defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\infrastructure\jwt\JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'userService' defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\application\service\UserService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'securityConfig' defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\infrastructure\config\SecurityConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'jwtAuthenticationFilter': Requested bean is currently in creation: Is there an unresolvable circular reference?
+2025-04-03 11:14:56.803 [restartedMain] INFO  o.a.catalina.core.StandardService - requestId= username= organizationId= ip= - Stopping service [Tomcat]
+2025-04-03 11:14:56.838 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - requestId= username= organizationId= ip= - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server
+2025-04-03 11:14:56.839 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - requestId= username= organizationId= ip= - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-03 11:14:56.857 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - requestId= username= organizationId= ip= - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-04-03 11:14:56.875 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId= username= organizationId= ip= - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The dependencies of some of the beans in the application context form a cycle:
+
+┌─────┐
+|  jwtAuthenticationFilter defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\infrastructure\jwt\JwtAuthenticationFilter.class]
+↑     ↓
+|  userService defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\application\service\UserService.class]
+↑     ↓
+|  securityConfig defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\infrastructure\config\SecurityConfig.class]
+└─────┘
+
+
+Action:
+
+Relying upon circular references is discouraged and they are prohibited by default. Update your application to remove the dependency cycle between beans. As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.
+
+2025-04-03 11:15:41.046 [background-preinit] INFO  o.h.validator.internal.util.Version - requestId= username= organizationId= ip= - HV000001: Hibernate Validator 8.0.1.Final
+2025-04-03 11:15:41.121 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Starting SaasApplication using Java 21.0.6 with PID 9468 (E:\project\method\Saas\build\classes\java\main started by cyrkakou in E:\project\method\Saas)
+2025-04-03 11:15:41.121 [restartedMain] DEBUG com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Running with Spring Boot v3.2.3, Spring v6.1.4
+2025-04-03 11:15:41.121 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - The following 1 profile is active: "dev"
+2025-04-03 11:15:41.248 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-04-03 11:15:41.248 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-04-03 11:15:42.912 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - requestId= username= organizationId= ip= - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-03 11:15:42.988 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - requestId= username= organizationId= ip= - Finished Spring Data repository scanning in 65 ms. Found 5 JPA repository interfaces.
+2025-04-03 11:15:44.403 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - requestId= username= organizationId= ip= - Tomcat initialized with port 8080 (http)
+2025-04-03 11:15:44.417 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - requestId= username= organizationId= ip= - Initializing ProtocolHandler ["http-nio-8080"]
+2025-04-03 11:15:44.417 [restartedMain] INFO  o.a.catalina.core.StandardService - requestId= username= organizationId= ip= - Starting service [Tomcat]
+2025-04-03 11:15:44.417 [restartedMain] INFO  o.a.catalina.core.StandardEngine - requestId= username= organizationId= ip= - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2025-04-03 11:15:44.482 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - requestId= username= organizationId= ip= - Initializing Spring embedded WebApplicationContext
+2025-04-03 11:15:44.482 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - requestId= username= organizationId= ip= - Root WebApplicationContext: initialization completed in 3234 ms
+2025-04-03 11:15:45.199 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - Flyway Community Edition 9.22.3 by Redgate
+2025-04-03 11:15:45.199 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - See release notes here: https://rd.gt/416ObMi
+2025-04-03 11:15:45.199 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - 
+2025-04-03 11:15:45.292 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - requestId= username= organizationId= ip= - Database: jdbc:postgresql://localhost:5432/saas (PostgreSQL 17.2)
+2025-04-03 11:15:45.292 [restartedMain] WARN  o.f.c.i.database.base.Database - requestId= username= organizationId= ip= - Flyway upgrade recommended: PostgreSQL 17.2 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 15.
+2025-04-03 11:15:45.314 [restartedMain] INFO  o.f.core.internal.command.DbValidate - requestId= username= organizationId= ip= - Successfully validated 0 migrations (execution time 00:00.010s)
+2025-04-03 11:15:45.314 [restartedMain] WARN  o.f.core.internal.command.DbValidate - requestId= username= organizationId= ip= - No migrations found. Are your locations set up correctly?
+2025-04-03 11:15:45.377 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - requestId= username= organizationId= ip= - Current version of schema "public": << Empty Schema >>
+2025-04-03 11:15:45.387 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - requestId= username= organizationId= ip= - Schema "public" is up to date. No migration necessary.
+2025-04-03 11:15:45.505 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - requestId= username= organizationId= ip= - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-03 11:15:45.599 [restartedMain] INFO  org.hibernate.Version - requestId= username= organizationId= ip= - HHH000412: Hibernate ORM core version 6.4.4.Final
+2025-04-03 11:15:45.648 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - requestId= username= organizationId= ip= - HHH000026: Second-level cache disabled
+2025-04-03 11:15:46.072 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - requestId= username= organizationId= ip= - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-03 11:15:46.182 [restartedMain] WARN  org.hibernate.orm.deprecation - requestId= username= organizationId= ip= - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-04-03 11:15:47.552 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - requestId= username= organizationId= ip= - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-03 11:15:47.690 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - requestId= username= organizationId= ip= - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-03 11:15:48.127 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - requestId= username= organizationId= ip= - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-04-03 11:15:48.659 [restartedMain] ERROR o.s.b.w.e.tomcat.TomcatStarter - requestId= username= organizationId= ip= - Error starting Tomcat context. Exception: org.springframework.beans.factory.UnsatisfiedDependencyException. Message: Error creating bean with name 'jwtAuthenticationFilter' defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\infrastructure\jwt\JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'userService' defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\application\service\UserService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'securityConfig' defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\infrastructure\config\SecurityConfig.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'jwtAuthenticationFilter': Requested bean is currently in creation: Is there an unresolvable circular reference?
+2025-04-03 11:15:48.682 [restartedMain] INFO  o.a.catalina.core.StandardService - requestId= username= organizationId= ip= - Stopping service [Tomcat]
+2025-04-03 11:15:48.682 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - requestId= username= organizationId= ip= - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server
+2025-04-03 11:15:48.682 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - requestId= username= organizationId= ip= - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-03 11:15:48.693 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - requestId= username= organizationId= ip= - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-04-03 11:15:48.707 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId= username= organizationId= ip= - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The dependencies of some of the beans in the application context form a cycle:
+
+┌─────┐
+|  jwtAuthenticationFilter defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\infrastructure\jwt\JwtAuthenticationFilter.class]
+↑     ↓
+|  userService defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\application\service\UserService.class]
+↑     ↓
+|  securityConfig defined in file [E:\project\method\Saas\build\classes\java\main\com\devolution\saas\security\infrastructure\config\SecurityConfig.class]
+└─────┘
+
+
+Action:
+
+Despite circular references being allowed, the dependency cycle between beans could not be broken. Update your application to remove the dependency cycle.
+
+2025-04-03 11:17:46.328 [background-preinit] INFO  o.h.validator.internal.util.Version - requestId= username= organizationId= ip= - HV000001: Hibernate Validator 8.0.1.Final
+2025-04-03 11:17:46.476 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Starting SaasApplication using Java 21.0.6 with PID 28656 (E:\project\method\Saas\build\classes\java\main started by cyrkakou in E:\project\method\Saas)
+2025-04-03 11:17:46.477 [restartedMain] DEBUG com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Running with Spring Boot v3.2.3, Spring v6.1.4
+2025-04-03 11:17:46.477 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - The following 1 profile is active: "dev"
+2025-04-03 11:17:46.528 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-04-03 11:17:46.528 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-04-03 11:17:47.969 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - requestId= username= organizationId= ip= - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-03 11:17:48.031 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - requestId= username= organizationId= ip= - Finished Spring Data repository scanning in 55 ms. Found 5 JPA repository interfaces.
+2025-04-03 11:17:49.215 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - requestId= username= organizationId= ip= - Tomcat initialized with port 8080 (http)
+2025-04-03 11:17:49.227 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - requestId= username= organizationId= ip= - Initializing ProtocolHandler ["http-nio-8080"]
+2025-04-03 11:17:49.230 [restartedMain] INFO  o.a.catalina.core.StandardService - requestId= username= organizationId= ip= - Starting service [Tomcat]
+2025-04-03 11:17:49.230 [restartedMain] INFO  o.a.catalina.core.StandardEngine - requestId= username= organizationId= ip= - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2025-04-03 11:17:49.285 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - requestId= username= organizationId= ip= - Initializing Spring embedded WebApplicationContext
+2025-04-03 11:17:49.285 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - requestId= username= organizationId= ip= - Root WebApplicationContext: initialization completed in 2756 ms
+2025-04-03 11:17:49.899 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - Flyway Community Edition 9.22.3 by Redgate
+2025-04-03 11:17:49.900 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - See release notes here: https://rd.gt/416ObMi
+2025-04-03 11:17:49.900 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - 
+2025-04-03 11:17:49.975 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - requestId= username= organizationId= ip= - Database: jdbc:postgresql://localhost:5432/saas (PostgreSQL 17.2)
+2025-04-03 11:17:49.996 [restartedMain] WARN  o.f.c.i.database.base.Database - requestId= username= organizationId= ip= - Flyway upgrade recommended: PostgreSQL 17.2 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 15.
+2025-04-03 11:17:50.020 [restartedMain] INFO  o.f.core.internal.command.DbValidate - requestId= username= organizationId= ip= - Successfully validated 0 migrations (execution time 00:00.010s)
+2025-04-03 11:17:50.020 [restartedMain] WARN  o.f.core.internal.command.DbValidate - requestId= username= organizationId= ip= - No migrations found. Are your locations set up correctly?
+2025-04-03 11:17:50.098 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - requestId= username= organizationId= ip= - Current version of schema "public": << Empty Schema >>
+2025-04-03 11:17:50.100 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - requestId= username= organizationId= ip= - Schema "public" is up to date. No migration necessary.
+2025-04-03 11:17:50.159 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - requestId= username= organizationId= ip= - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-03 11:17:50.222 [restartedMain] INFO  org.hibernate.Version - requestId= username= organizationId= ip= - HHH000412: Hibernate ORM core version 6.4.4.Final
+2025-04-03 11:17:50.260 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - requestId= username= organizationId= ip= - HHH000026: Second-level cache disabled
+2025-04-03 11:17:50.573 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - requestId= username= organizationId= ip= - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-03 11:17:50.824 [restartedMain] WARN  org.hibernate.orm.deprecation - requestId= username= organizationId= ip= - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-04-03 11:17:52.215 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - requestId= username= organizationId= ip= - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-03 11:17:52.402 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - requestId= username= organizationId= ip= - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-03 11:17:53.007 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - requestId= username= organizationId= ip= - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-04-03 11:17:54.298 [restartedMain] DEBUG c.d.saas.common.logging.MDCFilter - requestId= username= organizationId= ip= - Filter 'MDCFilter' configured for use
+2025-04-03 11:17:54.304 [restartedMain] DEBUG c.d.s.s.i.j.JwtAuthenticationFilter - requestId= username= organizationId= ip= - Filter 'jwtAuthenticationFilter' configured for use
+2025-04-03 11:17:54.304 [restartedMain] DEBUG c.d.s.o.i.context.OrganizationFilter - requestId= username= organizationId= ip= - Filter 'organizationFilter' configured for use
+2025-04-03 11:17:56.154 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - requestId= username= organizationId= ip= - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-03 11:17:57.766 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - requestId= username= organizationId= ip= - Exposing 1 endpoint(s) beneath base path '/actuator'
+2025-04-03 11:17:58.157 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - requestId= username= organizationId= ip= - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@309a47f2, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@732c519b, org.springframework.security.web.context.SecurityContextHolderFilter@233f0328, org.springframework.security.web.header.HeaderWriterFilter@1a736a1c, org.springframework.web.filter.CorsFilter@55c38650, org.springframework.security.web.authentication.logout.LogoutFilter@6dcfbca8, com.devolution.saas.security.infrastructure.jwt.JwtAuthenticationFilter@1622a598, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5535fb0b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@646c2b23, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2cf98920, org.springframework.security.web.session.SessionManagementFilter@4e9577c0, org.springframework.security.web.access.ExceptionTranslationFilter@66c8c84f, org.springframework.security.web.access.intercept.AuthorizationFilter@a6e2e1e]
+2025-04-03 11:18:00.092 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - requestId= username= organizationId= ip= - LiveReload server is running on port 35729
+2025-04-03 11:18:00.202 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - requestId= username= organizationId= ip= - Starting ProtocolHandler ["http-nio-8080"]
+2025-04-03 11:18:00.253 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - requestId= username= organizationId= ip= - Tomcat started on port 8080 (http) with context path ''
+2025-04-03 11:18:00.279 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Started SaasApplication in 14.594 seconds (process running for 15.029)
+2025-04-03 11:18:34.589 [background-preinit] INFO  o.h.validator.internal.util.Version - requestId= username= organizationId= ip= - HV000001: Hibernate Validator 8.0.1.Final
+2025-04-03 11:18:34.675 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Starting SaasApplication using Java 21.0.4 with PID 1352 (E:\project\method\Saas\build\classes\java\main started by cyrkakou in E:\project\method\Saas)
+2025-04-03 11:18:34.676 [restartedMain] DEBUG com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Running with Spring Boot v3.2.3, Spring v6.1.4
+2025-04-03 11:18:34.676 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - The following 1 profile is active: "dev"
+2025-04-03 11:18:34.856 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-04-03 11:18:34.857 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-04-03 11:18:36.511 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - requestId= username= organizationId= ip= - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-03 11:18:36.616 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - requestId= username= organizationId= ip= - Finished Spring Data repository scanning in 92 ms. Found 5 JPA repository interfaces.
+2025-04-03 11:18:37.862 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - requestId= username= organizationId= ip= - Tomcat initialized with port 8080 (http)
+2025-04-03 11:18:37.871 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - requestId= username= organizationId= ip= - Initializing ProtocolHandler ["http-nio-8080"]
+2025-04-03 11:18:37.872 [restartedMain] INFO  o.a.catalina.core.StandardService - requestId= username= organizationId= ip= - Starting service [Tomcat]
+2025-04-03 11:18:37.873 [restartedMain] INFO  o.a.catalina.core.StandardEngine - requestId= username= organizationId= ip= - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2025-04-03 11:18:37.925 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - requestId= username= organizationId= ip= - Initializing Spring embedded WebApplicationContext
+2025-04-03 11:18:37.926 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - requestId= username= organizationId= ip= - Root WebApplicationContext: initialization completed in 3064 ms
+2025-04-03 11:18:38.530 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - Flyway Community Edition 9.22.3 by Redgate
+2025-04-03 11:18:38.530 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - See release notes here: https://rd.gt/416ObMi
+2025-04-03 11:18:38.530 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - 
+2025-04-03 11:18:38.699 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - requestId= username= organizationId= ip= - Database: jdbc:postgresql://localhost:5432/saas (PostgreSQL 17.2)
+2025-04-03 11:18:38.705 [restartedMain] WARN  o.f.c.i.database.base.Database - requestId= username= organizationId= ip= - Flyway upgrade recommended: PostgreSQL 17.2 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 15.
+2025-04-03 11:18:38.721 [restartedMain] INFO  o.f.core.internal.command.DbValidate - requestId= username= organizationId= ip= - Successfully validated 0 migrations (execution time 00:00.009s)
+2025-04-03 11:18:38.721 [restartedMain] WARN  o.f.core.internal.command.DbValidate - requestId= username= organizationId= ip= - No migrations found. Are your locations set up correctly?
+2025-04-03 11:18:38.816 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - requestId= username= organizationId= ip= - Current version of schema "public": << Empty Schema >>
+2025-04-03 11:18:38.821 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - requestId= username= organizationId= ip= - Schema "public" is up to date. No migration necessary.
+2025-04-03 11:18:38.973 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - requestId= username= organizationId= ip= - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-03 11:18:39.020 [restartedMain] INFO  org.hibernate.Version - requestId= username= organizationId= ip= - HHH000412: Hibernate ORM core version 6.4.4.Final
+2025-04-03 11:18:39.059 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - requestId= username= organizationId= ip= - HHH000026: Second-level cache disabled
+2025-04-03 11:18:39.400 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - requestId= username= organizationId= ip= - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-03 11:18:39.599 [restartedMain] WARN  org.hibernate.orm.deprecation - requestId= username= organizationId= ip= - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-04-03 11:18:40.936 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - requestId= username= organizationId= ip= - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-03 11:18:41.070 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - requestId= username= organizationId= ip= - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-03 11:18:41.605 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - requestId= username= organizationId= ip= - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-04-03 11:18:42.252 [restartedMain] DEBUG c.d.saas.common.logging.MDCFilter - requestId= username= organizationId= ip= - Filter 'MDCFilter' configured for use
+2025-04-03 11:18:42.254 [restartedMain] DEBUG c.d.s.s.i.j.JwtAuthenticationFilter - requestId= username= organizationId= ip= - Filter 'jwtAuthenticationFilter' configured for use
+2025-04-03 11:18:42.254 [restartedMain] DEBUG c.d.s.o.i.context.OrganizationFilter - requestId= username= organizationId= ip= - Filter 'organizationFilter' configured for use
+2025-04-03 11:18:43.256 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - requestId= username= organizationId= ip= - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-03 11:18:44.382 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - requestId= username= organizationId= ip= - Exposing 1 endpoint(s) beneath base path '/actuator'
+2025-04-03 11:18:44.507 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - requestId= username= organizationId= ip= - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@60921e8, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@73cd6e52, org.springframework.security.web.context.SecurityContextHolderFilter@2490fc49, org.springframework.security.web.header.HeaderWriterFilter@68cdc82a, org.springframework.web.filter.CorsFilter@519200d, org.springframework.security.web.authentication.logout.LogoutFilter@642a12f7, com.devolution.saas.security.infrastructure.jwt.JwtAuthenticationFilter@1f06d431, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1d296479, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@624ea2b6, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@37187c6f, org.springframework.security.web.session.SessionManagementFilter@1f871ce8, org.springframework.security.web.access.ExceptionTranslationFilter@70838a9, org.springframework.security.web.access.intercept.AuthorizationFilter@37146f18]
+2025-04-03 11:18:45.672 [restartedMain] WARN  o.s.b.d.a.OptionalLiveReloadServer - requestId= username= organizationId= ip= - Unable to start LiveReload server
+2025-04-03 11:18:45.738 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - requestId= username= organizationId= ip= - Starting ProtocolHandler ["http-nio-8080"]
+2025-04-03 11:18:45.744 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - requestId= username= organizationId= ip= - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2025-04-03 11:18:45.751 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - requestId= username= organizationId= ip= - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-03 11:18:45.773 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - requestId= username= organizationId= ip= - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-04-03 11:18:45.798 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId= username= organizationId= ip= - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8080 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
+
+2025-04-03 14:57:15.747 [background-preinit] INFO  o.h.validator.internal.util.Version - requestId= username= organizationId= ip= - HV000001: Hibernate Validator 8.0.1.Final
+2025-04-03 14:57:15.830 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Starting SaasApplication using Java 21.0.4 with PID 26364 (E:\project\method\Saas\build\classes\java\main started by cyrkakou in E:\project\method\Saas)
+2025-04-03 14:57:15.831 [restartedMain] DEBUG com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Running with Spring Boot v3.2.3, Spring v6.1.4
+2025-04-03 14:57:15.832 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - The following 1 profile is active: "dev"
+2025-04-03 14:57:15.915 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-04-03 14:57:15.915 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - requestId= username= organizationId= ip= - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-04-03 14:57:17.255 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - requestId= username= organizationId= ip= - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-03 14:57:17.336 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - requestId= username= organizationId= ip= - Finished Spring Data repository scanning in 71 ms. Found 5 JPA repository interfaces.
+2025-04-03 14:57:18.924 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - requestId= username= organizationId= ip= - Tomcat initialized with port 8080 (http)
+2025-04-03 14:57:18.938 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - requestId= username= organizationId= ip= - Initializing ProtocolHandler ["http-nio-8080"]
+2025-04-03 14:57:18.941 [restartedMain] INFO  o.a.catalina.core.StandardService - requestId= username= organizationId= ip= - Starting service [Tomcat]
+2025-04-03 14:57:18.941 [restartedMain] INFO  o.a.catalina.core.StandardEngine - requestId= username= organizationId= ip= - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2025-04-03 14:57:18.997 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - requestId= username= organizationId= ip= - Initializing Spring embedded WebApplicationContext
+2025-04-03 14:57:18.997 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - requestId= username= organizationId= ip= - Root WebApplicationContext: initialization completed in 3081 ms
+2025-04-03 14:57:19.753 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - Flyway Community Edition 9.22.3 by Redgate
+2025-04-03 14:57:19.753 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - See release notes here: https://rd.gt/416ObMi
+2025-04-03 14:57:19.753 [restartedMain] INFO  o.f.c.i.license.VersionPrinter - requestId= username= organizationId= ip= - 
+2025-04-03 14:57:19.817 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - requestId= username= organizationId= ip= - Database: jdbc:postgresql://localhost:5432/saas (PostgreSQL 17.2)
+2025-04-03 14:57:19.824 [restartedMain] WARN  o.f.c.i.database.base.Database - requestId= username= organizationId= ip= - Flyway upgrade recommended: PostgreSQL 17.2 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 15.
+2025-04-03 14:57:19.858 [restartedMain] INFO  o.f.core.internal.command.DbValidate - requestId= username= organizationId= ip= - Successfully validated 0 migrations (execution time 00:00.017s)
+2025-04-03 14:57:19.859 [restartedMain] WARN  o.f.core.internal.command.DbValidate - requestId= username= organizationId= ip= - No migrations found. Are your locations set up correctly?
+2025-04-03 14:57:20.043 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - requestId= username= organizationId= ip= - Current version of schema "public": << Empty Schema >>
+2025-04-03 14:57:20.046 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - requestId= username= organizationId= ip= - Schema "public" is up to date. No migration necessary.
+2025-04-03 14:57:20.126 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - requestId= username= organizationId= ip= - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-03 14:57:20.203 [restartedMain] INFO  org.hibernate.Version - requestId= username= organizationId= ip= - HHH000412: Hibernate ORM core version 6.4.4.Final
+2025-04-03 14:57:20.242 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - requestId= username= organizationId= ip= - HHH000026: Second-level cache disabled
+2025-04-03 14:57:20.679 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - requestId= username= organizationId= ip= - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-03 14:57:20.819 [restartedMain] WARN  org.hibernate.orm.deprecation - requestId= username= organizationId= ip= - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-04-03 14:57:22.037 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - requestId= username= organizationId= ip= - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-03 14:57:22.222 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - requestId= username= organizationId= ip= - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-03 14:57:22.667 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - requestId= username= organizationId= ip= - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-04-03 14:57:23.435 [restartedMain] DEBUG c.d.saas.common.logging.MDCFilter - requestId= username= organizationId= ip= - Filter 'MDCFilter' configured for use
+2025-04-03 14:57:23.438 [restartedMain] DEBUG c.d.s.s.i.j.JwtAuthenticationFilter - requestId= username= organizationId= ip= - Filter 'jwtAuthenticationFilter' configured for use
+2025-04-03 14:57:23.438 [restartedMain] DEBUG c.d.s.o.i.context.OrganizationFilter - requestId= username= organizationId= ip= - Filter 'organizationFilter' configured for use
+2025-04-03 14:57:25.262 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - requestId= username= organizationId= ip= - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-03 14:57:27.000 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - requestId= username= organizationId= ip= - Exposing 1 endpoint(s) beneath base path '/actuator'
+2025-04-03 14:57:27.251 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - requestId= username= organizationId= ip= - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7b54646a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@27dfbf63, org.springframework.security.web.context.SecurityContextHolderFilter@92b04f2, org.springframework.security.web.header.HeaderWriterFilter@727d1a50, org.springframework.web.filter.CorsFilter@6ea075be, org.springframework.security.web.authentication.logout.LogoutFilter@5b1e8690, com.devolution.saas.security.infrastructure.jwt.JwtAuthenticationFilter@7c211582, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4cf65cb4, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@393019e1, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@70752332, org.springframework.security.web.session.SessionManagementFilter@187d3b14, org.springframework.security.web.access.ExceptionTranslationFilter@19650d5f, org.springframework.security.web.access.intercept.AuthorizationFilter@309ce269]
+2025-04-03 14:57:28.372 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - requestId= username= organizationId= ip= - LiveReload server is running on port 35729
+2025-04-03 14:57:28.444 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - requestId= username= organizationId= ip= - Starting ProtocolHandler ["http-nio-8080"]
+2025-04-03 14:57:28.463 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - requestId= username= organizationId= ip= - Tomcat started on port 8080 (http) with context path ''
+2025-04-03 14:57:28.480 [restartedMain] INFO  com.devolution.saas.SaasApplication - requestId= username= organizationId= ip= - Started SaasApplication in 14.05 seconds (process running for 15.393)
+2025-04-03 14:57:28.911 [RMI TCP Connection(2)-192.168.88.246] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - requestId= username= organizationId= ip= - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-03 14:57:28.911 [RMI TCP Connection(2)-192.168.88.246] INFO  o.s.web.servlet.DispatcherServlet - requestId= username= organizationId= ip= - Initializing Servlet 'dispatcherServlet'
+2025-04-03 14:57:28.914 [RMI TCP Connection(2)-192.168.88.246] INFO  o.s.web.servlet.DispatcherServlet - requestId= username= organizationId= ip= - Completed initialization in 3 ms
+2025-04-03 15:19:26.367 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - requestId= username= organizationId= ip= - Closing JPA EntityManagerFactory for persistence unit 'default'

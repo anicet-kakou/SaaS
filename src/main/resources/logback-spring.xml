@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOGS" value="./logs"/>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } --- [%15.15t] %-40.40logger{39} : %X{requestId:-} %X{username:-} %X{organizationId:-} %m%n"/>
+
+
+    <!-- Console Appender -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Rolling File Appender for all logs -->
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/saas-api.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - requestId=%X{requestId:-}
+                username=%X{username:-} organizationId=%X{organizationId:-} ip=%X{ipAddress:-} - %msg%n
+            </pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/archived/saas-api-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Rolling File Appender for error logs -->
+    <appender name="ErrorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/saas-api-error.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - requestId=%X{requestId:-}
+                username=%X{username:-} organizationId=%X{organizationId:-} ip=%X{ipAddress:-} - %msg%n
+            </pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/archived/saas-api-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Async Appender for better performance -->
+    <appender name="AsyncRollingFile" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="RollingFile"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <appender name="AsyncErrorFile" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="ErrorFile"/>
+        <queueSize>256</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <!-- Logger for security events -->
+    <appender name="SecurityFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/saas-api-security.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - requestId=%X{requestId:-}
+                username=%X{username:-} organizationId=%X{organizationId:-} ip=%X{ipAddress:-} - %msg%n
+            </pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/archived/saas-api-security-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>300MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="AsyncSecurityFile" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="SecurityFile"/>
+        <queueSize>256</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <!-- Logger for audit events -->
+    <appender name="AuditFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/saas-api-audit.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - requestId=%X{requestId:-}
+                username=%X{username:-} organizationId=%X{organizationId:-} ip=%X{ipAddress:-} - %msg%n
+            </pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/archived/saas-api-audit-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>90</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="AsyncAuditFile" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="AuditFile"/>
+        <queueSize>256</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <!-- JSON Appender for ELK integration -->
+    <appender name="JsonFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/saas-api-json.log</file>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdc>true</includeMdc>
+            <includeContext>true</includeContext>
+            <customFields>{"application":"saas-api","environment":"${SPRING_PROFILES_ACTIVE:-dev}"}</customFields>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/archived/saas-api-json-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="AsyncJsonFile" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="JsonFile"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <!-- Specific loggers -->
+    <logger name="com.devolution.saas" level="DEBUG" additivity="false">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="AsyncRollingFile"/>
+        <appender-ref ref="AsyncErrorFile"/>
+        <appender-ref ref="AsyncJsonFile"/>
+    </logger>
+
+    <logger name="com.devolution.saas.security" level="DEBUG" additivity="false">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="AsyncRollingFile"/>
+        <appender-ref ref="AsyncSecurityFile"/>
+        <appender-ref ref="AsyncErrorFile"/>
+        <appender-ref ref="AsyncJsonFile"/>
+    </logger>
+
+    <logger name="com.devolution.saas.audit" level="INFO" additivity="false">
+        <appender-ref ref="AsyncAuditFile"/>
+        <appender-ref ref="AsyncJsonFile"/>
+    </logger>
+
+    <!-- Spring Framework loggers -->
+    <logger name="org.springframework" level="INFO" additivity="false">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="AsyncRollingFile"/>
+        <appender-ref ref="AsyncErrorFile"/>
+    </logger>
+
+    <logger name="org.springframework.security" level="INFO" additivity="false">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="AsyncRollingFile"/>
+        <appender-ref ref="AsyncSecurityFile"/>
+        <appender-ref ref="AsyncErrorFile"/>
+    </logger>
+
+    <logger name="org.springframework.web" level="INFO" additivity="false">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="AsyncRollingFile"/>
+        <appender-ref ref="AsyncErrorFile"/>
+    </logger>
+
+    <!-- Hibernate loggers -->
+    <logger name="org.hibernate" level="INFO" additivity="false">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="AsyncRollingFile"/>
+        <appender-ref ref="AsyncErrorFile"/>
+    </logger>
+
+    <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="AsyncRollingFile"/>
+    </logger>
+
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="AsyncRollingFile"/>
+        <appender-ref ref="AsyncErrorFile"/>
+        <appender-ref ref="AsyncJsonFile"/>
+    </root>
+</configuration>

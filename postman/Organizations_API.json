@@ -1,0 +1,263 @@
+{
+  "item": [
+    {
+      "name": "Organizations",
+      "description": "Endpoints pour la gestion des organisations",
+      "item": [
+        {
+          "name": "Create Organization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Assurance XYZ\",\n  \"code\": \"AXYZ\",\n  \"type\": \"INSURER\",\n  \"status\": \"ACTIVE\",\n  \"parentId\": null,\n  \"address\": {\n    \"street\": \"123 Avenue des Assurances\",\n    \"city\": \"Paris\",\n    \"zipCode\": \"75008\",\n    \"country\": \"France\"\n  },\n  \"contact\": {\n    \"email\": \"contact@assurance-xyz.com\",\n    \"phone\": \"+33123456789\",\n    \"website\": \"https://www.assurance-xyz.com\"\n  },\n  \"settings\": {\n    \"timezone\": \"Europe/Paris\",\n    \"locale\": \"fr-FR\",\n    \"dateFormat\": \"dd/MM/yyyy\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations"
+              ]
+            },
+            "description": "Crée une nouvelle organisation"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Organization",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{organizationId}}\",\n  \"name\": \"Assurance XYZ Updated\",\n  \"code\": \"AXYZ\",\n  \"type\": \"INSURER\",\n  \"status\": \"ACTIVE\",\n  \"parentId\": null,\n  \"address\": {\n    \"street\": \"456 Boulevard des Assurances\",\n    \"city\": \"Paris\",\n    \"zipCode\": \"75008\",\n    \"country\": \"France\"\n  },\n  \"contact\": {\n    \"email\": \"contact@assurance-xyz.com\",\n    \"phone\": \"+33123456789\",\n    \"website\": \"https://www.assurance-xyz.com\"\n  },\n  \"settings\": {\n    \"timezone\": \"Europe/Paris\",\n    \"locale\": \"fr-FR\",\n    \"dateFormat\": \"dd/MM/yyyy\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations/{{organizationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{organizationId}}"
+              ]
+            },
+            "description": "Met à jour une organisation existante"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Organization by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations/{{organizationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{organizationId}}"
+              ]
+            },
+            "description": "Récupère une organisation par son ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Organization by Code",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations/code/{{organizationCode}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "code",
+                "{{organizationCode}}"
+              ]
+            },
+            "description": "Récupère une organisation par son code"
+          },
+          "response": []
+        },
+        {
+          "name": "List Organizations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations"
+              ]
+            },
+            "description": "Liste toutes les organisations"
+          },
+          "response": []
+        },
+        {
+          "name": "List Organizations with Filters",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations?type=INSURER&status=ACTIVE&parentId={{parentOrgId}}&rootsOnly=false&searchTerm=Assurance&page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "INSURER"
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                },
+                {
+                  "key": "parentId",
+                  "value": "{{parentOrgId}}"
+                },
+                {
+                  "key": "rootsOnly",
+                  "value": "false"
+                },
+                {
+                  "key": "searchTerm",
+                  "value": "Assurance"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Liste les organisations avec des filtres (type, statut, parent, recherche, etc.)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Organization Hierarchy",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations/{{organizationId}}/hierarchy",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{organizationId}}",
+                "hierarchy"
+              ]
+            },
+            "description": "Récupère la hiérarchie complète d'une organisation"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Organization",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/organizations/{{organizationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{organizationId}}"
+              ]
+            },
+            "description": "Supprime une organisation"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
