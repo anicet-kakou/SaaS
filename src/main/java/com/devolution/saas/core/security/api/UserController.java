@@ -1,5 +1,6 @@
 package com.devolution.saas.core.security.api;
 
+import com.devolution.saas.common.abstracts.AbstractCrudController;
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
 import com.devolution.saas.core.security.application.command.ChangePasswordCommand;
@@ -13,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,67 +29,85 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Users", description = "API pour la gestion des utilisateurs")
-public class UserController {
+public class UserController extends AbstractCrudController<UserDTO, UUID, CreateUserCommand, UpdateUserCommand> {
 
     private final UserService userService;
 
+    @Override
+    protected UserDTO create(CreateUserCommand command) {
+        return userService.createUser(command);
+    }
+
+    @Override
+    protected UserDTO update(UUID id, UpdateUserCommand command) {
+        return userService.updateUser(command);
+    }
+
+    @Override
+    protected UserDTO get(UUID id) {
+        return userService.getUser(id);
+    }
+
+    @Override
+    protected List<UserDTO> list() {
+        return userService.listUsers();
+    }
+
+    @Override
+    protected void delete(UUID id) {
+        // Non implémenté pour le moment
+        throw new UnsupportedOperationException("La suppression d'utilisateurs n'est pas prise en charge");
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "utilisateur";
+    }
+
+    @Override
+    protected boolean isValidId(UUID id, UpdateUserCommand command) {
+        return id.equals(command.getId());
+    }
+
     /**
-     * Crée un nouvel utilisateur.
-     *
-     * @param command Commande de création d'utilisateur
-     * @return DTO de l'utilisateur créé
+     * Surcharge des méthodes standard pour ajouter les annotations de sécurité
      */
+    @Override
     @PostMapping
     @Operation(summary = "Crée un nouvel utilisateur")
     @Auditable(action = "API_CREATE_USER")
     @TenantRequired
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody CreateUserCommand command) {
-        log.debug("REST request pour créer un utilisateur: {}", command.getUsername());
-        UserDTO result = userService.createUser(command);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    public ResponseEntity<UserDTO> createEntity(@Valid @RequestBody CreateUserCommand command) {
+        return super.createEntity(command);
     }
 
-    /**
-     * 3
-     * Met à jour un utilisateur existant.
-     *
-     * @param id      ID de l'utilisateur à mettre à jour
-     * @param command Commande de mise à jour d'utilisateur
-     * @return DTO de l'utilisateur mis à jour
-     */
+    @Override
     @PutMapping("/{id}")
     @Operation(summary = "Met à jour un utilisateur existant")
     @Auditable(action = "API_UPDATE_USER")
     @TenantRequired
     @PreAuthorize("hasRole('ADMIN') or @securityService.isCurrentUser(#id)")
-    public ResponseEntity<UserDTO> updateUser(
-            @PathVariable UUID id,
-            @Valid @RequestBody UpdateUserCommand command) {
-        log.debug("REST request pour mettre à jour l'utilisateur {}: {}", id, command);
-
-        if (!id.equals(command.getId())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        UserDTO result = userService.updateUser(command);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<UserDTO> updateEntity(@PathVariable UUID id, @Valid @RequestBody UpdateUserCommand command) {
+        return super.updateEntity(id, command);
     }
 
-    /**
-     * Récupère un utilisateur par son ID.
-     *
-     * @param id ID de l'utilisateur
-     * @return DTO de l'utilisateur
-     */
+    @Override
     @GetMapping("/{id}")
     @Operation(summary = "Récupère un utilisateur par son ID")
     @Auditable(action = "API_GET_USER")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isCurrentUser(#id)")
-    public ResponseEntity<UserDTO> getUser(@PathVariable UUID id) {
-        log.debug("REST request pour récupérer l'utilisateur: {}", id);
-        UserDTO result = userService.getUser(id);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<UserDTO> getEntity(@PathVariable UUID id) {
+        return super.getEntity(id);
+    }
+
+    @Override
+    @GetMapping
+    @Operation(summary = "Liste tous les utilisateurs")
+    @Auditable(action = "API_LIST_USERS")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserDTO>> listEntities() {
+        return super.listEntities();
     }
 
     /**
@@ -121,21 +139,6 @@ public class UserController {
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
         log.debug("REST request pour récupérer l'utilisateur par email: {}", email);
         UserDTO result = userService.getUserByEmail(email);
-        return ResponseEntity.ok(result);
-    }
-
-    /**
-     * Liste tous les utilisateurs.
-     *
-     * @return Liste des DTOs d'utilisateurs
-     */
-    @GetMapping
-    @Operation(summary = "Liste tous les utilisateurs")
-    @Auditable(action = "API_LIST_USERS")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserDTO>> listUsers() {
-        log.debug("REST request pour lister les utilisateurs");
-        List<UserDTO> result = userService.listUsers();
         return ResponseEntity.ok(result);
     }
 

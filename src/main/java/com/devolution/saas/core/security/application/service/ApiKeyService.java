@@ -1,5 +1,6 @@
 package com.devolution.saas.core.security.application.service;
 
+import com.devolution.saas.common.abstracts.AbstractCrudService;
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
 import com.devolution.saas.core.security.application.command.CreateApiKeyCommand;
@@ -26,7 +27,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ApiKeyService {
+public class ApiKeyService extends AbstractCrudService<ApiKeyDTO, UUID, CreateApiKeyCommand, UpdateApiKeyCommand> {
 
     private final CreateApiKey createApiKey;
     private final UpdateApiKey updateApiKey;
@@ -37,57 +38,42 @@ public class ApiKeyService {
     private final ApiKeyRepository apiKeyRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Crée une nouvelle clé API.
-     *
-     * @param command Commande de création de clé API
-     * @return DTO de la clé API créée
-     */
-    @Transactional
-    @Auditable(action = "CREATE_API_KEY")
+    @Override
     @TenantRequired
-    public ApiKeyDTO createApiKey(CreateApiKeyCommand command) {
+    protected ApiKeyDTO executeCreate(CreateApiKeyCommand command) {
         log.debug("Création d'une nouvelle clé API: {}", command.getName());
         return createApiKey.execute(command);
     }
 
-    /**
-     * Met à jour une clé API existante.
-     *
-     * @param command Commande de mise à jour de clé API
-     * @return DTO de la clé API mise à jour
-     */
-    @Transactional
-    @Auditable(action = "UPDATE_API_KEY")
+    @Override
     @TenantRequired
-    public ApiKeyDTO updateApiKey(UpdateApiKeyCommand command) {
+    protected ApiKeyDTO executeUpdate(UpdateApiKeyCommand command) {
         log.debug("Mise à jour de la clé API: {}", command.getId());
         return updateApiKey.execute(command);
     }
 
-    /**
-     * Récupère une clé API par son ID.
-     *
-     * @param id ID de la clé API
-     * @return DTO de la clé API
-     */
-    @Transactional(readOnly = true)
-    @Auditable(action = "GET_API_KEY")
-    public ApiKeyDTO getApiKey(UUID id) {
+    @Override
+    protected ApiKeyDTO executeGet(UUID id) {
         log.debug("Récupération de la clé API: {}", id);
         return getApiKey.execute(id);
     }
 
-    /**
-     * Liste toutes les clés API.
-     *
-     * @return Liste des DTOs de clés API
-     */
-    @Transactional(readOnly = true)
-    @Auditable(action = "LIST_API_KEYS")
-    public List<ApiKeyDTO> listApiKeys() {
+    @Override
+    protected List<ApiKeyDTO> executeList() {
         log.debug("Listage de toutes les clés API");
         return listApiKeys.execute();
+    }
+
+    @Override
+    @TenantRequired
+    protected void executeDelete(UUID id) {
+        log.debug("Suppression de la clé API: {}", id);
+        deleteApiKey.execute(id);
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "clé API";
     }
 
     /**
@@ -132,16 +118,51 @@ public class ApiKeyService {
     }
 
     /**
+     * Crée une nouvelle clé API.
+     *
+     * @param command Commande de création de clé API
+     * @return DTO de la clé API créée
+     */
+    public ApiKeyDTO createApiKey(CreateApiKeyCommand command) {
+        return create(command);
+    }
+
+    /**
+     * Met à jour une clé API existante.
+     *
+     * @param command Commande de mise à jour de clé API
+     * @return DTO de la clé API mise à jour
+     */
+    public ApiKeyDTO updateApiKey(UpdateApiKeyCommand command) {
+        return update(command);
+    }
+
+    /**
+     * Récupère une clé API par son ID.
+     *
+     * @param id ID de la clé API
+     * @return DTO de la clé API
+     */
+    public ApiKeyDTO getApiKey(UUID id) {
+        return get(id);
+    }
+
+    /**
+     * Liste toutes les clés API.
+     *
+     * @return Liste des DTOs de clés API
+     */
+    public List<ApiKeyDTO> listApiKeys() {
+        return list();
+    }
+
+    /**
      * Supprime une clé API.
      *
      * @param id ID de la clé API à supprimer
      */
-    @Transactional
-    @Auditable(action = "DELETE_API_KEY")
-    @TenantRequired
     public void deleteApiKey(UUID id) {
-        log.debug("Suppression de la clé API: {}", id);
-        deleteApiKey.execute(id);
+        delete(id);
     }
 
     /**

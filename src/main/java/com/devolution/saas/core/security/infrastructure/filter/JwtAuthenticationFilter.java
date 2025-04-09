@@ -1,5 +1,6 @@
 package com.devolution.saas.core.security.infrastructure.filter;
 
+import com.devolution.saas.common.util.HttpRequestUtils;
 import com.devolution.saas.core.security.infrastructure.config.JwtTokenProvider;
 import com.devolution.saas.core.security.infrastructure.service.TenantContextHolder;
 import jakarta.servlet.FilterChain;
@@ -36,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            String jwt = resolveToken(request);
+            String jwt = HttpRequestUtils.resolveJwtToken(request);
             if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
                 Authentication auth = jwtTokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(auth);
@@ -56,16 +57,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Extrait le jeton JWT de la requête HTTP.
-     *
-     * @param request Requête HTTP
-     * @return Jeton JWT ou null
+     * {@inheritDoc}
      */
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return HttpRequestUtils.shouldNotFilter(request);
     }
 }

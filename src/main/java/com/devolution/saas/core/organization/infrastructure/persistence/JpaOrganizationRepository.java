@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -57,4 +58,14 @@ public interface JpaOrganizationRepository extends JpaRepository<Organization, U
      */
     @Override
     boolean existsByCode(String code);
+
+    @Query("SELECT o FROM Organization o LEFT JOIN FETCH o.parent WHERE o.id = :id")
+    Optional<Organization> findByIdWithParent(@Param("id") UUID id);
+
+    @Query("""
+                SELECT DISTINCT o FROM Organization o 
+                LEFT JOIN FETCH o.parent 
+                WHERE o.id IN :ids
+            """)
+    List<Organization> findAllByIdsWithParent(@Param("ids") Collection<UUID> ids);
 }

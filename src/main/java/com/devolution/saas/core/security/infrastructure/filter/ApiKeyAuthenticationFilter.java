@@ -1,5 +1,6 @@
 package com.devolution.saas.core.security.infrastructure.filter;
 
+import com.devolution.saas.common.util.HttpRequestUtils;
 import com.devolution.saas.core.security.application.service.ApiKeyService;
 import com.devolution.saas.core.security.domain.model.ApiKey;
 import com.devolution.saas.core.security.infrastructure.service.TenantContextHolder;
@@ -81,14 +82,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
      * @return Clé API ou null
      */
     private String resolveApiKey(HttpServletRequest request) {
-        // Vérification dans l'en-tête X-API-Key
-        String apiKey = request.getHeader("X-API-Key");
-        if (StringUtils.hasText(apiKey)) {
-            return apiKey;
-        }
-
-        // Vérification dans le paramètre de requête api_key
-        return request.getParameter("api_key");
+        return HttpRequestUtils.resolveApiKey(request);
     }
 
     /**
@@ -98,10 +92,6 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
      * @return Adresse IP du client
      */
     private String getClientIp(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-        if (StringUtils.hasText(xForwardedFor)) {
-            return xForwardedFor.split(",")[0].trim();
-        }
-        return request.getRemoteAddr();
+        return HttpRequestUtils.getClientIp(request);
     }
 }

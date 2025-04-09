@@ -1,5 +1,6 @@
 package com.devolution.saas.core.security.application.service;
 
+import com.devolution.saas.common.abstracts.AbstractCrudService;
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
 import com.devolution.saas.core.security.application.command.CreateRoleCommand;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RoleService {
+public class RoleService extends AbstractCrudService<RoleDTO, UUID, CreateRoleCommand, UpdateRoleCommand> {
 
     private final CreateRole createRole;
     private final UpdateRole updateRole;
@@ -29,17 +30,51 @@ public class RoleService {
     private final DeleteRole deleteRole;
 
     /**
+     * Implémentation des méthodes abstraites de AbstractCrudService
+     */
+    @Override
+    protected RoleDTO executeCreate(CreateRoleCommand command) {
+        return createRole.execute(command);
+    }
+
+    @Override
+    protected RoleDTO executeUpdate(UpdateRoleCommand command) {
+        return updateRole.execute(command);
+    }
+
+    @Override
+    protected RoleDTO executeGet(UUID id) {
+        return getRole.execute(id);
+    }
+
+    @Override
+    protected List<RoleDTO> executeList() {
+        return listRoles.execute();
+    }
+
+    @Override
+    protected void executeDelete(UUID id) {
+        deleteRole.execute(id);
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "rôle";
+    }
+
+    /**
+     * Méthodes de façade pour les opérations CRUD standard
+     */
+
+    /**
      * Crée un nouveau rôle.
      *
      * @param command Commande de création de rôle
      * @return DTO du rôle créé
      */
-    @Transactional
     @Auditable(action = "CREATE_ROLE")
-    @TenantRequired
     public RoleDTO createRole(CreateRoleCommand command) {
-        log.debug("Création d'un nouveau rôle: {}", command.getName());
-        return createRole.execute(command);
+        return create(command);
     }
 
     /**
@@ -48,12 +83,9 @@ public class RoleService {
      * @param command Commande de mise à jour de rôle
      * @return DTO du rôle mis à jour
      */
-    @Transactional
     @Auditable(action = "UPDATE_ROLE")
-    @TenantRequired
     public RoleDTO updateRole(UpdateRoleCommand command) {
-        log.debug("Mise à jour du rôle: {}", command.getId());
-        return updateRole.execute(command);
+        return update(command);
     }
 
     /**
@@ -62,11 +94,9 @@ public class RoleService {
      * @param id ID du rôle
      * @return DTO du rôle
      */
-    @Transactional(readOnly = true)
     @Auditable(action = "GET_ROLE")
     public RoleDTO getRole(UUID id) {
-        log.debug("Récupération du rôle: {}", id);
-        return getRole.execute(id);
+        return get(id);
     }
 
     /**
@@ -74,11 +104,19 @@ public class RoleService {
      *
      * @return Liste des DTOs de rôles
      */
-    @Transactional(readOnly = true)
     @Auditable(action = "LIST_ROLES")
     public List<RoleDTO> listRoles() {
-        log.debug("Listage de tous les rôles");
-        return listRoles.execute();
+        return list();
+    }
+
+    /**
+     * Supprime un rôle.
+     *
+     * @param id ID du rôle à supprimer
+     */
+    @Auditable(action = "DELETE_ROLE")
+    public void deleteRole(UUID id) {
+        delete(id);
     }
 
     /**
@@ -108,16 +146,5 @@ public class RoleService {
         return listRoles.executeBySystemDefined(systemDefined);
     }
 
-    /**
-     * Supprime un rôle.
-     *
-     * @param id ID du rôle à supprimer
-     */
-    @Transactional
-    @Auditable(action = "DELETE_ROLE")
-    @TenantRequired
-    public void deleteRole(UUID id) {
-        log.debug("Suppression du rôle: {}", id);
-        deleteRole.execute(id);
-    }
+
 }

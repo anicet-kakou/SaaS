@@ -1,5 +1,6 @@
 package com.devolution.saas.core.organization.application.service;
 
+import com.devolution.saas.common.abstracts.AbstractCrudService;
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantFilter;
 import com.devolution.saas.common.annotation.TenantRequired;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OrganizationService {
+public class OrganizationService extends AbstractCrudService<OrganizationDTO, UUID, CreateOrganizationCommand, UpdateOrganizationCommand> {
 
     private final CreateOrganization createOrganization;
     private final UpdateOrganization updateOrganization;
@@ -37,31 +38,48 @@ public class OrganizationService {
     private final GetOrganizationHierarchy getOrganizationHierarchy;
     private final DeleteOrganization deleteOrganization;
 
-    /**
-     * Crée une nouvelle organisation.
-     *
-     * @param command Commande de création d'organisation
-     * @return DTO de l'organisation créée
-     */
-    @Transactional
-    @Auditable(action = "CREATE_ORGANIZATION")
-    public OrganizationDTO createOrganization(CreateOrganizationCommand command) {
+    @Override
+    @TenantRequired
+    protected OrganizationDTO executeCreate(CreateOrganizationCommand command) {
         log.debug("Création d'une nouvelle organisation: {}", command.getName());
         return createOrganization.execute(command);
     }
 
-    /**
-     * Met à jour une organisation existante.
-     *
-     * @param command Commande de mise à jour d'organisation
-     * @return DTO de l'organisation mise à jour
-     */
-    @Transactional
-    @Auditable(action = "UPDATE_ORGANIZATION")
+    @Override
     @TenantRequired
-    public OrganizationDTO updateOrganization(UpdateOrganizationCommand command) {
+    protected OrganizationDTO executeUpdate(UpdateOrganizationCommand command) {
         log.debug("Mise à jour de l'organisation: {}", command.getId());
         return updateOrganization.execute(command);
+    }
+
+    @Override
+    protected OrganizationDTO executeGet(UUID id) {
+        log.debug("Récupération de l'organisation: {}", id);
+        GetOrganizationQuery query = new GetOrganizationQuery(id, null);
+        return getOrganization.execute(query);
+    }
+
+    @Override
+    @TenantFilter(includeDescendants = true)
+    protected List<OrganizationDTO> executeList() {
+        log.debug("Listage de toutes les organisations");
+        ListOrganizationsQuery query = ListOrganizationsQuery.builder()
+                .page(0)
+                .size(100)
+                .build();
+        return listOrganizations.execute(query);
+    }
+
+    @Override
+    @TenantRequired
+    protected void executeDelete(UUID id) {
+        log.debug("Suppression de l'organisation: {}", id);
+        deleteOrganization.execute(id);
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "organisation";
     }
 
     /**
@@ -119,16 +137,32 @@ public class OrganizationService {
     }
 
     /**
+     * Crée une nouvelle organisation.
+     *
+     * @param command Commande de création d'organisation
+     * @return DTO de l'organisation créée
+     */
+    public OrganizationDTO createOrganization(CreateOrganizationCommand command) {
+        return create(command);
+    }
+
+    /**
+     * Met à jour une organisation existante.
+     *
+     * @param command Commande de mise à jour d'organisation
+     * @return DTO de l'organisation mise à jour
+     */
+    public OrganizationDTO updateOrganization(UpdateOrganizationCommand command) {
+        return update(command);
+    }
+
+    /**
      * Supprime une organisation.
      *
      * @param organizationId ID de l'organisation à supprimer
      */
-    @Transactional
-    @Auditable(action = "DELETE_ORGANIZATION")
-    @TenantRequired
     public void deleteOrganization(UUID organizationId) {
-        log.debug("Suppression de l'organisation: {}", organizationId);
-        deleteOrganization.execute(organizationId);
+        delete(organizationId);
     }
 
     // Cette méthode a été déplacée vers CreateHierarchyEntriesUseCase

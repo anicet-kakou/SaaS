@@ -1,7 +1,7 @@
 package com.devolution.saas.core.security.application.usecase;
 
+import com.devolution.saas.common.abstracts.AbstractCreateUseCase;
 import com.devolution.saas.common.domain.exception.ResourceNotFoundException;
-import com.devolution.saas.common.domain.exception.ValidationException;
 import com.devolution.saas.core.organization.domain.repository.OrganizationRepository;
 import com.devolution.saas.core.security.application.command.CreateUserCommand;
 import com.devolution.saas.core.security.application.dto.UserDTO;
@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -27,7 +26,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class CreateUser {
+public class CreateUser extends AbstractCreateUseCase<UserDTO, CreateUserCommand, User> {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -36,25 +35,10 @@ public class CreateUser {
     private final UserMapper userMapper;
 
     /**
-     * Exécute le cas d'utilisation.
-     *
-     * @param command Commande de création d'utilisateur
-     * @return DTO de l'utilisateur créé
+     * Implémentation des méthodes abstraites de AbstractCreateUseCase
      */
-    @Transactional
-    public UserDTO execute(CreateUserCommand command) {
-        log.debug("Création d'un nouvel utilisateur: {}", command.getUsername());
-
-        // Vérification de l'unicité du nom d'utilisateur
-        if (userRepository.existsByUsername(command.getUsername())) {
-            throw new ValidationException("Le nom d'utilisateur est déjà utilisé");
-        }
-
-        // Vérification de l'unicité de l'email
-        if (userRepository.existsByEmail(command.getEmail())) {
-            throw new ValidationException("L'adresse email est déjà utilisée");
-        }
-
+    @Override
+    protected User createEntity(CreateUserCommand command) {
         // Vérification de l'existence de l'organisation principale
         organizationRepository.findById(command.getOrganizationId())
                 .orElseThrow(() -> new ResourceNotFoundException("Organization", command.getOrganizationId()));
@@ -96,8 +80,27 @@ public class CreateUser {
         }
 
         // Sauvegarde de l'utilisateur
-        user = userRepository.save(user);
+        return userRepository.save(user);
+    }
 
-        return userMapper.toDTO(user);
+    @Override
+    protected UserDTO toDto(User entity) {
+        return userMapper.toDTO(entity);
+    }
+
+    @Override
+    protected boolean existsByUniqueCriteria(CreateUserCommand command) {
+        return userRepository.existsByUsername(command.getUsername()) ||
+                userRepository.existsByEmail(command.getEmail());
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "utilisateur";
+    }
+
+    @Override
+    protected String getUniqueFieldName() {
+        return "identifiant";
     }
 }

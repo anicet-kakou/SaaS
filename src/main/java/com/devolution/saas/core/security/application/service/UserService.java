@@ -1,5 +1,6 @@
 package com.devolution.saas.core.security.application.service;
 
+import com.devolution.saas.common.abstracts.AbstractCrudService;
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantFilter;
 import com.devolution.saas.common.annotation.TenantRequired;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService {
+public class UserService extends AbstractCrudService<UserDTO, UUID, CreateUserCommand, UpdateUserCommand> {
 
     private final CreateUser createUser;
     private final UpdateUser updateUser;
@@ -40,17 +41,53 @@ public class UserService {
     private final UnlockUser unlockUser;
 
     /**
+     * Implémentation des méthodes abstraites de AbstractCrudService
+     */
+    @Override
+    protected UserDTO executeCreate(CreateUserCommand command) {
+        return createUser.execute(command);
+    }
+
+    @Override
+    protected UserDTO executeUpdate(UpdateUserCommand command) {
+        return updateUser.execute(command);
+    }
+
+    @Override
+    protected UserDTO executeGet(UUID id) {
+        return getUser.execute(id);
+    }
+
+    @Override
+    @TenantFilter(includeDescendants = true)
+    protected List<UserDTO> executeList() {
+        return listUsers.execute();
+    }
+
+    @Override
+    protected void executeDelete(UUID id) {
+        // Non implémenté pour le moment
+        throw new UnsupportedOperationException("La suppression d'utilisateurs n'est pas prise en charge");
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "utilisateur";
+    }
+
+    /**
+     * Méthodes de façade pour les opérations CRUD standard
+     */
+
+    /**
      * Crée un nouvel utilisateur.
      *
      * @param command Commande de création d'utilisateur
      * @return DTO de l'utilisateur créé
      */
-    @Transactional
     @Auditable(action = "CREATE_USER")
-    @TenantRequired
     public UserDTO createUser(CreateUserCommand command) {
-        log.debug("Création d'un nouvel utilisateur: {}", command.getUsername());
-        return createUser.execute(command);
+        return create(command);
     }
 
     /**
@@ -59,12 +96,9 @@ public class UserService {
      * @param command Commande de mise à jour d'utilisateur
      * @return DTO de l'utilisateur mis à jour
      */
-    @Transactional
     @Auditable(action = "UPDATE_USER")
-    @TenantRequired
     public UserDTO updateUser(UpdateUserCommand command) {
-        log.debug("Mise à jour de l'utilisateur: {}", command.getId());
-        return updateUser.execute(command);
+        return update(command);
     }
 
     /**
@@ -73,12 +107,24 @@ public class UserService {
      * @param id ID de l'utilisateur
      * @return DTO de l'utilisateur
      */
-    @Transactional(readOnly = true)
     @Auditable(action = "GET_USER")
     public UserDTO getUser(UUID id) {
-        log.debug("Récupération de l'utilisateur: {}", id);
-        return getUser.execute(id);
+        return get(id);
     }
+
+    /**
+     * Liste tous les utilisateurs.
+     *
+     * @return Liste des DTOs d'utilisateurs
+     */
+    @Auditable(action = "LIST_USERS")
+    public List<UserDTO> listUsers() {
+        return list();
+    }
+
+    /**
+     * Méthodes spécifiques au UserService
+     */
 
     /**
      * Récupère un utilisateur par son nom d'utilisateur.
@@ -104,19 +150,6 @@ public class UserService {
     public UserDTO getUserByEmail(String email) {
         log.debug("Récupération de l'utilisateur par email: {}", email);
         return getUserByEmail.execute(email);
-    }
-
-    /**
-     * Liste tous les utilisateurs.
-     *
-     * @return Liste des DTOs d'utilisateurs
-     */
-    @Transactional(readOnly = true)
-    @Auditable(action = "LIST_USERS")
-    @TenantFilter(includeDescendants = true)
-    public List<UserDTO> listUsers() {
-        log.debug("Listage des utilisateurs");
-        return listUsers.execute();
     }
 
     /**

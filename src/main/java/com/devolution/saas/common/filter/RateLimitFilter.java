@@ -1,5 +1,6 @@
 package com.devolution.saas.common.filter;
 
+import com.devolution.saas.common.util.HttpRequestUtils;
 import com.devolution.saas.core.security.application.service.ApiKeyService;
 import com.devolution.saas.core.security.domain.model.ApiKey;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,7 +63,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
         }
 
         // Récupération de l'API Key
-        String apiKeyValue = resolveApiKey(request);
+        String apiKeyValue = HttpRequestUtils.resolveApiKey(request);
 
         // Si une API Key est présente, utiliser la limite de l'API Key
         if (StringUtils.hasText(apiKeyValue)) {
@@ -89,7 +90,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
         }
 
         // Si aucune API Key n'est présente ou si elle est invalide, utiliser la limite par IP
-        String clientIp = getClientIp(request);
+        String clientIp = HttpRequestUtils.getClientIp(request);
 
         // Récupération ou création du bucket pour cette adresse IP
         Bucket bucket = ipBuckets.computeIfAbsent(clientIp, k -> createBucket(DEFAULT_IP_LIMIT));
@@ -134,46 +135,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 
-    /**
-     * Extrait la clé API de la requête HTTP.
-     *
-     * @param request Requête HTTP
-     * @return Clé API ou null
-     */
-    private String resolveApiKey(HttpServletRequest request) {
-        // Vérification dans l'en-tête X-API-Key
-        String apiKey = request.getHeader("X-API-Key");
-        if (StringUtils.hasText(apiKey)) {
-            return apiKey;
-        }
 
-        // Vérification dans le paramètre de requête api_key
-        return request.getParameter("api_key");
-    }
-
-    /**
-     * Récupère l'adresse IP du client.
-     *
-     * @param request Requête HTTP
-     * @return Adresse IP du client
-     */
-    private String getClientIp(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-        if (StringUtils.hasText(xForwardedFor)) {
-            return xForwardedFor.split(",")[0].trim();
-        }
-        return request.getRemoteAddr();
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        return path.contains("/actuator/") ||
-                path.contains("/swagger-ui/") ||
-                path.contains("/v3/api-docs") ||
-                path.contains("/favicon.ico");
+        return HttpRequestUtils.shouldNotFilter(request);
     }
 }

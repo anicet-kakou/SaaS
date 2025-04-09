@@ -1,5 +1,6 @@
 package com.devolution.saas.core.security.application.usecase;
 
+import com.devolution.saas.common.abstracts.AbstractUpdateUseCase;
 import com.devolution.saas.common.domain.exception.ResourceNotFoundException;
 import com.devolution.saas.common.domain.exception.ValidationException;
 import com.devolution.saas.core.organization.domain.repository.OrganizationRepository;
@@ -14,7 +15,6 @@ import com.devolution.saas.core.security.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -24,7 +24,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class UpdateUser {
+public class UpdateUser extends AbstractUpdateUseCase<UserDTO, UpdateUserCommand, User, UUID> {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -32,19 +32,16 @@ public class UpdateUser {
     private final UserMapper userMapper;
 
     /**
-     * Exécute le cas d'utilisation.
-     *
-     * @param command Commande de mise à jour d'utilisateur
-     * @return DTO de l'utilisateur mis à jour
+     * Implémentation des méthodes abstraites de AbstractUpdateUseCase
      */
-    @Transactional
-    public UserDTO execute(UpdateUserCommand command) {
-        log.debug("Mise à jour de l'utilisateur: {}", command.getId());
+    @Override
+    protected User getEntity(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", id));
+    }
 
-        // Récupération de l'utilisateur
-        User user = userRepository.findById(command.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User", command.getId()));
-
+    @Override
+    protected User updateEntity(User user, UpdateUserCommand command) {
         // Vérification de l'unicité de l'email si modifié
         if (command.getEmail() != null && !command.getEmail().equals(user.getEmail()) &&
                 userRepository.existsByEmail(command.getEmail())) {
@@ -107,8 +104,27 @@ public class UpdateUser {
         }
 
         // Sauvegarde de l'utilisateur
-        user = userRepository.save(user);
+        return userRepository.save(user);
+    }
 
-        return userMapper.toDTO(user);
+    @Override
+    protected UserDTO toDto(User entity) {
+        return userMapper.toDTO(entity);
+    }
+
+    @Override
+    protected boolean isEntityModifiable(User entity) {
+        // Tous les utilisateurs sont modifiables pour le moment
+        return true;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "utilisateur";
+    }
+
+    @Override
+    protected UUID getIdFromCommand(UpdateUserCommand command) {
+        return command.getId();
     }
 }

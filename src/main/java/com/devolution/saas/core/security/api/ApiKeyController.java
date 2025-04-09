@@ -1,5 +1,6 @@
 package com.devolution.saas.core.security.api;
 
+import com.devolution.saas.common.abstracts.AbstractCrudController;
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
 import com.devolution.saas.core.security.application.command.CreateApiKeyCommand;
@@ -9,10 +10,8 @@ import com.devolution.saas.core.security.application.service.ApiKeyService;
 import com.devolution.saas.core.security.domain.model.ApiKeyStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,81 +27,38 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "API Keys", description = "API pour la gestion des clés API")
-public class ApiKeyController {
+public class ApiKeyController extends AbstractCrudController<ApiKeyDTO, UUID, CreateApiKeyCommand, UpdateApiKeyCommand> {
 
     private final ApiKeyService apiKeyService;
 
-    /**
-     * Crée une nouvelle clé API.
-     *
-     * @param command Commande de création de clé API
-     * @return DTO de la clé API créée
-     */
-    @PostMapping
-    @Operation(summary = "Crée une nouvelle clé API")
-    @Auditable(action = "API_CREATE_API_KEY")
+    @Override
     @TenantRequired
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiKeyDTO> createApiKey(@Valid @RequestBody CreateApiKeyCommand command) {
+    protected ApiKeyDTO create(CreateApiKeyCommand command) {
         log.debug("REST request pour créer une clé API: {}", command.getName());
-        ApiKeyDTO result = apiKeyService.createApiKey(command);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return apiKeyService.createApiKey(command);
     }
 
-    /**
-     * Met à jour une clé API existante.
-     *
-     * @param id      ID de la clé API à mettre à jour
-     * @param command Commande de mise à jour de clé API
-     * @return DTO de la clé API mise à jour
-     */
-    @PutMapping("/{id}")
-    @Operation(summary = "Met à jour une clé API existante")
-    @Auditable(action = "API_UPDATE_API_KEY")
+    @Override
     @TenantRequired
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiKeyDTO> updateApiKey(
-            @PathVariable UUID id,
-            @Valid @RequestBody UpdateApiKeyCommand command) {
+    protected ApiKeyDTO update(UUID id, UpdateApiKeyCommand command) {
         log.debug("REST request pour mettre à jour la clé API {}: {}", id, command);
-
-        if (!id.equals(command.getId())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        ApiKeyDTO result = apiKeyService.updateApiKey(command);
-        return ResponseEntity.ok(result);
+        return apiKeyService.updateApiKey(command);
     }
 
-    /**
-     * Récupère une clé API par son ID.
-     *
-     * @param id ID de la clé API
-     * @return DTO de la clé API
-     */
-    @GetMapping("/{id}")
-    @Operation(summary = "Récupère une clé API par son ID")
-    @Auditable(action = "API_GET_API_KEY")
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiKeyDTO> getApiKey(@PathVariable UUID id) {
+    protected ApiKeyDTO get(UUID id) {
         log.debug("REST request pour récupérer la clé API: {}", id);
-        ApiKeyDTO result = apiKeyService.getApiKey(id);
-        return ResponseEntity.ok(result);
+        return apiKeyService.getApiKey(id);
     }
 
-    /**
-     * Liste toutes les clés API.
-     *
-     * @return Liste des DTOs de clés API
-     */
-    @GetMapping
-    @Operation(summary = "Liste toutes les clés API")
-    @Auditable(action = "API_LIST_API_KEYS")
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<ApiKeyDTO>> listApiKeys() {
+    protected List<ApiKeyDTO> list() {
         log.debug("REST request pour lister toutes les clés API");
-        List<ApiKeyDTO> result = apiKeyService.listApiKeys();
-        return ResponseEntity.ok(result);
+        return apiKeyService.listApiKeys();
     }
 
     /**
@@ -155,20 +111,21 @@ public class ApiKeyController {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * Supprime une clé API.
-     *
-     * @param id ID de la clé API à supprimer
-     * @return Réponse vide avec statut 204 No Content
-     */
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Supprime une clé API")
-    @Auditable(action = "API_DELETE_API_KEY")
+    @Override
     @TenantRequired
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteApiKey(@PathVariable UUID id) {
+    protected void delete(UUID id) {
         log.debug("REST request pour supprimer la clé API: {}", id);
         apiKeyService.deleteApiKey(id);
-        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "clé API";
+    }
+
+    @Override
+    protected boolean isValidId(UUID id, UpdateApiKeyCommand command) {
+        return id.equals(command.getId());
     }
 }

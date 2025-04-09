@@ -1,5 +1,6 @@
 package com.devolution.saas.core.security.application.service;
 
+import com.devolution.saas.common.abstracts.AbstractCrudService;
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.core.security.application.command.CreatePermissionCommand;
 import com.devolution.saas.core.security.application.command.UpdatePermissionCommand;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PermissionService {
+public class PermissionService extends AbstractCrudService<PermissionDTO, UUID, CreatePermissionCommand, UpdatePermissionCommand> {
 
     private final CreatePermission createPermission;
     private final UpdatePermission updatePermission;
@@ -27,55 +28,39 @@ public class PermissionService {
     private final ListPermissions listPermissions;
     private final DeletePermission deletePermission;
 
-    /**
-     * Crée une nouvelle permission.
-     *
-     * @param command Commande de création de permission
-     * @return DTO de la permission créée
-     */
-    @Transactional
-    @Auditable(action = "CREATE_PERMISSION")
-    public PermissionDTO createPermission(CreatePermissionCommand command) {
+    @Override
+    protected PermissionDTO executeCreate(CreatePermissionCommand command) {
         log.debug("Création d'une nouvelle permission: {}", command.getResourceType() + "_" + command.getAction());
         return createPermission.execute(command);
     }
 
-    /**
-     * Met à jour une permission existante.
-     *
-     * @param command Commande de mise à jour de permission
-     * @return DTO de la permission mise à jour
-     */
-    @Transactional
-    @Auditable(action = "UPDATE_PERMISSION")
-    public PermissionDTO updatePermission(UpdatePermissionCommand command) {
+    @Override
+    protected PermissionDTO executeUpdate(UpdatePermissionCommand command) {
         log.debug("Mise à jour de la permission: {}", command.getId());
         return updatePermission.execute(command);
     }
 
-    /**
-     * Récupère une permission par son ID.
-     *
-     * @param id ID de la permission
-     * @return DTO de la permission
-     */
-    @Transactional(readOnly = true)
-    @Auditable(action = "GET_PERMISSION")
-    public PermissionDTO getPermission(UUID id) {
+    @Override
+    protected PermissionDTO executeGet(UUID id) {
         log.debug("Récupération de la permission: {}", id);
         return getPermission.execute(id);
     }
 
-    /**
-     * Liste toutes les permissions.
-     *
-     * @return Liste des DTOs de permissions
-     */
-    @Transactional(readOnly = true)
-    @Auditable(action = "LIST_PERMISSIONS")
-    public List<PermissionDTO> listPermissions() {
+    @Override
+    protected List<PermissionDTO> executeList() {
         log.debug("Listage de toutes les permissions");
         return listPermissions.execute();
+    }
+
+    @Override
+    protected void executeDelete(UUID id) {
+        log.debug("Suppression de la permission: {}", id);
+        deletePermission.execute(id);
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "permission";
     }
 
     /**
@@ -105,14 +90,50 @@ public class PermissionService {
     }
 
     /**
+     * Crée une nouvelle permission.
+     *
+     * @param command Commande de création de permission
+     * @return DTO de la permission créée
+     */
+    public PermissionDTO createPermission(CreatePermissionCommand command) {
+        return create(command);
+    }
+
+    /**
+     * Met à jour une permission existante.
+     *
+     * @param command Commande de mise à jour de permission
+     * @return DTO de la permission mise à jour
+     */
+    public PermissionDTO updatePermission(UpdatePermissionCommand command) {
+        return update(command);
+    }
+
+    /**
+     * Récupère une permission par son ID.
+     *
+     * @param id ID de la permission
+     * @return DTO de la permission
+     */
+    public PermissionDTO getPermission(UUID id) {
+        return get(id);
+    }
+
+    /**
+     * Liste toutes les permissions.
+     *
+     * @return Liste des DTOs de permissions
+     */
+    public List<PermissionDTO> listPermissions() {
+        return list();
+    }
+
+    /**
      * Supprime une permission.
      *
      * @param id ID de la permission à supprimer
      */
-    @Transactional
-    @Auditable(action = "DELETE_PERMISSION")
     public void deletePermission(UUID id) {
-        log.debug("Suppression de la permission: {}", id);
-        deletePermission.execute(id);
+        delete(id);
     }
 }

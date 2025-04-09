@@ -1,5 +1,6 @@
 package com.devolution.saas.core.security.api;
 
+import com.devolution.saas.common.abstracts.AbstractCrudController;
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
 import com.devolution.saas.core.security.application.command.CreateRoleCommand;
@@ -11,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,81 +27,94 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Roles", description = "API pour la gestion des rôles")
-public class RoleController {
+public class RoleController extends AbstractCrudController<RoleDTO, UUID, CreateRoleCommand, UpdateRoleCommand> {
 
     private final RoleService roleService;
 
+    @Override
+    protected RoleDTO create(CreateRoleCommand command) {
+        return roleService.createRole(command);
+    }
+
+    @Override
+    protected RoleDTO update(UUID id, UpdateRoleCommand command) {
+        return roleService.updateRole(command);
+    }
+
+    @Override
+    protected RoleDTO get(UUID id) {
+        return roleService.getRole(id);
+    }
+
+    @Override
+    protected List<RoleDTO> list() {
+        return roleService.listRoles();
+    }
+
+    @Override
+    protected void delete(UUID id) {
+        roleService.deleteRole(id);
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "rôle";
+    }
+
+    @Override
+    protected boolean isValidId(UUID id, UpdateRoleCommand command) {
+        return id.equals(command.getId());
+    }
+
     /**
-     * Crée un nouveau rôle.
-     *
-     * @param command Commande de création de rôle
-     * @return DTO du rôle créé
+     * Surcharge des méthodes standard pour ajouter les annotations de sécurité
      */
+    @Override
     @PostMapping
     @Operation(summary = "Crée un nouveau rôle")
     @Auditable(action = "API_CREATE_ROLE")
     @TenantRequired
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RoleDTO> createRole(@Valid @RequestBody CreateRoleCommand command) {
-        log.debug("REST request pour créer un rôle: {}", command.getName());
-        RoleDTO result = roleService.createRole(command);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    public ResponseEntity<RoleDTO> createEntity(@Valid @RequestBody CreateRoleCommand command) {
+        return super.createEntity(command);
     }
 
-    /**
-     * Met à jour un rôle existant.
-     *
-     * @param id      ID du rôle à mettre à jour
-     * @param command Commande de mise à jour de rôle
-     * @return DTO du rôle mis à jour
-     */
+    @Override
     @PutMapping("/{id}")
     @Operation(summary = "Met à jour un rôle existant")
     @Auditable(action = "API_UPDATE_ROLE")
     @TenantRequired
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RoleDTO> updateRole(
-            @PathVariable UUID id,
-            @Valid @RequestBody UpdateRoleCommand command) {
-        log.debug("REST request pour mettre à jour le rôle {}: {}", id, command);
-
-        if (!id.equals(command.getId())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        RoleDTO result = roleService.updateRole(command);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<RoleDTO> updateEntity(@PathVariable UUID id, @Valid @RequestBody UpdateRoleCommand command) {
+        return super.updateEntity(id, command);
     }
 
-    /**
-     * Récupère un rôle par son ID.
-     *
-     * @param id ID du rôle
-     * @return DTO du rôle
-     */
+    @Override
     @GetMapping("/{id}")
     @Operation(summary = "Récupère un rôle par son ID")
     @Auditable(action = "API_GET_ROLE")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RoleDTO> getRole(@PathVariable UUID id) {
-        log.debug("REST request pour récupérer le rôle: {}", id);
-        RoleDTO result = roleService.getRole(id);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<RoleDTO> getEntity(@PathVariable UUID id) {
+        return super.getEntity(id);
     }
 
-    /**
-     * Liste tous les rôles.
-     *
-     * @return Liste des DTOs de rôles
-     */
+    @Override
     @GetMapping
     @Operation(summary = "Liste tous les rôles")
     @Auditable(action = "API_LIST_ROLES")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<RoleDTO>> listRoles() {
-        log.debug("REST request pour lister tous les rôles");
-        List<RoleDTO> result = roleService.listRoles();
-        return ResponseEntity.ok(result);
+    public ResponseEntity<List<RoleDTO>> listEntities() {
+        return super.listEntities();
+    }
+
+    @Override
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Supprime un rôle")
+    @Auditable(action = "API_DELETE_ROLE")
+    @TenantRequired
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteEntity(@PathVariable UUID id) {
+        return super.deleteEntity(id);
     }
 
     /**
@@ -138,20 +151,5 @@ public class RoleController {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * Supprime un rôle.
-     *
-     * @param id ID du rôle à supprimer
-     * @return Réponse vide avec statut 204 No Content
-     */
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Supprime un rôle")
-    @Auditable(action = "API_DELETE_ROLE")
-    @TenantRequired
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteRole(@PathVariable UUID id) {
-        log.debug("REST request pour supprimer le rôle: {}", id);
-        roleService.deleteRole(id);
-        return ResponseEntity.noContent().build();
-    }
+
 }

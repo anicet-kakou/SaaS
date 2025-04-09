@@ -1,5 +1,6 @@
 package com.devolution.saas.core.organization.api;
 
+import com.devolution.saas.common.abstracts.AbstractCrudController;
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
 import com.devolution.saas.core.organization.application.command.CreateOrganizationCommand;
@@ -14,10 +15,8 @@ import com.devolution.saas.core.organization.domain.model.OrganizationType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,63 +31,29 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Organizations", description = "API pour la gestion des organisations")
-public class OrganizationController {
+public class OrganizationController extends AbstractCrudController<OrganizationDTO, UUID, CreateOrganizationCommand, UpdateOrganizationCommand> {
 
     private final OrganizationService organizationService;
 
-    /**
-     * Crée une nouvelle organisation.
-     *
-     * @param command Commande de création d'organisation
-     * @return DTO de l'organisation créée
-     */
-    @PostMapping
-    @Operation(summary = "Crée une nouvelle organisation")
-    @Auditable(action = "API_CREATE_ORGANIZATION")
-    public ResponseEntity<OrganizationDTO> createOrganization(@Valid @RequestBody CreateOrganizationCommand command) {
-        log.debug("REST request pour créer une organisation: {}", command);
-        OrganizationDTO result = organizationService.createOrganization(command);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
-
-    /**
-     * Met à jour une organisation existante.
-     *
-     * @param id      ID de l'organisation à mettre à jour
-     * @param command Commande de mise à jour d'organisation
-     * @return DTO de l'organisation mise à jour
-     */
-    @PutMapping("/{id}")
-    @Operation(summary = "Met à jour une organisation existante")
-    @Auditable(action = "API_UPDATE_ORGANIZATION")
+    @Override
     @TenantRequired
-    public ResponseEntity<OrganizationDTO> updateOrganization(
-            @PathVariable UUID id,
-            @Valid @RequestBody UpdateOrganizationCommand command) {
-        log.debug("REST request pour mettre à jour l'organisation {}: {}", id, command);
-
-        if (!id.equals(command.getId())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        OrganizationDTO result = organizationService.updateOrganization(command);
-        return ResponseEntity.ok(result);
+    protected OrganizationDTO create(CreateOrganizationCommand command) {
+        log.debug("REST request pour créer une organisation: {}", command);
+        return organizationService.createOrganization(command);
     }
 
-    /**
-     * Récupère une organisation par son ID.
-     *
-     * @param id ID de l'organisation
-     * @return DTO de l'organisation
-     */
-    @GetMapping("/{id}")
-    @Operation(summary = "Récupère une organisation par son ID")
-    @Auditable(action = "API_GET_ORGANIZATION")
-    public ResponseEntity<OrganizationDTO> getOrganization(@PathVariable UUID id) {
+    @Override
+    @TenantRequired
+    protected OrganizationDTO update(UUID id, UpdateOrganizationCommand command) {
+        log.debug("REST request pour mettre à jour l'organisation {}: {}", id, command);
+        return organizationService.updateOrganization(command);
+    }
+
+    @Override
+    protected OrganizationDTO get(UUID id) {
         log.debug("REST request pour récupérer l'organisation: {}", id);
         GetOrganizationQuery query = new GetOrganizationQuery(id, null);
-        OrganizationDTO result = organizationService.getOrganization(query);
-        return ResponseEntity.ok(result);
+        return organizationService.getOrganization(query);
     }
 
     /**
@@ -107,6 +72,32 @@ public class OrganizationController {
         return ResponseEntity.ok(result);
     }
 
+    @Override
+    protected List<OrganizationDTO> list() {
+        log.debug("REST request pour lister toutes les organisations");
+        ListOrganizationsQuery query = ListOrganizationsQuery.builder()
+                .page(0)
+                .size(100)
+                .build();
+        return organizationService.listOrganizations(query);
+    }
+
+    @Override
+    protected void delete(UUID id) {
+        log.debug("REST request pour supprimer l'organisation: {}", id);
+        organizationService.deleteOrganization(id);
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "organisation";
+    }
+
+    @Override
+    protected boolean isValidId(UUID id, UpdateOrganizationCommand command) {
+        return id.equals(command.getId());
+    }
+
     /**
      * Liste les organisations selon les critères de filtrage.
      *
@@ -119,10 +110,10 @@ public class OrganizationController {
      * @param size       Taille de page pour la pagination
      * @return Liste des DTOs d'organisations
      */
-    @GetMapping
+    @GetMapping("/search")
     @Operation(summary = "Liste les organisations selon les critères de filtrage")
     @Auditable(action = "API_LIST_ORGANIZATIONS")
-    public ResponseEntity<List<OrganizationDTO>> listOrganizations(
+    public ResponseEntity<List<OrganizationDTO>> searchOrganizations(
             @Parameter(description = "Type d'organisation à filtrer")
             @RequestParam(required = false) OrganizationType type,
 
@@ -176,20 +167,5 @@ public class OrganizationController {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * Supprime une organisation.
-     *
-     * @param id ID de l'organisation à supprimer
-     * @return Réponse vide avec statut 204 No Content
-     */
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Supprime une organisation")
-    @Auditable(action = "API_DELETE_ORGANIZATION")
-    @TenantRequired
-    public ResponseEntity<Void> deleteOrganization(@PathVariable UUID id) {
-        log.debug("REST request pour supprimer l'organisation: {}", id);
-        organizationService.deleteOrganization(id);
-        return ResponseEntity.noContent().build();
-    }
+
 }
