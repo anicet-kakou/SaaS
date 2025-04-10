@@ -915,7 +915,130 @@ CREATE TABLE identity_document_types
 
 -- Insertion des types de documents d'identité
 INSERT INTO identity_document_types (id, code, name, description, validation_regex)
-VALUES (uuid_generate_v4(), 'ID_CARD', 'Carte d\'identité nationale', 'Carte d\'identité nationale', NULL),
+```
+
+## 4. Tables de référence spécifiques aux véhicules
+
+### 4.1 Structure des tables
+
+Les tables suivantes sont nécessaires pour la gestion des caractéristiques des véhicules :
+
+#### 4.1.1 Carrosseries (vehicle_body_types)
+
+```sql
+CREATE TABLE vehicle_body_types
+(
+    id              UUID PRIMARY KEY,
+    code            VARCHAR(20)  NOT NULL,
+    name            VARCHAR(100) NOT NULL,
+    description     TEXT,
+    is_active       BOOLEAN      NOT NULL DEFAULT TRUE,
+    created_at      TIMESTAMP    NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMP,
+    created_by      UUID,
+    updated_by      UUID,
+    organization_id UUID         NOT NULL,
+    FOREIGN KEY (organization_id) REFERENCES organizations (id),
+    UNIQUE (code, organization_id)
+);
+```
+
+#### 4.1.2 Genres de véhicules (vehicle_genres)
+
+```sql
+CREATE TABLE vehicle_genres
+(
+    id              UUID PRIMARY KEY,
+    code            VARCHAR(20)  NOT NULL,
+    name            VARCHAR(100) NOT NULL,
+    description     TEXT,
+    is_active       BOOLEAN      NOT NULL DEFAULT TRUE,
+    created_at      TIMESTAMP    NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMP,
+    created_by      UUID,
+    updated_by      UUID,
+    organization_id UUID         NOT NULL,
+    FOREIGN KEY (organization_id) REFERENCES organizations (id),
+    UNIQUE (code, organization_id)
+);
+```
+
+#### 4.1.3 Zones de circulation (circulation_zones)
+
+```sql
+CREATE TABLE circulation_zones
+(
+    id               UUID PRIMARY KEY,
+    code             VARCHAR(20)   NOT NULL,
+    name             VARCHAR(100)  NOT NULL,
+    description      TEXT,
+    risk_coefficient DECIMAL(5, 2) NOT NULL,
+    is_active        BOOLEAN       NOT NULL DEFAULT TRUE,
+    created_at       TIMESTAMP     NOT NULL DEFAULT NOW(),
+    updated_at       TIMESTAMP,
+    created_by       UUID,
+    updated_by       UUID,
+    organization_id  UUID          NOT NULL,
+    FOREIGN KEY (organization_id) REFERENCES organizations (id),
+    UNIQUE (code, organization_id)
+);
+```
+
+#### 4.1.4 Modification de la table vehicles
+
+```sql
+ALTER TABLE vehicles
+    ADD COLUMN body_type_id UUID NOT NULL REFERENCES vehicle_body_types (id),
+    ADD COLUMN genre_id UUID NOT NULL REFERENCES vehicle_genres (id),
+    ADD COLUMN circulation_zone_id UUID NOT NULL REFERENCES circulation_zones (id);
+```
+
+### 4.2 Données de référence initiales
+
+#### 4.2.1 Carrosseries standard
+
+```sql
+INSERT INTO vehicle_body_types (id, code, name, description, organization_id)
+VALUES 
+    (uuid_generate_v4(), 'BERLINE', 'Berline', 'Véhicule à coffre fermé', '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'BREAK', 'Break', 'Véhicule familial à grand volume', '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'SUV', 'SUV', 'Sport Utility Vehicle', '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'PICKUP', 'Pick-up', 'Véhicule utilitaire avec benne', '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'FOURGON', 'Fourgon', 'Véhicule utilitaire fermé', '00000000-0000-0000-0000-000000000000');
+```
+
+#### 4.2.2 Genres de véhicules standard
+
+```sql
+INSERT INTO vehicle_genres (id, code, name, description, organization_id)
+VALUES 
+    (uuid_generate_v4(), 'VP', 'Véhicule Particulier', 'Voiture de tourisme', '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'CTTE', 'Camionnette', 'Véhicule utilitaire léger', '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'CAM', 'Camion', 'Véhicule de transport de marchandises', '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'TRR', 'Tracteur Routier', 'Véhicule de traction', '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'MOTO', 'Motocyclette', 'Deux-roues motorisé', '00000000-0000-0000-0000-000000000000');
+```
+
+#### 4.2.3 Zones de circulation standard
+
+```sql
+INSERT INTO circulation_zones (id, code, name, description, risk_coefficient, organization_id)
+VALUES 
+    (uuid_generate_v4(), 'ZONE1', 'Zone urbaine principale', 'Capitale et grandes villes', 1.30, '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'ZONE2', 'Zone urbaine secondaire', 'Villes moyennes', 1.15, '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'ZONE3', 'Zone semi-urbaine', 'Petites villes et périphéries', 1.00, '00000000-0000-0000-0000-000000000000'),
+    (uuid_generate_v4(), 'ZONE4', 'Zone rurale', 'Villages et zones rurales', 0.90, '00000000-0000-0000-0000-000000000000');
+```
+
+### 4.3 Impact sur la tarification
+
+Ces tables de référence ont un impact direct sur la tarification des polices auto :
+
+- Le genre du véhicule influence le calcul de la prime de base
+- La carrosserie peut entraîner des majorations ou réductions selon le risque associé
+- La zone de circulation applique un coefficient multiplicateur sur la prime
+
+Le service de tarification (`AutoPricingService`) devra prendre en compte ces paramètres dans son calcul.
        (uuid_generate_v4(), 'PASSPORT', 'Passeport', 'Passeport international', NULL),
        (uuid_generate_v4(), 'DRIVER_LICENSE', 'Permis de conduire', 'Permis de conduire', NULL),
        (uuid_generate_v4(), 'RESIDENCE_PERMIT', 'Carte de séjour', 'Carte de séjour pour résidents étrangers', NULL),

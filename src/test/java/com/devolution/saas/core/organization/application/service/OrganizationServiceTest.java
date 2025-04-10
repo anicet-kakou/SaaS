@@ -3,9 +3,13 @@ package com.devolution.saas.core.organization.application.service;
 import com.devolution.saas.common.domain.exception.ResourceNotFoundException;
 import com.devolution.saas.common.domain.exception.ValidationException;
 import com.devolution.saas.core.organization.application.command.CreateOrganizationCommand;
+import com.devolution.saas.core.organization.application.command.UpdateOrganizationCommand;
 import com.devolution.saas.core.organization.application.dto.OrganizationDTO;
+import com.devolution.saas.core.organization.application.dto.OrganizationHierarchyDTO;
+import com.devolution.saas.core.organization.application.dto.OrganizationTypeDTO;
 import com.devolution.saas.core.organization.application.mapper.OrganizationMapper;
 import com.devolution.saas.core.organization.application.query.GetOrganizationQuery;
+import com.devolution.saas.core.organization.application.query.ListOrganizationsQuery;
 import com.devolution.saas.core.organization.application.usecase.*;
 import com.devolution.saas.core.organization.domain.model.Organization;
 import com.devolution.saas.core.organization.domain.model.OrganizationType;
@@ -21,12 +25,13 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationServiceTest {
@@ -212,5 +217,122 @@ class OrganizationServiceTest {
         });
 
         verify(getOrganization).execute(query);
+    }
+
+    @Test
+    void listOrganizations_Success() {
+        // Given
+        ListOrganizationsQuery query = ListOrganizationsQuery.builder()
+                .page(0)
+                .size(10)
+                .build();
+
+        List<OrganizationDTO> expectedDtos = Arrays.asList(
+                new OrganizationDTO(),
+                new OrganizationDTO()
+        );
+
+        when(listOrganizations.execute(any(ListOrganizationsQuery.class))).thenReturn(expectedDtos);
+
+        // When
+        List<OrganizationDTO> result = organizationService.listOrganizations(query);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(listOrganizations).execute(query);
+    }
+
+    @Test
+    void getOrganizationHierarchy_Success() {
+        // Given
+        UUID organizationId = UUID.randomUUID();
+        OrganizationHierarchyDTO expectedDto = new OrganizationHierarchyDTO();
+        expectedDto.setId(organizationId);
+        expectedDto.setName("Test Organization");
+
+        when(getOrganizationHierarchy.execute(any(UUID.class))).thenReturn(expectedDto);
+
+        // When
+        OrganizationHierarchyDTO result = organizationService.getOrganizationHierarchy(organizationId);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(organizationId, result.getId());
+        assertEquals("Test Organization", result.getName());
+        verify(getOrganizationHierarchy).execute(organizationId);
+    }
+
+    @Test
+    void listOrganizationTypes_Success() {
+        // Given
+        // No setup needed as this method doesn't use any dependencies
+
+        // When
+        List<OrganizationTypeDTO> result = organizationService.listOrganizationTypes();
+
+        // Then
+        assertNotNull(result);
+        assertEquals(OrganizationType.values().length, result.size());
+        // Verify each enum value is represented in the result
+        for (OrganizationType type : OrganizationType.values()) {
+            assertTrue(result.stream().anyMatch(dto -> dto.getCode().equals(type.name())));
+        }
+    }
+
+    @Test
+    void updateOrganization_Success() {
+        // Given
+        UUID organizationId = UUID.randomUUID();
+        UpdateOrganizationCommand command = new UpdateOrganizationCommand();
+        command.setId(organizationId);
+        command.setName("Updated Organization");
+
+        OrganizationDTO expectedDto = new OrganizationDTO();
+        expectedDto.setId(organizationId);
+        expectedDto.setName("Updated Organization");
+
+        when(updateOrganization.execute(any(UpdateOrganizationCommand.class))).thenReturn(expectedDto);
+
+        // When
+        OrganizationDTO result = organizationService.updateOrganization(command);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(organizationId, result.getId());
+        assertEquals("Updated Organization", result.getName());
+        verify(updateOrganization).execute(command);
+    }
+
+    @Test
+    void deleteOrganization_Success() {
+        // Given
+        UUID organizationId = UUID.randomUUID();
+        doNothing().when(deleteOrganization).execute(any(UUID.class));
+
+        // When
+        organizationService.deleteOrganization(organizationId);
+
+        // Then
+        verify(deleteOrganization).execute(organizationId);
+    }
+
+    @Test
+    void executeList_Success() {
+        // Given
+        List<OrganizationDTO> expectedDtos = Arrays.asList(
+                new OrganizationDTO(),
+                new OrganizationDTO()
+        );
+
+        when(listOrganizations.execute(any(ListOrganizationsQuery.class))).thenReturn(expectedDtos);
+
+        // When
+        List<OrganizationDTO> result = organizationService.executeList();
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(listOrganizations).execute(any(ListOrganizationsQuery.class));
     }
 }

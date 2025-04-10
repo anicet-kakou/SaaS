@@ -1,4 +1,4 @@
-2025-04-09 11:22:44.406 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId=
+2025-04-10 09:34:36.631 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId=
                 username= organizationId= ip= - 
 
 ***************************
@@ -7,14 +7,14 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in com.devolution.saas.insurance.nonlife.auto.api.AutoPolicyController required a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.service.AutoPricingService' that could not be found.
+Parameter 0 of constructor in com.devolution.saas.insurance.nonlife.auto.reference.api.ReferenceDataController required a bean of type 'com.devolution.saas.insurance.nonlife.auto.reference.application.service.ReferenceDataService' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.service.AutoPricingService' in your configuration.
+Consider defining a bean of type 'com.devolution.saas.insurance.nonlife.auto.reference.application.service.ReferenceDataService' in your configuration.
 
-2025-04-09 12:03:56.117 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId=
+2025-04-10 09:36:26.846 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId=
                 username= organizationId= ip= - 
 
 ***************************
@@ -23,90 +23,10 @@ APPLICATION FAILED TO START
 
 Description:
 
-Parameter 0 of constructor in com.devolution.saas.insurance.nonlife.auto.api.AutoPolicyController required a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.service.AutoPricingService' that could not be found.
+Parameter 0 of constructor in com.devolution.saas.insurance.nonlife.auto.reference.api.ReferenceDataController required a bean of type 'com.devolution.saas.insurance.nonlife.auto.reference.application.service.ReferenceDataService' that could not be found.
 
 
 Action:
 
-Consider defining a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.service.AutoPricingService' in your configuration.
-
-2025-04-09 12:05:24.474 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId=
-                username= organizationId= ip= - 
-
-***************************
-APPLICATION FAILED TO START
-***************************
-
-Description:
-
-Parameter 0 of constructor in com.devolution.saas.insurance.nonlife.auto.api.AutoPolicyController required a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.service.AutoPricingService' that could not be found.
-
-
-Action:
-
-Consider defining a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.service.AutoPricingService' in your configuration.
-
-2025-04-09 12:16:47.629 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId=
-                username= organizationId= ip= - 
-
-***************************
-APPLICATION FAILED TO START
-***************************
-
-Description:
-
-Parameter 0 of constructor in com.devolution.saas.insurance.nonlife.auto.api.AutoPolicyController required a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.service.AutoPricingService' that could not be found.
-
-
-Action:
-
-Consider defining a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.service.AutoPricingService' in your configuration.
-
-2025-04-09 12:20:19.717 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId=
-                username= organizationId= ip= - 
-
-***************************
-APPLICATION FAILED TO START
-***************************
-
-Description:
-
-Parameter 0 of constructor in com.devolution.saas.insurance.nonlife.auto.api.BonusMalusController required a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.usecase.ApplyBonusMalus' that could not be found.
-
-
-Action:
-
-Consider defining a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.usecase.ApplyBonusMalus' in your configuration.
-
-2025-04-09 13:28:59.215 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId=
-                username= organizationId= ip= - 
-
-***************************
-APPLICATION FAILED TO START
-***************************
-
-Description:
-
-Parameter 0 of constructor in com.devolution.saas.insurance.nonlife.auto.api.BonusMalusController required a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.usecase.ApplyBonusMalus' that could not be found.
-
-
-Action:
-
-Consider defining a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.usecase.ApplyBonusMalus' in your configuration.
-
-2025-04-09 13:31:20.089 [restartedMain] ERROR o.s.b.d.LoggingFailureAnalysisReporter - requestId=
-                username= organizationId= ip= - 
-
-***************************
-APPLICATION FAILED TO START
-***************************
-
-Description:
-
-Parameter 0 of constructor in com.devolution.saas.insurance.nonlife.auto.api.VehicleController required a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.service.VehicleService' that could not be found.
-
-
-Action:
-
-Consider defining a bean of type 'com.devolution.saas.insurance.nonlife.auto.application.service.VehicleService' in your configuration.
+Consider defining a bean of type 'com.devolution.saas.insurance.nonlife.auto.reference.application.service.ReferenceDataService' in your configuration.
 

@@ -37,9 +37,6 @@ public class ReferenceDataServiceImpl implements ReferenceDataService {
     public void initializeStandardReferenceData(UUID organizationId) {
         // Initialisation des types de carburant standard
         initializeStandardFuelTypes(organizationId);
-
-        // Autres initialisations de données de référence standard
-        // ...
     }
 
     @Override
@@ -47,8 +44,6 @@ public class ReferenceDataServiceImpl implements ReferenceDataService {
         switch (referenceType) {
             case "FUEL_TYPE":
                 return fuelTypeService.getFuelTypeById(referenceId, organizationId).isPresent();
-            // Autres types de référence
-            // ...
             default:
                 return false;
         }
@@ -60,9 +55,6 @@ public class ReferenceDataServiceImpl implements ReferenceDataService {
 
         // Ajout des types de carburant
         referenceData.put("fuelTypes", fuelTypeService.getAllActiveFuelTypes(organizationId));
-
-        // Ajout d'autres données de référence
-        // ...
 
         return referenceData;
     }
