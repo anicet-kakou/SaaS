@@ -1,18 +1,16 @@
 package com.devolution.saas.common.api.advice;
 
+import com.devolution.saas.common.api.context.CorrelationIdContext;
 import com.devolution.saas.common.api.dto.ErrorResponse;
-import com.devolution.saas.common.domain.exception.BusinessException;
-import com.devolution.saas.common.domain.exception.ConcurrencyException;
-import com.devolution.saas.common.domain.exception.ResourceNotFoundException;
+import com.devolution.saas.common.domain.exception.*;
 import com.devolution.saas.common.domain.exception.SecurityException;
-import com.devolution.saas.common.domain.exception.TenantException;
-import com.devolution.saas.common.domain.exception.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -29,10 +27,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.springframework.http.HttpStatusCode;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -69,7 +65,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex, HttpServletRequest request) {
-        log.warn("BusinessException: {}", ex.getMessage());
+        String correlationId = CorrelationIdContext.getCorrelationId();
+        log.warn("BusinessException: code={}, message={}, path={}, correlationId={}",
+                ex.getCode(), ex.getMessage(), request.getRequestURI(), correlationId);
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -88,6 +86,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(status.value())
                 .path(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
+                .correlationId(CorrelationIdContext.getCorrelationId())
                 .build();
 
         if (isDevEnvironment()) {
@@ -106,7 +105,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
-        log.warn("ResourceNotFoundException: {}", ex.getMessage());
+        String correlationId = CorrelationIdContext.getCorrelationId();
+        log.warn("ResourceNotFoundException: code={}, message={}, path={}, correlationId={}",
+                ex.getCode(), ex.getMessage(), request.getRequestURI(), correlationId);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(ex.getCode())
@@ -114,6 +115,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.NOT_FOUND.value())
                 .path(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
+                .correlationId(CorrelationIdContext.getCorrelationId())
                 .build();
 
         if (isDevEnvironment()) {
@@ -121,6 +123,35 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Gère les exceptions de ressource déjà existante.
+     *
+     * @param ex      Exception de ressource déjà existante
+     * @param request Requête HTTP
+     * @return Réponse d'erreur
+     */
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex, HttpServletRequest request) {
+        String correlationId = CorrelationIdContext.getCorrelationId();
+        log.warn("ResourceAlreadyExistsException: code={}, message={}, path={}, correlationId={}",
+                ex.getCode(), ex.getMessage(), request.getRequestURI(), correlationId);
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(ex.getCode())
+                .message(ex.getMessage())
+                .status(HttpStatus.CONFLICT.value())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .correlationId(CorrelationIdContext.getCorrelationId())
+                .build();
+
+        if (isDevEnvironment()) {
+            errorResponse.setTrace(getStackTrace(ex));
+        }
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     /**
@@ -132,7 +163,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex, HttpServletRequest request) {
-        log.warn("ValidationException: {}", ex.getMessage());
+        String correlationId = CorrelationIdContext.getCorrelationId();
+        log.warn("ValidationException: code={}, message={}, path={}, correlationId={}, errors={}",
+                ex.getCode(), ex.getMessage(), request.getRequestURI(), correlationId, ex.getErrors());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(ex.getCode())
@@ -140,6 +173,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST.value())
                 .path(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
+                .correlationId(CorrelationIdContext.getCorrelationId())
                 .build();
 
         if (ex.getErrors() != null && !ex.getErrors().isEmpty()) {
@@ -196,7 +230,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
-        log.warn("AccessDeniedException: {}", ex.getMessage());
+        String correlationId = CorrelationIdContext.getCorrelationId();
+        log.warn("AccessDeniedException: message={}, path={}, correlationId={}",
+                ex.getMessage(), request.getRequestURI(), correlationId);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code("access.denied")
@@ -204,6 +240,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.FORBIDDEN.value())
                 .path(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
+                .correlationId(CorrelationIdContext.getCorrelationId())
                 .build();
 
         if (isDevEnvironment()) {
@@ -279,7 +316,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAllUncaughtException(Exception ex, HttpServletRequest request) {
-        log.error("Exception non gérée: {}", ex.getMessage(), ex);
+        String correlationId = CorrelationIdContext.getCorrelationId();
+        log.error("Exception non gérée: type={}, message={}, path={}, correlationId={}",
+                ex.getClass().getName(), ex.getMessage(), request.getRequestURI(), correlationId, ex);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code("internal.error")
@@ -287,6 +326,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .path(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
+                .correlationId(CorrelationIdContext.getCorrelationId())
                 .build();
 
         if (isDevEnvironment()) {
@@ -455,6 +495,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(status instanceof HttpStatus ? ((HttpStatus) status).value() : status.value())
                 .path(getRequestPath(request))
                 .timestamp(LocalDateTime.now())
+                .correlationId(CorrelationIdContext.getCorrelationId())
                 .build();
 
         fieldErrors.forEach(fieldError ->
@@ -560,6 +601,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(status instanceof HttpStatus ? ((HttpStatus) status).value() : status.value())
                 .path(getRequestPath(request))
                 .timestamp(LocalDateTime.now())
+                .correlationId(CorrelationIdContext.getCorrelationId())
                 .build();
 
         if (isDevEnvironment()) {

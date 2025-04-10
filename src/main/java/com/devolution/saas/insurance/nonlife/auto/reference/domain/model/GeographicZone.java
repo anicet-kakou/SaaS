@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
- * Entité représentant une zone géographique.
+ * Entité représentant une zone géographique pour les véhicules.
  */
 @Data
 @Builder

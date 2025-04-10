@@ -2,6 +2,12 @@ package com.devolution.saas.insurance.nonlife.auto.reference.api;
 
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.*;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.service.ReferenceDataService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +22,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/auto/reference")
 @RequiredArgsConstructor
-public class AutoReferenceDataController_TEMP {
+@Tag(name = "Auto Reference Data", description = "API pour la gestion des données de référence auto")
+public class AutoReferenceDataController {
 
     private final ReferenceDataService referenceDataService;
 
@@ -26,8 +33,15 @@ public class AutoReferenceDataController_TEMP {
      * @param organizationId L'ID de l'organisation
      * @return Les données de référence
      */
+    @Operation(summary = "Récupère toutes les données de référence", description = "Récupère toutes les données de référence pour l'interface utilisateur")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Données de référence récupérées avec succès"),
+            @ApiResponse(responseCode = "400", description = "Paramètres invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
+    })
     @GetMapping
-    public ResponseEntity<Map<String, List<?>>> getReferenceData(@RequestParam UUID organizationId) {
+    public ResponseEntity<Map<String, List<?>>> getReferenceData(
+            @Parameter(description = "ID de l'organisation", required = true) @RequestParam UUID organizationId) {
         Map<String, List<?>> referenceData = referenceDataService.getReferenceDataForUI(organizationId);
         return ResponseEntity.ok(referenceData);
     }
@@ -38,8 +52,15 @@ public class AutoReferenceDataController_TEMP {
      * @param organizationId L'ID de l'organisation
      * @return Réponse vide avec statut 204
      */
+    @Operation(summary = "Initialise les données de référence standard", description = "Initialise les données de référence standard pour une nouvelle organisation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Données de référence initialisées avec succès"),
+            @ApiResponse(responseCode = "400", description = "Paramètres invalides", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur", content = @Content)
+    })
     @PostMapping("/initialize")
-    public ResponseEntity<Void> initializeReferenceData(@RequestParam UUID organizationId) {
+    public ResponseEntity<Void> initializeReferenceData(
+            @Parameter(description = "ID de l'organisation", required = true) @RequestParam UUID organizationId) {
         referenceDataService.initializeStandardReferenceData(organizationId);
         return ResponseEntity.noContent().build();
     }

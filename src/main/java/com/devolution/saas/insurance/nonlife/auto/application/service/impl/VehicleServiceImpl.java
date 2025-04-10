@@ -1,8 +1,9 @@
 package com.devolution.saas.insurance.nonlife.auto.application.service.impl;
 
-import com.devolution.saas.common.domain.exception.ResourceNotFoundException;
 import com.devolution.saas.insurance.nonlife.auto.application.command.CreateVehicleCommand;
 import com.devolution.saas.insurance.nonlife.auto.application.dto.VehicleDTO;
+import com.devolution.saas.insurance.nonlife.auto.application.exception.AutoResourceAlreadyExistsException;
+import com.devolution.saas.insurance.nonlife.auto.application.exception.AutoResourceNotFoundException;
 import com.devolution.saas.insurance.nonlife.auto.application.service.VehicleService;
 import com.devolution.saas.insurance.nonlife.auto.domain.model.Vehicle;
 import com.devolution.saas.insurance.nonlife.auto.domain.repository.VehicleRepository;
@@ -33,7 +34,7 @@ public class VehicleServiceImpl implements VehicleService {
         // Vérifier si un véhicule avec la même immatriculation existe déjà
         vehicleRepository.findByRegistrationNumber(command.getRegistrationNumber(), command.getOrganizationId())
                 .ifPresent(v -> {
-                    throw new IllegalArgumentException("Un véhicule avec cette immatriculation existe déjà");
+                    throw AutoResourceAlreadyExistsException.forIdentifier("Véhicule", "immatriculation", command.getRegistrationNumber());
                 });
 
         // Créer et sauvegarder le véhicule
@@ -49,11 +50,11 @@ public class VehicleServiceImpl implements VehicleService {
         log.debug("Récupération du véhicule avec ID: {}", id);
 
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule", id));
+                .orElseThrow(() -> AutoResourceNotFoundException.forId("Véhicule", id));
 
         // Vérifier que le véhicule appartient à l'organisation
         if (!vehicle.getOrganizationId().equals(organizationId)) {
-            throw new ResourceNotFoundException("Véhicule", id);
+            throw AutoResourceNotFoundException.forId("Véhicule", id);
         }
 
         return mapEntityToDTO(vehicle);
@@ -65,7 +66,7 @@ public class VehicleServiceImpl implements VehicleService {
         log.debug("Récupération du véhicule avec immatriculation: {}", registrationNumber);
 
         Vehicle vehicle = vehicleRepository.findByRegistrationNumber(registrationNumber, organizationId)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule avec l'immatriculation " + registrationNumber + " n'a pas été trouvé"));
+                .orElseThrow(() -> AutoResourceNotFoundException.forIdentifier("Véhicule", "immatriculation", registrationNumber));
 
         return mapEntityToDTO(vehicle);
     }
@@ -101,11 +102,11 @@ public class VehicleServiceImpl implements VehicleService {
 
         // Vérifier que le véhicule existe
         Vehicle existingVehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule", id));
+                .orElseThrow(() -> AutoResourceNotFoundException.forId("Véhicule", id));
 
         // Vérifier que le véhicule appartient à l'organisation
         if (!existingVehicle.getOrganizationId().equals(command.getOrganizationId())) {
-            throw new ResourceNotFoundException("Véhicule", id);
+            throw AutoResourceNotFoundException.forId("Véhicule", id);
         }
 
         // Si l'immatriculation a changé, vérifier qu'elle n'est pas déjà utilisée
@@ -113,7 +114,7 @@ public class VehicleServiceImpl implements VehicleService {
             vehicleRepository.findByRegistrationNumber(command.getRegistrationNumber(), command.getOrganizationId())
                     .ifPresent(v -> {
                         if (!v.getId().equals(id)) {
-                            throw new IllegalArgumentException("Un véhicule avec cette immatriculation existe déjà");
+                            throw AutoResourceAlreadyExistsException.forIdentifier("Véhicule", "immatriculation", command.getRegistrationNumber());
                         }
                     });
         }
@@ -134,10 +135,10 @@ public class VehicleServiceImpl implements VehicleService {
 
         // Vérifier que le véhicule existe et appartient à l'organisation
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Véhicule", id));
+                .orElseThrow(() -> AutoResourceNotFoundException.forId("Véhicule", id));
 
         if (!vehicle.getOrganizationId().equals(organizationId)) {
-            throw new ResourceNotFoundException("Véhicule", id);
+            throw AutoResourceNotFoundException.forId("Véhicule", id);
         }
 
         vehicleRepository.deleteById(id);

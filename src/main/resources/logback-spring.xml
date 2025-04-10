@@ -2,7 +2,7 @@
 <configuration>
     <property name="LOGS" value="./logs"/>
     <property name="CONSOLE_LOG_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } --- [%15.15t] %-40.40logger{39} : %X{requestId:-} %X{username:-} %X{organizationId:-} %m%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } --- [%15.15t] %-40.40logger{39} : [%X{correlationId:-}] %X{requestId:-} %X{username:-} %X{organizationId:-} %m%n"/>
 
 
     <!-- Console Appender -->
@@ -17,7 +17,8 @@
     <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOGS}/saas-api.log</file>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - requestId=%X{requestId:-}
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - correlationId=%X{correlationId:-}
+                requestId=%X{requestId:-}
                 username=%X{username:-} organizationId=%X{organizationId:-} ip=%X{ipAddress:-} - %msg%n
             </pattern>
             <charset>utf8</charset>
@@ -34,7 +35,8 @@
     <appender name="ErrorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOGS}/saas-api-error.log</file>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - requestId=%X{requestId:-}
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - correlationId=%X{correlationId:-}
+                requestId=%X{requestId:-}
                 username=%X{username:-} organizationId=%X{organizationId:-} ip=%X{ipAddress:-} - %msg%n
             </pattern>
             <charset>utf8</charset>
@@ -67,7 +69,8 @@
     <appender name="SecurityFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOGS}/saas-api-security.log</file>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - requestId=%X{requestId:-}
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - correlationId=%X{correlationId:-}
+                requestId=%X{requestId:-}
                 username=%X{username:-} organizationId=%X{organizationId:-} ip=%X{ipAddress:-} - %msg%n
             </pattern>
             <charset>utf8</charset>
@@ -90,7 +93,8 @@
     <appender name="AuditFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOGS}/saas-api-audit.log</file>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - requestId=%X{requestId:-}
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - correlationId=%X{correlationId:-}
+                requestId=%X{requestId:-}
                 username=%X{username:-} organizationId=%X{organizationId:-} ip=%X{ipAddress:-} - %msg%n
             </pattern>
             <charset>utf8</charset>

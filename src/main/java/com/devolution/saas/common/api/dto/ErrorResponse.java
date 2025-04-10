@@ -56,6 +56,11 @@ public class ErrorResponse {
     private List<FieldError> errors = new ArrayList<>();
 
     /**
+     * ID de corrélation pour le suivi des erreurs.
+     */
+    private String correlationId;
+
+    /**
      * Trace de la pile (uniquement en développement).
      */
     private String trace;

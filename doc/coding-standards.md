@@ -16,7 +16,7 @@ cohérent, lisible et facilement maintenable par tous les membres de l'équipe.
 - **Repositories**: Toutes les interfaces de repository doivent avoir le suffixe `Repository` (ex: `UserRepository`,
   `OrganizationRepository`)
 - **Implémentations de Repository**: Toutes les implémentations de repository doivent avoir le préfixe indiquant la
-  technologie utilisée (ex: `PostgresUserRepository`, `MongoOrganizationRepository`)
+  technologie utilisée (ex: `JpaUserRepository`, `MongoOrganizationRepository`)
 - **Services**: Tous les services doivent avoir le suffixe `Service` (ex: `UserService`, `AuthenticationService`)
 - **Contrôleurs**: Tous les contrôleurs doivent avoir le suffixe `Controller` (ex: `UserController`,
   `OrganizationController`)

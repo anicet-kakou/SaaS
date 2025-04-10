@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Service d'application pour la gestion des types de carburant.
+ * Service pour la gestion des types de carburant.
  */
 public interface FuelTypeService {
 
@@ -17,16 +17,26 @@ public interface FuelTypeService {
      *
      * @param fuelType       Le type de carburant à créer
      * @param organizationId L'ID de l'organisation
-     * @return Le DTO du type de carburant créé
+     * @return Le type de carburant créé
      */
     FuelTypeDTO createFuelType(FuelType fuelType, UUID organizationId);
+
+    /**
+     * Met à jour un type de carburant.
+     *
+     * @param id             L'ID du type de carburant
+     * @param fuelType       Le type de carburant mis à jour
+     * @param organizationId L'ID de l'organisation
+     * @return Le type de carburant mis à jour, ou empty si non trouvé
+     */
+    Optional<FuelTypeDTO> updateFuelType(UUID id, FuelType fuelType, UUID organizationId);
 
     /**
      * Récupère un type de carburant par son ID.
      *
      * @param id             L'ID du type de carburant
      * @param organizationId L'ID de l'organisation
-     * @return Le DTO du type de carburant, ou empty si non trouvé
+     * @return Le type de carburant trouvé, ou empty si non trouvé
      */
     Optional<FuelTypeDTO> getFuelTypeById(UUID id, UUID organizationId);
 
@@ -35,7 +45,7 @@ public interface FuelTypeService {
      *
      * @param code           Le code du type de carburant
      * @param organizationId L'ID de l'organisation
-     * @return Le DTO du type de carburant, ou empty si non trouvé
+     * @return Le type de carburant trouvé, ou empty si non trouvé
      */
     Optional<FuelTypeDTO> getFuelTypeByCode(String code, UUID organizationId);
 
@@ -43,7 +53,7 @@ public interface FuelTypeService {
      * Liste tous les types de carburant d'une organisation.
      *
      * @param organizationId L'ID de l'organisation
-     * @return La liste des DTOs des types de carburant
+     * @return La liste des types de carburant
      */
     List<FuelTypeDTO> getAllFuelTypes(UUID organizationId);
 
@@ -51,26 +61,16 @@ public interface FuelTypeService {
      * Liste tous les types de carburant actifs d'une organisation.
      *
      * @param organizationId L'ID de l'organisation
-     * @return La liste des DTOs des types de carburant actifs
+     * @return La liste des types de carburant actifs
      */
     List<FuelTypeDTO> getAllActiveFuelTypes(UUID organizationId);
-
-    /**
-     * Met à jour un type de carburant.
-     *
-     * @param id             L'ID du type de carburant
-     * @param fuelType       Le type de carburant mis à jour
-     * @param organizationId L'ID de l'organisation
-     * @return Le DTO du type de carburant mis à jour, ou empty si non trouvé
-     */
-    Optional<FuelTypeDTO> updateFuelType(UUID id, FuelType fuelType, UUID organizationId);
 
     /**
      * Supprime un type de carburant.
      *
      * @param id             L'ID du type de carburant
      * @param organizationId L'ID de l'organisation
-     * @return true si supprimé, false sinon
+     * @return true si la suppression a réussi, false sinon
      */
     boolean deleteFuelType(UUID id, UUID organizationId);
 }

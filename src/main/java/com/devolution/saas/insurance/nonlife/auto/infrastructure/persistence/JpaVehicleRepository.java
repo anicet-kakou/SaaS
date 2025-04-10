@@ -2,9 +2,12 @@ package com.devolution.saas.insurance.nonlife.auto.infrastructure.persistence;
 
 import com.devolution.saas.insurance.nonlife.auto.domain.model.Vehicle;
 import com.devolution.saas.insurance.nonlife.auto.domain.repository.VehicleRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,45 +16,44 @@ import java.util.UUID;
  * Implémentation JPA du repository pour les véhicules.
  */
 @Repository
-public class JpaVehicleRepository implements VehicleRepository {
+public interface JpaVehicleRepository extends JpaRepository<Vehicle, UUID>, JpaSpecificationExecutor<Vehicle>, VehicleRepository {
 
-    // Cette implémentation est un exemple et devrait être remplacée par une vraie implémentation JPA
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Vehicle save(Vehicle vehicle) {
-        // Logique de sauvegarde avec JPA
-        if (vehicle.getId() == null) {
-            vehicle.setId(UUID.randomUUID());
-        }
-        return vehicle;
-    }
+    Optional<Vehicle> findById(UUID id);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Optional<Vehicle> findById(UUID id) {
-        // Logique de recherche par ID avec JPA
-        return Optional.empty();
-    }
+    Vehicle save(Vehicle vehicle);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Optional<Vehicle> findByRegistrationNumber(String registrationNumber, UUID organizationId) {
-        // Logique de recherche par numéro d'immatriculation avec JPA
-        return Optional.empty();
-    }
+    @Query("SELECT v FROM Vehicle v WHERE v.registrationNumber = :registrationNumber AND v.organizationId = :organizationId")
+    Optional<Vehicle> findByRegistrationNumber(@Param("registrationNumber") String registrationNumber, @Param("organizationId") UUID organizationId);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<Vehicle> findAllByOrganizationId(UUID organizationId) {
-        // Logique de recherche par organisation avec JPA
-        return new ArrayList<>();
-    }
+    @Query("SELECT v FROM Vehicle v WHERE v.organizationId = :organizationId")
+    List<Vehicle> findAllByOrganizationId(@Param("organizationId") UUID organizationId);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<Vehicle> findAllByOwnerIdAndOrganizationId(UUID ownerId, UUID organizationId) {
-        // Logique de recherche par propriétaire et organisation avec JPA
-        return new ArrayList<>();
-    }
+    @Query("SELECT v FROM Vehicle v WHERE v.ownerId = :ownerId AND v.organizationId = :organizationId")
+    List<Vehicle> findAllByOwnerIdAndOrganizationId(@Param("ownerId") UUID ownerId, @Param("organizationId") UUID organizationId);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void deleteById(UUID id) {
-        // Logique de suppression avec JPA
-    }
+    void deleteById(UUID id);
 }

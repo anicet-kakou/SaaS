@@ -316,7 +316,7 @@ d'abstractions. Les abstractions ne doivent pas dépendre des détails. Les dét
 ```java
 // Violation du DIP
 public class UserService {
-    private PostgresUserRepository repository = new PostgresUserRepository();
+   private JpaUserRepository repository = new JpaUserRepository();
 
     public User createUser(String username, String email) {
         // Utilisation directe de l'implémentation concrète
@@ -331,9 +331,9 @@ public interface UserRepository {
     User save(User user);
 }
 
-public class PostgresUserRepository implements UserRepository {
+public class JpaUserRepository implements UserRepository {
     public User save(User user) {
-        // Implémentation spécifique à PostgreSQL
+       // Implémentation spécifique à JPA
         return user;
     }
 }

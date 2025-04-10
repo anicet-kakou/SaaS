@@ -311,7 +311,7 @@ Le projet dispose d'une structure de base avec :
 - **Entités de persistance**: Suffixe `Entity` (ex: `UserEntity`, `OrganizationEntity`)
 - **Cas d'utilisation**: Préfixe `UseCase` (ex: `UseCaseCreateUser`, `UseCaseUpdateOrganization`)
 - **Repositories**: Suffixe `Repository` (ex: `UserRepository`, `OrganizationRepository`)
-- **Implémentations de Repository**: Préfixe indiquant la technologie (ex: `PostgresUserRepository`)
+- **Implémentations de Repository**: Préfixe indiquant la technologie (ex: `JpaUserRepository`)
 - **Services**: Suffixe `Service` (ex: `UserService`, `AuthenticationService`)
 - **Contrôleurs**: Suffixe `Controller` (ex: `UserController`, `OrganizationController`)
 - **DTOs**: Suffixe approprié selon usage (`Request`, `Response`, `DTO`)
