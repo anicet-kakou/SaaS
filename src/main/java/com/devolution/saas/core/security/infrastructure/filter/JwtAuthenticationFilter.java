@@ -2,6 +2,7 @@ package com.devolution.saas.core.security.infrastructure.filter;
 
 import com.devolution.saas.common.util.HttpRequestUtils;
 import com.devolution.saas.core.security.infrastructure.config.JwtTokenProvider;
+import com.devolution.saas.core.security.infrastructure.service.JwtBlacklistService;
 import com.devolution.saas.core.security.infrastructure.service.TenantContextHolder;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final TenantContextHolder tenantContextHolder;
+    private final JwtBlacklistService jwtBlacklistService;
 
     /**
      * {@inheritDoc}
@@ -38,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String jwt = HttpRequestUtils.resolveJwtToken(request);
-            if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
+            if (StringUtils.hasText(jwt) && !jwtBlacklistService.isBlacklisted(jwt) && jwtTokenProvider.validateToken(jwt)) {
                 Authentication auth = jwtTokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(auth);
 

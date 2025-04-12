@@ -21,15 +21,14 @@ public class VehicleUsageMapper {
             return null;
         }
 
-        return VehicleUsageDTO.builder()
-                .id(vehicleUsage.getId())
-                .code(vehicleUsage.getCode())
-                .name(vehicleUsage.getName())
-                .description(vehicleUsage.getDescription())
-                .tariffCoefficient(vehicleUsage.getTariffCoefficient())
-                .isActive(vehicleUsage.isActive())
-                .organizationId(vehicleUsage.getOrganizationId())
-                .build();
+        return new VehicleUsageDTO(
+                vehicleUsage.getId(),
+                vehicleUsage.getCode(),
+                vehicleUsage.getName(),
+                vehicleUsage.getDescription(),
+                vehicleUsage.getTariffCoefficient(),
+                vehicleUsage.isActive(),
+                vehicleUsage.getOrganizationId());
     }
 
     /**
@@ -44,13 +43,13 @@ public class VehicleUsageMapper {
         }
 
         return VehicleUsage.builder()
-                .id(vehicleUsageDTO.getId())
-                .code(vehicleUsageDTO.getCode())
-                .name(vehicleUsageDTO.getName())
-                .description(vehicleUsageDTO.getDescription())
-                .tariffCoefficient(vehicleUsageDTO.getTariffCoefficient())
+                .id(vehicleUsageDTO.id())
+                .code(vehicleUsageDTO.code())
+                .name(vehicleUsageDTO.name())
+                .description(vehicleUsageDTO.description())
+                .tariffCoefficient(vehicleUsageDTO.tariffCoefficient())
                 .isActive(vehicleUsageDTO.isActive())
-                .organizationId(vehicleUsageDTO.getOrganizationId())
+                .organizationId(vehicleUsageDTO.organizationId())
                 .build();
     }
 }

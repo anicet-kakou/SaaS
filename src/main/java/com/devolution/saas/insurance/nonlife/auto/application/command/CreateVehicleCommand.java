@@ -20,7 +20,8 @@ public class CreateVehicleCommand {
     private String registrationNumber;
     private UUID makeId;
     private UUID modelId;
-    private String version;
+    private String modelVariant;
+    private Long version;
     private int year;
     private Integer enginePower;
     private Integer engineSize;

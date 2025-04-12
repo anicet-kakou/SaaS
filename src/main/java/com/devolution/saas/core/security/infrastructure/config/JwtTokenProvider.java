@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +40,12 @@ public class JwtTokenProvider {
 
     @Value("${devolution.saas.security.jwt.issuer:DEVOLUTION SaaS}")
     private String issuer;
+
+    @Value("${devolution.saas.security.jwt.audience:https://api.devolution-saas.com}")
+    private String audience;
+
+    @Value("${devolution.saas.security.jwt.clock-skew-seconds:30}")
+    private int clockSkewSeconds;
 
     private Key key;
 
@@ -65,7 +72,12 @@ public class JwtTokenProvider {
     public String createToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("id", user.getId().toString());
-        claims.put("email", user.getEmail());
+
+        // Limiter les informations sensibles dans le token
+        // Ne pas inclure l'email complet pour réduire les risques en cas de compromission du token
+        // claims.put("email", user.getEmail());
+
+        // Inclure uniquement les rôles, pas les permissions détaillées
         claims.put("roles", user.getRoles().stream()
                 .map(role -> "ROLE_" + role.getName())
                 .collect(Collectors.toList()));
@@ -74,14 +86,20 @@ public class JwtTokenProvider {
             claims.put("organizationId", user.getOrganizationId().toString());
         }
 
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInSeconds * 1000);
+        // Générer un identifiant unique pour le token
+        String tokenId = UUID.randomUUID().toString();
+
+        Instant now = Instant.now();
+        Instant validity = now.plusSeconds(validityInSeconds);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .setIssuer(issuer)
+                .setId(tokenId)  // jti - JWT ID
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(validity))
+                .setNotBefore(Date.from(now))  // nbf - Not Before
+                .setIssuer(issuer)  // iss - Issuer
+                .setAudience(audience)  // aud - Audience
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -94,12 +112,24 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parserBuilder()
+            // Utiliser un parser avec des validations plus strictes
+            JwtParser parser = Jwts.parserBuilder()
                     .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
+                    .requireIssuer(issuer)  // Vérifier l'émetteur
+                    .requireAudience(audience)  // Vérifier l'audience
+                    .setAllowedClockSkewSeconds(clockSkewSeconds)  // Tolérance pour les décalages d'horloge
+                    .build();
 
-            return !claims.getBody().getExpiration().before(new Date());
+            // Analyser et valider le token
+            Jws<Claims> claims = parser.parseClaimsJws(token);
+
+            // Vérifications supplémentaires
+            Date now = new Date();
+            Date expiration = claims.getBody().getExpiration();
+            Date notBefore = claims.getBody().getNotBefore();
+
+            // Vérifier que le token n'est pas expiré et qu'il est déjà valide (not before)
+            return !expiration.before(now) && (notBefore == null || !notBefore.after(now));
         } catch (JwtException | IllegalArgumentException e) {
             log.error("JWT token invalide: {}", e.getMessage());
             return false;
@@ -152,6 +182,21 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .get("roles", List.class);
+    }
+
+    /**
+     * Extrait la date d'expiration d'un jeton JWT.
+     *
+     * @param token Jeton JWT
+     * @return Date d'expiration
+     */
+    public Date getExpiration(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
     }
 
     /**

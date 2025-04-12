@@ -1,10 +1,14 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.domain.model;
 
-import com.devolution.saas.common.domain.model.BaseEntity;
+import com.devolution.saas.common.domain.model.TenantAwareEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
@@ -14,17 +18,17 @@ import java.util.UUID;
 @Entity
 @Table(name = "vehicle_models")
 @Data
-@Builder
+@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class VehicleModel extends BaseEntity {
+public class VehicleModel extends TenantAwareEntity {
 
     /**
-     * ID de la marque du véhicule.
+     * ID du fabricant du véhicule.
      */
-    @Column(name = "make_id", nullable = false)
-    private UUID makeId;
+    @Column(name = "manufacturer_id", nullable = false)
+    private UUID manufacturerId;
 
     /**
      * Code unique du modèle.
@@ -62,9 +66,5 @@ public class VehicleModel extends BaseEntity {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
-    /**
-     * ID de l'organisation.
-     */
-    @Column(name = "organization_id", nullable = false)
-    private UUID organizationId;
+    // The organizationId field is inherited from TenantAwareEntity
 }

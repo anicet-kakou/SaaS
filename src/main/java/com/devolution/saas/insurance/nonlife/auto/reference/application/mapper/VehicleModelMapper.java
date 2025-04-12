@@ -1,9 +1,12 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.application.mapper;
 
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.VehicleModelDTO;
+import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleCategory;
+import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleManufacturer;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleModel;
+import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleSubcategory;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.repository.VehicleCategoryRepository;
-import com.devolution.saas.insurance.nonlife.auto.reference.domain.repository.VehicleMakeRepository;
+import com.devolution.saas.insurance.nonlife.auto.reference.domain.repository.VehicleManufacturerRepository;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.repository.VehicleSubcategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,9 +18,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VehicleModelMapper {
 
-    private final VehicleMakeRepository vehicleMakeRepository;
     private final VehicleCategoryRepository vehicleCategoryRepository;
     private final VehicleSubcategoryRepository vehicleSubcategoryRepository;
+    private final VehicleManufacturerRepository vehicleManufacturerRepository;
 
     /**
      * Convertit une entité VehicleModel en DTO VehicleModelDTO.
@@ -30,33 +33,42 @@ public class VehicleModelMapper {
             return null;
         }
 
-        VehicleModelDTO dto = VehicleModelDTO.builder()
-                .id(vehicleModel.getId())
-                .makeId(vehicleModel.getMakeId())
-                .code(vehicleModel.getCode())
-                .name(vehicleModel.getName())
-                .description(vehicleModel.getDescription())
-                .categoryId(vehicleModel.getCategoryId())
-                .subcategoryId(vehicleModel.getSubcategoryId())
-                .isActive(vehicleModel.isActive())
-                .organizationId(vehicleModel.getOrganizationId())
-                .build();
-
-        // Ajouter le nom de la marque si disponible
-        vehicleMakeRepository.findById(vehicleModel.getMakeId())
-                .ifPresent(make -> dto.setMakeName(make.getName()));
-
-        // Ajouter le nom de la catégorie si disponible
-        vehicleCategoryRepository.findById(vehicleModel.getCategoryId())
-                .ifPresent(category -> dto.setCategoryName(category.getName()));
-
-        // Ajouter le nom de la sous-catégorie si disponible
-        if (vehicleModel.getSubcategoryId() != null) {
-            vehicleSubcategoryRepository.findById(vehicleModel.getSubcategoryId())
-                    .ifPresent(subcategory -> dto.setSubcategoryName(subcategory.getName()));
+        // Get related entity names
+        String makeName = null;
+        if (vehicleModel.getManufacturerId() != null) {
+            makeName = vehicleManufacturerRepository.findById(vehicleModel.getManufacturerId())
+                    .map(VehicleManufacturer::getName)
+                    .orElse(null);
         }
 
-        return dto;
+        String categoryName = null;
+        if (vehicleModel.getCategoryId() != null) {
+            categoryName = vehicleCategoryRepository.findById(vehicleModel.getCategoryId())
+                    .map(VehicleCategory::getName)
+                    .orElse(null);
+        }
+
+        String subcategoryName = null;
+        if (vehicleModel.getSubcategoryId() != null) {
+            subcategoryName = vehicleSubcategoryRepository.findById(vehicleModel.getSubcategoryId())
+                    .map(VehicleSubcategory::getName)
+                    .orElse(null);
+        }
+
+        // Create the DTO with all values
+        return new VehicleModelDTO(
+                vehicleModel.getId(),
+                vehicleModel.getManufacturerId(),
+                makeName,
+                vehicleModel.getCode(),
+                vehicleModel.getName(),
+                vehicleModel.getDescription(),
+                vehicleModel.getCategoryId(),
+                categoryName,
+                vehicleModel.getSubcategoryId(),
+                subcategoryName,
+                vehicleModel.isActive(),
+                vehicleModel.getOrganizationId());
     }
 
     /**
@@ -71,15 +83,15 @@ public class VehicleModelMapper {
         }
 
         return VehicleModel.builder()
-                .id(vehicleModelDTO.getId())
-                .makeId(vehicleModelDTO.getMakeId())
-                .code(vehicleModelDTO.getCode())
-                .name(vehicleModelDTO.getName())
-                .description(vehicleModelDTO.getDescription())
-                .categoryId(vehicleModelDTO.getCategoryId())
-                .subcategoryId(vehicleModelDTO.getSubcategoryId())
+                .id(vehicleModelDTO.id())
+                .manufacturerId(vehicleModelDTO.makeId())
+                .code(vehicleModelDTO.code())
+                .name(vehicleModelDTO.name())
+                .description(vehicleModelDTO.description())
+                .categoryId(vehicleModelDTO.categoryId())
+                .subcategoryId(vehicleModelDTO.subcategoryId())
                 .isActive(vehicleModelDTO.isActive())
-                .organizationId(vehicleModelDTO.getOrganizationId())
+                .organizationId(vehicleModelDTO.organizationId())
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package com.devolution.saas.insurance.nonlife.auto.application.usecase.impl;
 import com.devolution.saas.insurance.nonlife.auto.application.command.CreateAutoPolicyCommand;
 import com.devolution.saas.insurance.nonlife.auto.application.dto.AutoPolicyDTO;
 import com.devolution.saas.insurance.nonlife.auto.application.dto.PremiumCalculationResultDTO;
+import com.devolution.saas.insurance.nonlife.auto.application.exception.AutoResourceAlreadyExistsException;
 import com.devolution.saas.insurance.nonlife.auto.application.exception.AutoResourceNotFoundException;
 import com.devolution.saas.insurance.nonlife.auto.application.exception.BusinessRuleViolationException;
 import com.devolution.saas.insurance.nonlife.auto.application.mapper.AutoPolicyMapper;
@@ -45,7 +46,7 @@ public class CreateAutoPolicyImpl implements CreateAutoPolicy {
         // Vérifier si une police avec le même numéro existe déjà
         autoPolicyRepository.findByPolicyNumberAndOrganizationId(command.getPolicyNumber(), command.getOrganizationId())
                 .ifPresent(p -> {
-                    throw ResourceAlreadyExistsException.forIdentifier("Police d'assurance", "numéro", command.getPolicyNumber());
+                    throw AutoResourceAlreadyExistsException.forIdentifier("Police d'assurance", "numéro", command.getPolicyNumber());
                 });
 
         // Vérifier que le véhicule existe
@@ -67,7 +68,7 @@ public class CreateAutoPolicyImpl implements CreateAutoPolicy {
         );
 
         // Mapper la commande en entité
-        AutoPolicy policy = mapCommandToEntity(command, premiumCalculation.getFinalPremium());
+        AutoPolicy policy = mapCommandToEntity(command, premiumCalculation.finalPremium());
 
         // Valider la police
         List<String> validationErrors = policyValidator.validateForCreation(policy, command.getOrganizationId());
@@ -90,14 +91,12 @@ public class CreateAutoPolicyImpl implements CreateAutoPolicy {
      * @return L'entité AutoPolicy correspondante
      */
     private AutoPolicy mapCommandToEntity(CreateAutoPolicyCommand command, java.math.BigDecimal premiumAmount) {
-        return AutoPolicy.builder()
+        AutoPolicy policy = AutoPolicy.builder()
                 .policyNumber(command.getPolicyNumber())
                 .status(AutoPolicy.PolicyStatus.ACTIVE) // Par défaut, la police est active
                 .startDate(command.getStartDate())
                 .endDate(command.getEndDate())
                 .premiumAmount(premiumAmount)
-                .vehicleId(command.getVehicleId())
-                .primaryDriverId(command.getPrimaryDriverId())
                 .coverageType(command.getCoverageType())
                 .bonusMalusCoefficient(command.getBonusMalusCoefficient())
                 .annualMileage(command.getAnnualMileage())
@@ -106,5 +105,11 @@ public class CreateAutoPolicyImpl implements CreateAutoPolicy {
                 .claimHistoryCategoryId(command.getClaimHistoryCategoryId())
                 .organizationId(command.getOrganizationId())
                 .build();
+
+        // Utiliser les setters pour définir les IDs
+        policy.setVehicleId(command.getVehicleId());
+        policy.setPrimaryDriverId(command.getPrimaryDriverId());
+
+        return policy;
     }
 }

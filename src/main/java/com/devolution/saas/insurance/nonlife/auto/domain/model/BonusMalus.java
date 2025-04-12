@@ -1,10 +1,14 @@
 package com.devolution.saas.insurance.nonlife.auto.domain.model;
 
-import com.devolution.saas.common.domain.model.BaseEntity;
+import com.devolution.saas.common.domain.model.TenantAwareEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,11 +20,11 @@ import java.util.UUID;
 @Entity
 @Table(name = "bonus_malus")
 @Data
-@Builder
+@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class BonusMalus extends BaseEntity {
+public class BonusMalus extends TenantAwareEntity {
 
     /**
      * ID du client.
@@ -58,9 +62,5 @@ public class BonusMalus extends BaseEntity {
     @Column(name = "years_without_claim", nullable = false)
     private int yearsWithoutClaim;
 
-    /**
-     * ID de l'organisation.
-     */
-    @Column(name = "organization_id", nullable = false)
-    private UUID organizationId;
+    // The organizationId field is inherited from TenantAwareEntity
 }

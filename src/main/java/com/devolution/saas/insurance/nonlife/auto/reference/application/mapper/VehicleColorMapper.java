@@ -21,14 +21,13 @@ public class VehicleColorMapper {
             return null;
         }
 
-        return VehicleColorDTO.builder()
-                .id(vehicleColor.getId())
-                .code(vehicleColor.getCode())
-                .name(vehicleColor.getName())
-                .description(vehicleColor.getDescription())
-                .isActive(vehicleColor.isActive())
-                .organizationId(vehicleColor.getOrganizationId())
-                .build();
+        return new VehicleColorDTO(
+                vehicleColor.getId(),
+                vehicleColor.getCode(),
+                vehicleColor.getName(),
+                vehicleColor.getDescription(),
+                vehicleColor.isActive(),
+                vehicleColor.getOrganizationId());
     }
 
     /**
@@ -43,12 +42,12 @@ public class VehicleColorMapper {
         }
 
         return VehicleColor.builder()
-                .id(vehicleColorDTO.getId())
-                .code(vehicleColorDTO.getCode())
-                .name(vehicleColorDTO.getName())
-                .description(vehicleColorDTO.getDescription())
+                .id(vehicleColorDTO.id())
+                .code(vehicleColorDTO.code())
+                .name(vehicleColorDTO.name())
+                .description(vehicleColorDTO.description())
                 .isActive(vehicleColorDTO.isActive())
-                .organizationId(vehicleColorDTO.getOrganizationId())
+                .organizationId(vehicleColorDTO.organizationId())
                 .build();
     }
 }

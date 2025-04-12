@@ -13,9 +13,13 @@ import java.util.UUID;
 
 /**
  * Contrôleur REST pour la gestion des types de carrosserie de véhicule.
+ *
+ * @deprecated Utiliser {@link VehicleBodyTypeReferenceController} à la place.
+ * Ce contrôleur sera supprimé dans une version future.
  */
+@Deprecated(since = "1.0.0", forRemoval = true)
 @RestController
-@RequestMapping("/api/v1/auto/reference/vehicle-body-types")
+@RequestMapping("/api/v1/auto/reference/vehicle-body-types-management")
 @RequiredArgsConstructor
 public class VehicleBodyTypeController {
 

@@ -30,35 +30,35 @@ public class PermissionController extends AbstractCrudController<PermissionDTO, 
     private final PermissionService permissionService;
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('PERMISSION_CREATE')")
     protected PermissionDTO create(CreatePermissionCommand command) {
         log.debug("REST request pour créer une permission: {}", command.getResourceType() + "_" + command.getAction());
         return permissionService.createPermission(command);
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('PERMISSION_UPDATE')")
     protected PermissionDTO update(UUID id, UpdatePermissionCommand command) {
         log.debug("REST request pour mettre à jour la permission {}: {}", id, command);
         return permissionService.updatePermission(command);
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('PERMISSION_READ')")
     protected PermissionDTO get(UUID id) {
         log.debug("REST request pour récupérer la permission: {}", id);
         return permissionService.getPermission(id);
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('PERMISSION_LIST')")
     protected List<PermissionDTO> list() {
         log.debug("REST request pour lister toutes les permissions");
         return permissionService.listPermissions();
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('PERMISSION_DELETE')")
     protected void delete(UUID id) {
         log.debug("REST request pour supprimer la permission: {}", id);
         permissionService.deletePermission(id);
@@ -83,7 +83,7 @@ public class PermissionController extends AbstractCrudController<PermissionDTO, 
     @GetMapping("/resource-type/{resourceType}")
     @Operation(summary = "Liste les permissions par type de ressource")
     @Auditable(action = "API_LIST_PERMISSIONS_BY_RESOURCE_TYPE")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('PERMISSION_LIST')")
     public ResponseEntity<List<PermissionDTO>> listPermissionsByResourceType(@PathVariable String resourceType) {
         log.debug("REST request pour lister les permissions par type de ressource: {}", resourceType);
         List<PermissionDTO> result = permissionService.listPermissionsByResourceType(resourceType);
@@ -99,7 +99,7 @@ public class PermissionController extends AbstractCrudController<PermissionDTO, 
     @GetMapping("/system")
     @Operation(summary = "Liste les permissions système")
     @Auditable(action = "API_LIST_PERMISSIONS_BY_SYSTEM_DEFINED")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('PERMISSION_LIST')")
     public ResponseEntity<List<PermissionDTO>> listPermissionsBySystemDefined(
             @RequestParam(defaultValue = "true") boolean systemDefined) {
         log.debug("REST request pour lister les permissions système: {}", systemDefined);

@@ -1,0 +1,43 @@
+@startuml Auto Module Sequence - Create Policy
+
+actor Client
+participant "AutoPolicyController" as Controller
+participant "AutoPolicyService" as Service
+participant "VehicleService" as VehicleService
+participant "DriverService" as DriverService
+participant "AutoPolicyRepository" as Repository
+participant "Database" as DB
+
+Client -> Controller : POST /auto-policies
+activate Controller
+
+Controller -> Controller : validate request
+Controller -> Service : createPolicy(policy, organizationId)
+activate Service
+
+Service -> VehicleService : getVehicleById(vehicleId, organizationId)
+activate VehicleService
+VehicleService --> Service : vehicle
+deactivate VehicleService
+
+Service -> DriverService : getDriverById(driverId, organizationId)
+activate DriverService
+DriverService --> Service : driver
+deactivate DriverService
+
+Service -> Service : validatePolicy(policy)
+Service -> Repository : save(policy)
+activate Repository
+Repository -> DB : INSERT INTO auto_policies
+DB --> Repository : policy
+Repository --> Service : savedPolicy
+deactivate Repository
+
+Service -> Service : mapToDTO(savedPolicy)
+Service --> Controller : policyDTO
+deactivate Service
+
+Controller --> Client : 201 Created (policyDTO)
+deactivate Controller
+
+@enduml

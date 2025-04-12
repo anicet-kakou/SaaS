@@ -17,6 +17,7 @@ import com.devolution.saas.core.security.domain.repository.RoleRepository;
 import com.devolution.saas.core.security.domain.repository.UserRepository;
 import com.devolution.saas.core.security.domain.service.AuthenticationDomainService;
 import com.devolution.saas.core.security.infrastructure.config.JwtTokenProvider;
+import com.devolution.saas.core.security.infrastructure.service.JwtBlacklistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,9 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Service pour l'authentification des utilisateurs.
@@ -49,6 +48,7 @@ public class AuthenticationService implements AuthenticationUseCase {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationDomainService authenticationDomainService;
+    private final JwtBlacklistService jwtBlacklistService;
 
     @Value("${jwt.expiration}")
     private long jwtExpirationInSeconds;
@@ -299,8 +299,8 @@ public class AuthenticationService implements AuthenticationUseCase {
      */
     @Transactional
     @Auditable(action = "USER_LOGOUT")
-    public boolean logout(String refreshToken) {
-        log.debug("Déconnexion de l'utilisateur");
+    public boolean logoutWithRefreshToken(String refreshToken) {
+        log.debug("Déconnexion de l'utilisateur avec jeton de rafraîchissement");
 
         // Vérification du jeton de rafraîchissement
         RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
@@ -464,6 +464,68 @@ public class AuthenticationService implements AuthenticationUseCase {
         command.setRefreshToken(refreshToken);
 
         return refreshToken(command);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean logout(String token) {
+        // Déterminer si le token est un jeton JWT ou un jeton de rafraîchissement
+        if (token.length() > 100) { // Les jetons JWT sont généralement plus longs
+            return logoutWithJwt(token);
+        } else {
+            return logoutWithRefreshToken(token);
+        }
+    }
+
+    /**
+     * Déconnecte un utilisateur en révoquant son jeton JWT et son jeton de rafraîchissement.
+     *
+     * @param token Jeton JWT à révoquer
+     * @return true si la déconnexion a réussi, false sinon
+     */
+    @Transactional
+    @Auditable(action = "LOGOUT")
+    public boolean logoutWithJwt(String token) {
+        log.debug("Déconnexion de l'utilisateur avec jeton JWT");
+
+        try {
+            // Vérifier que le jeton est valide
+            if (!jwtTokenProvider.validateToken(token)) {
+                log.warn("Tentative de déconnexion avec un jeton invalide");
+                return false;
+            }
+
+            // Récupérer l'ID de l'utilisateur à partir du jeton
+            String username = jwtTokenProvider.getUsername(token);
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new BusinessException("auth.user.not.found", "Utilisateur non trouvé"));
+
+            // Révoquer tous les jetons de rafraîchissement de l'utilisateur
+            List<RefreshToken> refreshTokens = refreshTokenRepository.findAllByUserId(user.getId());
+            for (RefreshToken refreshToken : refreshTokens) {
+                refreshToken.revoke();
+                refreshTokenRepository.save(refreshToken);
+            }
+
+            // Ajouter le jeton JWT à la liste noire
+            // Calculer la durée de validité restante du jeton
+            Date expiration = jwtTokenProvider.getExpiration(token);
+            long expirationTimeInSeconds = (expiration.getTime() - System.currentTimeMillis()) / 1000;
+            if (expirationTimeInSeconds > 0) {
+                jwtBlacklistService.blacklistToken(token, expirationTimeInSeconds);
+            }
+
+            // Effacer le contexte de sécurité
+            SecurityContextHolder.clearContext();
+
+            log.info("Utilisateur {} déconnecté avec succès", username);
+            return true;
+        } catch (Exception e) {
+            log.error("Erreur lors de la déconnexion: {}", e.getMessage());
+            return false;
+        }
     }
 
     private String buildKeycloakAuthorizationUrl(String redirectUri, String state) {

@@ -1,167 +1,103 @@
 package com.devolution.saas.insurance.nonlife.auto.application.service.impl;
 
+import com.devolution.saas.common.domain.exception.ResourceNotFoundException;
 import com.devolution.saas.insurance.nonlife.auto.application.service.AutoPricingService;
 import com.devolution.saas.insurance.nonlife.auto.domain.model.AutoPolicy.CoverageType;
 import com.devolution.saas.insurance.nonlife.auto.domain.model.Vehicle;
-import com.devolution.saas.insurance.nonlife.auto.domain.repository.VehicleRepository;
+import com.devolution.saas.insurance.nonlife.auto.domain.port.VehicleProvider;
+import com.devolution.saas.insurance.nonlife.auto.domain.service.PricingCalculator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
  * Implémentation du service de tarification auto.
+ * Ce service d'application délègue la logique métier au service de domaine PricingCalculator.
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AutoPricingServiceImpl implements AutoPricingService {
 
-    // Constantes pour la tarification
-    private static final BigDecimal BASE_PREMIUM = new BigDecimal("500.00");
-    private static final BigDecimal COMPREHENSIVE_MULTIPLIER = new BigDecimal("1.5");
-    private static final BigDecimal THIRD_PARTY_MULTIPLIER = new BigDecimal("1.0");
-    private static final BigDecimal ANTI_THEFT_DISCOUNT = new BigDecimal("0.95");
-    private static final BigDecimal GARAGE_PARKING_DISCOUNT = new BigDecimal("0.90");
-    private static final BigDecimal HIGH_VALUE_SURCHARGE = new BigDecimal("1.2");
-    private static final BigDecimal HIGH_POWER_SURCHARGE = new BigDecimal("1.3");
-    private static final BigDecimal GLASS_COVERAGE_PRICE = new BigDecimal("80.00");
-    private static final BigDecimal ASSISTANCE_COVERAGE_PRICE = new BigDecimal("120.00");
-    private static final BigDecimal DRIVER_COVERAGE_PRICE = new BigDecimal("150.00");
-    private final VehicleRepository vehicleRepository;
+    private final VehicleProvider vehicleProvider;
+    private final PricingCalculator pricingCalculator;
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal calculateBasePremium(UUID vehicleId, UUID organizationId) {
         log.debug("Calcul de la prime de base pour le véhicule: {}", vehicleId);
 
         // Récupération du véhicule
-        Optional<Vehicle> vehicleOpt = vehicleRepository.findById(vehicleId);
-        if (vehicleOpt.isEmpty()) {
-            log.error("Véhicule non trouvé: {}", vehicleId);
-            throw new IllegalArgumentException("Véhicule non trouvé");
-        }
+        Vehicle vehicle = vehicleProvider.findVehicleById(vehicleId, organizationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle", vehicleId));
 
-        Vehicle vehicle = vehicleOpt.get();
-
-        // Vérification de l'organisation
-        if (!vehicle.getOrganizationId().equals(organizationId)) {
-            log.error("Le véhicule n'appartient pas à l'organisation: {}", organizationId);
-            throw new IllegalArgumentException("Le véhicule n'appartient pas à l'organisation spécifiée");
-        }
-
-        // Calcul de la prime de base en fonction des caractéristiques du véhicule
-        BigDecimal premium = BASE_PREMIUM;
-
-        // Ajustement en fonction de la valeur du véhicule
-        if (vehicle.getCurrentValue() != null && vehicle.getCurrentValue().compareTo(new BigDecimal("30000")) > 0) {
-            premium = premium.multiply(HIGH_VALUE_SURCHARGE);
-        }
-
-        // Ajustement en fonction de la puissance du moteur
-        if (vehicle.getEnginePower() != null && vehicle.getEnginePower() > 150) {
-            premium = premium.multiply(HIGH_POWER_SURCHARGE);
-        }
-
-        // Ajustement en fonction de l'âge du véhicule
-        int vehicleAge = java.time.LocalDate.now().getYear() - vehicle.getYear();
-        if (vehicleAge > 10) {
-            // Réduction pour les véhicules anciens
-            premium = premium.multiply(new BigDecimal("0.8"));
-        } else if (vehicleAge < 2) {
-            // Majoration pour les véhicules neufs
-            premium = premium.multiply(new BigDecimal("1.1"));
-        }
-
-        return premium.setScale(2, RoundingMode.HALF_UP);
+        // Délégation du calcul au service de domaine
+        return pricingCalculator.calculateBasePremium(vehicle, CoverageType.THIRD_PARTY);
     }
 
     @Override
-    public BigDecimal calculateFinalPremium(UUID vehicleId, String coverageType, BigDecimal bonusMalusCoefficient,
+    @Transactional(readOnly = true)
+    public BigDecimal calculateFinalPremium(UUID vehicleId, String coverageTypeStr, BigDecimal bonusMalusCoefficient,
                                             Map<String, Boolean> additionalOptions, UUID organizationId) {
-        log.debug("Calcul de la prime finale pour le véhicule: {}, couverture: {}", vehicleId, coverageType);
+        log.debug("Calcul de la prime finale pour le véhicule: {}, couverture: {}", vehicleId, coverageTypeStr);
 
-        // Calcul de la prime de base
-        BigDecimal basePremium = calculateBasePremium(vehicleId, organizationId);
+        // Récupération du véhicule
+        Vehicle vehicle = vehicleProvider.findVehicleById(vehicleId, organizationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle", vehicleId));
 
-        // Application du multiplicateur selon le type de couverture
-        BigDecimal premium;
-        if (CoverageType.COMPREHENSIVE.name().equals(coverageType)) {
-            premium = basePremium.multiply(COMPREHENSIVE_MULTIPLIER);
-        } else {
-            premium = basePremium.multiply(THIRD_PARTY_MULTIPLIER);
-        }
+        // Conversion du type de couverture
+        CoverageType coverageType = CoverageType.valueOf(coverageTypeStr);
+
+        // Délégation du calcul de la prime de base au service de domaine
+        BigDecimal basePremium = pricingCalculator.calculateBasePremium(vehicle, coverageType);
 
         // Application du coefficient bonus-malus
-        if (bonusMalusCoefficient != null) {
-            premium = premium.multiply(bonusMalusCoefficient);
-        }
+        BigDecimal finalPremium = pricingCalculator.calculateFinalPremium(basePremium, bonusMalusCoefficient);
 
-        // Application des options additionnelles
+        // Application des options additionnelles (cette logique pourrait également être déplacée vers le domaine)
         if (additionalOptions != null) {
-            if (Boolean.TRUE.equals(additionalOptions.get("antiTheftDevice"))) {
-                premium = premium.multiply(ANTI_THEFT_DISCOUNT);
-            }
-
-            if (Boolean.TRUE.equals(additionalOptions.get("garageParking"))) {
-                premium = premium.multiply(GARAGE_PARKING_DISCOUNT);
-            }
-
             if (Boolean.TRUE.equals(additionalOptions.get("glassCoverage"))) {
-                premium = premium.add(GLASS_COVERAGE_PRICE);
+                finalPremium = finalPremium.add(new BigDecimal("80.00"));
             }
-
             if (Boolean.TRUE.equals(additionalOptions.get("assistanceCoverage"))) {
-                premium = premium.add(ASSISTANCE_COVERAGE_PRICE);
+                finalPremium = finalPremium.add(new BigDecimal("120.00"));
             }
-
             if (Boolean.TRUE.equals(additionalOptions.get("driverCoverage"))) {
-                premium = premium.add(DRIVER_COVERAGE_PRICE);
+                finalPremium = finalPremium.add(new BigDecimal("150.00"));
             }
         }
 
-        return premium.setScale(2, RoundingMode.HALF_UP);
+        return finalPremium;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Map<String, BigDecimal> simulatePricingOptions(UUID vehicleId, UUID organizationId) {
         log.debug("Simulation des options de tarification pour le véhicule: {}", vehicleId);
 
+        // Récupération du véhicule
+        Vehicle vehicle = vehicleProvider.findVehicleById(vehicleId, organizationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle", vehicleId));
+
         Map<String, BigDecimal> options = new HashMap<>();
 
-        // Calcul des primes pour différentes options
-        BigDecimal basePremium = calculateBasePremium(vehicleId, organizationId);
-        options.put("basePremium", basePremium);
+        // Calcul des primes pour différentes options en utilisant le service de domaine
+        BigDecimal thirdPartyPremium = pricingCalculator.calculateBasePremium(vehicle, CoverageType.THIRD_PARTY);
+        options.put("thirdPartyPremium", thirdPartyPremium);
 
-        // Option tiers
-        BigDecimal thirdPartyPremium = basePremium.multiply(THIRD_PARTY_MULTIPLIER);
-        options.put("thirdParty", thirdPartyPremium);
+        BigDecimal comprehensivePremium = pricingCalculator.calculateBasePremium(vehicle, CoverageType.COMPREHENSIVE);
+        options.put("comprehensivePremium", comprehensivePremium);
 
-        // Option tous risques
-        BigDecimal comprehensivePremium = basePremium.multiply(COMPREHENSIVE_MULTIPLIER);
-        options.put("comprehensive", comprehensivePremium);
-
-        // Option tous risques avec franchise réduite
-        BigDecimal comprehensiveReducedDeductible = comprehensivePremium.multiply(new BigDecimal("1.15"));
-        options.put("comprehensiveReducedDeductible", comprehensiveReducedDeductible);
-
-        // Option tous risques avec garantie valeur à neuf
-        BigDecimal comprehensiveNewValue = comprehensivePremium.multiply(new BigDecimal("1.25"));
-        options.put("comprehensiveNewValue", comprehensiveNewValue);
-
-        // Option bris de glace
-        options.put("glassCoverage", GLASS_COVERAGE_PRICE);
-
-        // Option assistance
-        options.put("assistanceCoverage", ASSISTANCE_COVERAGE_PRICE);
-
-        // Option protection du conducteur
-        options.put("driverCoverage", DRIVER_COVERAGE_PRICE);
+        // Options additionnelles
+        options.put("glassCoverage", new BigDecimal("80.00"));
+        options.put("assistanceCoverage", new BigDecimal("120.00"));
+        options.put("driverCoverage", new BigDecimal("150.00"));
 
         return options;
     }

@@ -13,9 +13,13 @@ import java.util.UUID;
 
 /**
  * Contrôleur REST pour la gestion des genres de véhicule.
+ *
+ * @deprecated Utiliser {@link VehicleGenreReferenceController} à la place.
+ * Ce contrôleur sera supprimé dans une version future.
  */
+@Deprecated(since = "1.0.0", forRemoval = true)
 @RestController
-@RequestMapping("/api/v1/auto/reference/vehicle-genres")
+@RequestMapping("/api/v1/auto/reference/vehicle-genres-management")
 @RequiredArgsConstructor
 public class VehicleGenreController {
 

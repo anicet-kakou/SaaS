@@ -1,0 +1,135 @@
+@startuml Auto Module Architecture
+
+!define RECTANGLE class
+!define INTERFACE interface
+
+skinparam class {
+    BackgroundColor<<Domain>> LightYellow
+    BackgroundColor<<Application>> LightBlue
+    BackgroundColor<<Infrastructure>> LightGreen
+    BackgroundColor<<API>> LightPink
+}
+
+package "API Layer" {
+    RECTANGLE "VehicleController" as VehicleController <<API>>
+    RECTANGLE "DriverController" as DriverController <<API>>
+    RECTANGLE "AutoPolicyController" as AutoPolicyController <<API>>
+    RECTANGLE "AutoInsuranceProductController" as AutoInsuranceProductController <<API>>
+}
+
+package "Application Layer" {
+    INTERFACE "VehicleService" as VehicleService <<Application>>
+    RECTANGLE "VehicleServiceImpl" as VehicleServiceImpl <<Application>>
+    INTERFACE "DriverService" as DriverService <<Application>>
+    RECTANGLE "DriverServiceImpl" as DriverServiceImpl <<Application>>
+    INTERFACE "AutoPolicyService" as AutoPolicyService <<Application>>
+    RECTANGLE "AutoPolicyServiceImpl" as AutoPolicyServiceImpl <<Application>>
+    INTERFACE "AutoInsuranceProductService" as AutoInsuranceProductService <<Application>>
+    RECTANGLE "AutoInsuranceProductServiceImpl" as AutoInsuranceProductServiceImpl <<Application>>
+    
+    RECTANGLE "VehicleDTO" as VehicleDTO <<Application>>
+    RECTANGLE "DriverDTO" as DriverDTO <<Application>>
+    RECTANGLE "AutoPolicyDTO" as AutoPolicyDTO <<Application>>
+    RECTANGLE "AutoInsuranceProductDTO" as AutoInsuranceProductDTO <<Application>>
+    
+    RECTANGLE "VehicleMapper" as VehicleMapper <<Application>>
+    RECTANGLE "DriverMapper" as DriverMapper <<Application>>
+    RECTANGLE "AutoPolicyMapper" as AutoPolicyMapper <<Application>>
+    RECTANGLE "AutoInsuranceProductMapper" as AutoInsuranceProductMapper <<Application>>
+    
+    RECTANGLE "ResourceNotFoundException" as ResourceNotFoundException <<Application>>
+    RECTANGLE "ResourceAlreadyExistsException" as ResourceAlreadyExistsException <<Application>>
+    RECTANGLE "BusinessRuleViolationException" as BusinessRuleViolationException <<Application>>
+}
+
+package "Domain Layer" {
+    RECTANGLE "Vehicle" as Vehicle <<Domain>>
+    RECTANGLE "Driver" as Driver <<Domain>>
+    RECTANGLE "AutoPolicy" as AutoPolicy <<Domain>>
+    RECTANGLE "BonusMalus" as BonusMalus <<Domain>>
+    RECTANGLE "AutoInsuranceProduct" as AutoInsuranceProduct <<Domain>>
+    
+    INTERFACE "VehicleRepository" as VehicleRepository <<Domain>>
+    INTERFACE "DriverRepository" as DriverRepository <<Domain>>
+    INTERFACE "AutoPolicyRepository" as AutoPolicyRepository <<Domain>>
+    INTERFACE "BonusMalusRepository" as BonusMalusRepository <<Domain>>
+    INTERFACE "AutoInsuranceProductRepository" as AutoInsuranceProductRepository <<Domain>>
+}
+
+package "Infrastructure Layer" {
+    RECTANGLE "JpaVehicleRepository" as JpaVehicleRepository <<Infrastructure>>
+    RECTANGLE "JpaDriverRepository" as JpaDriverRepository <<Infrastructure>>
+    RECTANGLE "JpaAutoPolicyRepository" as JpaAutoPolicyRepository <<Infrastructure>>
+    RECTANGLE "JpaBonusMalusRepository" as JpaBonusMalusRepository <<Infrastructure>>
+    RECTANGLE "JpaAutoInsuranceProductRepository" as JpaAutoInsuranceProductRepository <<Infrastructure>>
+}
+
+package "Reference Data" {
+    RECTANGLE "VehicleMake" as VehicleMake <<Domain>>
+    RECTANGLE "VehicleModel" as VehicleModel <<Domain>>
+    RECTANGLE "VehicleCategory" as VehicleCategory <<Domain>>
+    RECTANGLE "VehicleSubcategory" as VehicleSubcategory <<Domain>>
+    RECTANGLE "FuelType" as FuelType <<Domain>>
+    RECTANGLE "VehicleUsage" as VehicleUsage <<Domain>>
+    RECTANGLE "VehicleColor" as VehicleColor <<Domain>>
+}
+
+' API Layer to Application Layer
+VehicleController --> VehicleService
+DriverController --> DriverService
+AutoPolicyController --> AutoPolicyService
+AutoInsuranceProductController --> AutoInsuranceProductService
+
+' Application Layer to Domain Layer
+VehicleService --> VehicleRepository
+DriverService --> DriverRepository
+AutoPolicyService --> AutoPolicyRepository
+AutoInsuranceProductService --> AutoInsuranceProductRepository
+
+' Application Layer Implementation
+VehicleServiceImpl ..|> VehicleService
+DriverServiceImpl ..|> DriverService
+AutoPolicyServiceImpl ..|> AutoPolicyService
+AutoInsuranceProductServiceImpl ..|> AutoInsuranceProductService
+
+' Application Layer to DTOs
+VehicleServiceImpl --> VehicleDTO
+DriverServiceImpl --> DriverDTO
+AutoPolicyServiceImpl --> AutoPolicyDTO
+AutoInsuranceProductServiceImpl --> AutoInsuranceProductDTO
+
+' Application Layer to Mappers
+VehicleServiceImpl --> VehicleMapper
+DriverServiceImpl --> DriverMapper
+AutoPolicyServiceImpl --> AutoPolicyMapper
+AutoInsuranceProductServiceImpl --> AutoInsuranceProductMapper
+
+' Mappers to Domain and DTOs
+VehicleMapper --> Vehicle
+VehicleMapper --> VehicleDTO
+DriverMapper --> Driver
+DriverMapper --> DriverDTO
+AutoPolicyMapper --> AutoPolicy
+AutoPolicyMapper --> AutoPolicyDTO
+AutoInsuranceProductMapper --> AutoInsuranceProduct
+AutoInsuranceProductMapper --> AutoInsuranceProductDTO
+
+' Infrastructure Layer to Domain Layer
+JpaVehicleRepository ..|> VehicleRepository
+JpaDriverRepository ..|> DriverRepository
+JpaAutoPolicyRepository ..|> AutoPolicyRepository
+JpaBonusMalusRepository ..|> BonusMalusRepository
+JpaAutoInsuranceProductRepository ..|> AutoInsuranceProductRepository
+
+' Domain Relationships
+Vehicle --> VehicleMake : references
+Vehicle --> VehicleModel : references
+Vehicle --> VehicleCategory : references
+Vehicle --> VehicleSubcategory : references
+Vehicle --> FuelType : references
+Vehicle --> VehicleUsage : references
+Vehicle --> VehicleColor : references
+AutoPolicy --> Vehicle : references
+AutoPolicy --> Driver : references
+
+@enduml

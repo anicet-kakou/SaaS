@@ -13,9 +13,13 @@ import java.util.UUID;
 
 /**
  * Contrôleur REST pour la gestion des zones géographiques.
+ *
+ * @deprecated Utiliser {@link GeographicZoneReferenceController} à la place.
+ * Ce contrôleur sera supprimé dans une version future.
  */
+@Deprecated(since = "1.0.0", forRemoval = true)
 @RestController
-@RequestMapping("/api/v1/auto/reference/geographic-zones")
+@RequestMapping("/api/v1/auto/reference/geographic-zones-management")
 @RequiredArgsConstructor
 public class GeographicZoneController {
 

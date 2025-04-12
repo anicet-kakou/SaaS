@@ -3,12 +3,15 @@ package com.devolution.saas.common.abstracts;
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service générique pour les opérations CRUD.
+ * Implémente les standards de transaction pour les opérations CRUD.
  *
  * @param <T>  Type de l'entité DTO
  * @param <ID> Type de l'identifiant
@@ -69,7 +72,7 @@ public abstract class AbstractCrudService<T, ID, C, U> {
      * @param command Commande de création
      * @return Entité créée
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Auditable(action = "CREATE")
     @TenantRequired
     public T create(C command) {
@@ -83,7 +86,7 @@ public abstract class AbstractCrudService<T, ID, C, U> {
      * @param command Commande de mise à jour
      * @return Entité mise à jour
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Auditable(action = "UPDATE")
     @TenantRequired
     public T update(U command) {
@@ -97,7 +100,7 @@ public abstract class AbstractCrudService<T, ID, C, U> {
      * @param id ID de l'entité
      * @return Entité récupérée
      */
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Auditable(action = "GET")
     public T get(ID id) {
         log.debug("Récupération du {}: {}", getEntityName(), id);
@@ -105,11 +108,38 @@ public abstract class AbstractCrudService<T, ID, C, U> {
     }
 
     /**
+     * Récupère une entité par son ID, retournant un Optional.
+     *
+     * @param id ID de l'entité
+     * @return Optional contenant l'entité récupérée, ou vide si non trouvée
+     */
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+    @Auditable(action = "GET")
+    public Optional<T> getOptional(ID id) {
+        log.debug("Récupération optionnelle du {}: {}", getEntityName(), id);
+        return executeGetOptional(id);
+    }
+
+    /**
+     * Exécute la récupération d'une entité, retournant un Optional.
+     *
+     * @param id ID de l'entité
+     * @return Optional contenant l'entité récupérée, ou vide si non trouvée
+     */
+    protected Optional<T> executeGetOptional(ID id) {
+        try {
+            return Optional.ofNullable(executeGet(id));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    /**
      * Liste toutes les entités.
      *
      * @return Liste des entités
      */
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     @Auditable(action = "LIST")
     public List<T> list() {
         log.debug("Listage des {}", getEntityName());
@@ -121,7 +151,7 @@ public abstract class AbstractCrudService<T, ID, C, U> {
      *
      * @param id ID de l'entité
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Auditable(action = "DELETE")
     @TenantRequired
     public void delete(ID id) {

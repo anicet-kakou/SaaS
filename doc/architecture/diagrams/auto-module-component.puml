@@ -1,0 +1,49 @@
+@startuml Auto Module Component Diagram
+
+!define COMPONENT component
+!define INTERFACE interface
+
+skinparam component {
+    BackgroundColor LightYellow
+    BorderColor Black
+    ArrowColor Black
+}
+
+package "Auto Module" {
+    COMPONENT "API Layer" as API
+    COMPONENT "Application Layer" as Application
+    COMPONENT "Domain Layer" as Domain
+    COMPONENT "Infrastructure Layer" as Infrastructure
+    COMPONENT "Reference Data" as ReferenceData
+}
+
+package "External Systems" {
+    COMPONENT "Client Module" as ClientModule
+    COMPONENT "Billing Module" as BillingModule
+    COMPONENT "Claims Module" as ClaimsModule
+    COMPONENT "Database" as Database
+}
+
+' Internal dependencies
+API --> Application
+Application --> Domain
+Infrastructure --> Domain
+ReferenceData --> Domain
+Infrastructure --> Database
+
+' External dependencies
+API --> ClientModule : uses
+API --> BillingModule : uses
+API --> ClaimsModule : uses
+
+' Interfaces
+INTERFACE "REST API" as RestAPI
+INTERFACE "Repository Interfaces" as RepositoryInterfaces
+INTERFACE "Service Interfaces" as ServiceInterfaces
+
+RestAPI - API
+ServiceInterfaces - Application
+RepositoryInterfaces - Domain
+Infrastructure -( RepositoryInterfaces : implements
+
+@enduml

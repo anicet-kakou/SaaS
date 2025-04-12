@@ -1,0 +1,174 @@
+@startuml Auto Module Domain Model
+
+!define ENTITY class
+
+skinparam class {
+    BackgroundColor LightYellow
+    BorderColor Black
+    ArrowColor Black
+}
+
+ENTITY "Vehicle" as Vehicle {
+    + id: UUID
+    + registrationNumber: String
+    + makeId: UUID
+    + modelId: UUID
+    + version: String
+    + year: int
+    + enginePower: Integer
+    + engineSize: Integer
+    + fuelTypeId: UUID
+    + categoryId: UUID
+    + subcategoryId: UUID
+    + usageId: UUID
+    + geographicZoneId: UUID
+    + purchaseDate: LocalDate
+    + purchaseValue: BigDecimal
+    + currentValue: BigDecimal
+    + mileage: Integer
+    + vin: String
+    + colorId: UUID
+    + ownerId: UUID
+    + organizationId: UUID
+}
+
+ENTITY "Driver" as Driver {
+    + id: UUID
+    + customerId: UUID
+    + licenseNumber: String
+    + licenseTypeId: UUID
+    + licenseIssueDate: LocalDate
+    + licenseExpiryDate: LocalDate
+    + isPrimaryDriver: boolean
+    + yearsOfDrivingExperience: int
+    + organizationId: UUID
+}
+
+ENTITY "AutoPolicy" as AutoPolicy {
+    + id: UUID
+    + policyNumber: String
+    + status: PolicyStatus
+    + startDate: LocalDate
+    + endDate: LocalDate
+    + premiumAmount: BigDecimal
+    + vehicleId: UUID
+    + primaryDriverId: UUID
+    + coverageType: CoverageType
+    + bonusMalusCoefficient: BigDecimal
+    + annualMileage: Integer
+    + parkingType: ParkingType
+    + hasAntiTheftDevice: boolean
+    + claimHistoryCategoryId: UUID
+    + organizationId: UUID
+}
+
+ENTITY "BonusMalus" as BonusMalus {
+    + id: UUID
+    + customerId: UUID
+    + coefficient: BigDecimal
+    + effectiveDate: LocalDate
+    + expiryDate: LocalDate
+    + previousCoefficient: BigDecimal
+    + yearsWithoutClaim: int
+    + organizationId: UUID
+}
+
+ENTITY "AutoInsuranceProduct" as AutoInsuranceProduct {
+    + id: UUID
+    + code: String
+    + name: String
+    + description: String
+    + status: ProductStatus
+    + effectiveDate: LocalDate
+    + expiryDate: LocalDate
+    + organizationId: UUID
+    + calculatePremium(context: PolicyCalculationContext): BigDecimal
+    + validateSubscription(context: SubscriptionContext): boolean
+}
+
+ENTITY "VehicleMake" as VehicleMake {
+    + id: UUID
+    + code: String
+    + name: String
+    + description: String
+    + countryOfOrigin: String
+    + isActive: boolean
+    + organizationId: UUID
+}
+
+ENTITY "VehicleModel" as VehicleModel {
+    + id: UUID
+    + makeId: UUID
+    + code: String
+    + name: String
+    + description: String
+    + categoryId: UUID
+    + subcategoryId: UUID
+    + isActive: boolean
+    + organizationId: UUID
+}
+
+ENTITY "VehicleCategory" as VehicleCategory {
+    + id: UUID
+    + code: String
+    + name: String
+    + description: String
+    + tariffCoefficient: BigDecimal
+    + isActive: boolean
+    + organizationId: UUID
+}
+
+ENTITY "VehicleSubcategory" as VehicleSubcategory {
+    + id: UUID
+    + categoryId: UUID
+    + code: String
+    + name: String
+    + description: String
+    + tariffCoefficient: BigDecimal
+    + isActive: boolean
+    + organizationId: UUID
+}
+
+ENTITY "FuelType" as FuelType {
+    + id: UUID
+    + code: String
+    + name: String
+    + description: String
+    + isActive: boolean
+    + organizationId: UUID
+}
+
+ENTITY "VehicleUsage" as VehicleUsage {
+    + id: UUID
+    + code: String
+    + name: String
+    + description: String
+    + tariffCoefficient: BigDecimal
+    + isActive: boolean
+    + organizationId: UUID
+}
+
+ENTITY "VehicleColor" as VehicleColor {
+    + id: UUID
+    + code: String
+    + name: String
+    + description: String
+    + isActive: boolean
+    + organizationId: UUID
+}
+
+' Relationships
+AutoPolicy "1" --> "1" Vehicle : insures
+AutoPolicy "1" --> "1" Driver : has primary driver
+Vehicle "1" --> "1" VehicleMake : has make
+Vehicle "1" --> "1" VehicleModel : has model
+Vehicle "1" --> "1" VehicleCategory : belongs to category
+Vehicle "1" --> "0..1" VehicleSubcategory : belongs to subcategory
+Vehicle "1" --> "1" FuelType : has fuel type
+Vehicle "1" --> "1" VehicleUsage : has usage
+Vehicle "1" --> "1" VehicleColor : has color
+VehicleModel "n" --> "1" VehicleMake : belongs to
+VehicleSubcategory "n" --> "1" VehicleCategory : belongs to
+BonusMalus "n" --> "1" Driver : applies to
+
+@enduml

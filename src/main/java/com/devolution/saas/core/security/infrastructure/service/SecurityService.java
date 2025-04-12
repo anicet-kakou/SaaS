@@ -1,12 +1,15 @@
 package com.devolution.saas.core.security.infrastructure.service;
 
+import com.devolution.saas.core.security.domain.model.Role;
 import com.devolution.saas.core.security.domain.model.User;
+import com.devolution.saas.core.security.domain.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,6 +22,7 @@ import java.util.UUID;
 public class SecurityService {
 
     private final TenantContextHolder tenantContextHolder;
+    private final RoleRepository roleRepository;
 
     /**
      * Vérifie si l'utilisateur courant est l'utilisateur spécifié.
@@ -122,7 +126,38 @@ public class SecurityService {
     }
 
     /**
+     * Vérifie si l'utilisateur courant a au moins un des rôles spécifiés.
+     *
+     * @param roleNames Noms des rôles à vérifier
+     * @return true si l'utilisateur courant a au moins un des rôles spécifiés, false sinon
+     */
+    public boolean hasAnyRole(String... roleNames) {
+        for (String roleName : roleNames) {
+            if (hasRole(roleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Vérifie si l'utilisateur courant a tous les rôles spécifiés.
+     *
+     * @param roleNames Noms des rôles à vérifier
+     * @return true si l'utilisateur courant a tous les rôles spécifiés, false sinon
+     */
+    public boolean hasAllRoles(String... roleNames) {
+        for (String roleName : roleNames) {
+            if (!hasRole(roleName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Vérifie si l'utilisateur courant a la permission spécifiée.
+     * Cette méthode tient compte de la hiérarchie des rôles.
      *
      * @param permissionName Nom de la permission à vérifier
      * @return true si l'utilisateur courant a la permission spécifiée, false sinon
@@ -133,8 +168,51 @@ public class SecurityService {
             return false;
         }
 
+        // Vérifier d'abord si l'utilisateur a directement la permission
+        if (authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals(permissionName))) {
+            return true;
+        }
+
+        // Si l'utilisateur n'a pas directement la permission, vérifier la hiérarchie des rôles
+        // Extraire les rôles de l'utilisateur (format: ROLE_XXX)
         return authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals(permissionName));
+                .filter(authority -> authority.getAuthority().startsWith("ROLE_"))
+                .map(authority -> authority.getAuthority().substring(5)) // Enlever le préfixe "ROLE_"
+                .anyMatch(roleName -> {
+                    Optional<Role> roleOpt = roleRepository.findByName(roleName);
+                    return roleOpt.isPresent() && roleOpt.get().hasPermissionWithHierarchy(permissionName);
+                });
+    }
+
+    /**
+     * Vérifie si l'utilisateur courant a au moins une des permissions spécifiées.
+     *
+     * @param permissionNames Noms des permissions à vérifier
+     * @return true si l'utilisateur courant a au moins une des permissions spécifiées, false sinon
+     */
+    public boolean hasAnyPermission(String... permissionNames) {
+        for (String permissionName : permissionNames) {
+            if (hasPermission(permissionName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Vérifie si l'utilisateur courant a toutes les permissions spécifiées.
+     *
+     * @param permissionNames Noms des permissions à vérifier
+     * @return true si l'utilisateur courant a toutes les permissions spécifiées, false sinon
+     */
+    public boolean hasAllPermissions(String... permissionNames) {
+        for (String permissionName : permissionNames) {
+            if (!hasPermission(permissionName)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -144,6 +222,89 @@ public class SecurityService {
      */
     public UUID getCurrentOrganizationId() {
         return tenantContextHolder.getCurrentTenant();
+    }
+
+    /**
+     * Vérifie si l'utilisateur courant a la permission spécifiée pour une ressource spécifique.
+     * Cette méthode combine la vérification de permission avec la vérification de propriété.
+     *
+     * @param resourceId   ID de la ressource
+     * @param resourceType Type de la ressource
+     * @param action       Action à effectuer sur la ressource
+     * @return true si l'utilisateur a la permission ou est propriétaire, false sinon
+     */
+    public boolean hasPermission(UUID resourceId, String resourceType, String action) {
+        // Vérifier si l'utilisateur a la permission spécifiée
+        String permissionName = resourceType.toUpperCase() + "_" + action.toUpperCase();
+        if (hasPermission(permissionName)) {
+            return true;
+        }
+
+        // Vérifier si l'utilisateur est propriétaire de la ressource
+        return isOwner(resourceId, resourceType);
+    }
+
+    /**
+     * Vérifie si l'utilisateur courant est propriétaire de la ressource spécifiée.
+     * Cette méthode doit être surchargée pour chaque type de ressource.
+     *
+     * @param resourceId   ID de la ressource
+     * @param resourceType Type de la ressource
+     * @return true si l'utilisateur est propriétaire, false sinon
+     */
+    public boolean isOwner(UUID resourceId, String resourceType) {
+        // Implémentation par défaut pour les types de ressources courants
+        switch (resourceType.toUpperCase()) {
+            case "USER":
+                return isCurrentUser(resourceId);
+            // Ajouter d'autres types de ressources au besoin
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Vérifie si l'utilisateur courant peut accéder à l'organisation spécifiée.
+     *
+     * @param organizationId ID de l'organisation
+     * @return true si l'utilisateur peut accéder à l'organisation, false sinon
+     */
+    public boolean canAccessOrganization(UUID organizationId) {
+        // Les administrateurs peuvent accéder à toutes les organisations
+        if (hasRole("ADMIN")) {
+            return true;
+        }
+
+        // Les autres utilisateurs ne peuvent accéder qu'à leur propre organisation
+        UUID currentTenant = tenantContextHolder.getCurrentTenant();
+        return currentTenant != null && currentTenant.equals(organizationId);
+    }
+
+    /**
+     * Vérifie si l'utilisateur courant peut gérer le rôle spécifié.
+     *
+     * @param roleId ID du rôle
+     * @return true si l'utilisateur peut gérer le rôle, false sinon
+     */
+    public boolean canManageRole(UUID roleId) {
+        // Seuls les administrateurs peuvent gérer les rôles
+        return hasRole("ADMIN");
+    }
+
+    /**
+     * Vérifie si l'utilisateur courant peut gérer les utilisateurs de l'organisation spécifiée.
+     *
+     * @param organizationId ID de l'organisation
+     * @return true si l'utilisateur peut gérer les utilisateurs, false sinon
+     */
+    public boolean canManageOrganizationUsers(UUID organizationId) {
+        // Vérifier si l'utilisateur peut accéder à l'organisation
+        if (!canAccessOrganization(organizationId)) {
+            return false;
+        }
+
+        // Vérifier si l'utilisateur a la permission de gérer les utilisateurs
+        return hasAnyPermission("USER_CREATE", "USER_UPDATE", "USER_DELETE", "USER_ACTIVATE", "USER_DEACTIVATE");
     }
 
     /**

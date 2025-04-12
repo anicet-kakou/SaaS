@@ -15,7 +15,7 @@ import java.util.UUID;
  * Contrôleur REST pour la gestion des sous-catégories de véhicule.
  */
 @RestController
-@RequestMapping("/api/v1/auto/reference/vehicle-subcategories")
+@RequestMapping("/api/v1/auto/reference/vehicle-subcategories-management")
 @RequiredArgsConstructor
 public class VehicleSubcategoryController {
 

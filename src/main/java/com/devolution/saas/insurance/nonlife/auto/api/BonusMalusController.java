@@ -1,5 +1,6 @@
 package com.devolution.saas.insurance.nonlife.auto.api;
 
+import com.devolution.saas.insurance.nonlife.auto.api.controller.AutoBonusMalusController;
 import com.devolution.saas.insurance.nonlife.auto.application.dto.BonusMalusDTO;
 import com.devolution.saas.insurance.nonlife.auto.application.usecase.ApplyBonusMalus;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,11 @@ import java.util.UUID;
 
 /**
  * Contrôleur REST pour la gestion du bonus-malus.
+ *
+ * @deprecated Utiliser {@link AutoBonusMalusController} à la place.
+ * Ce contrôleur sera supprimé dans une version future.
  */
+@Deprecated(since = "1.0.0", forRemoval = true)
 @RestController
 @RequestMapping("/api/v1/auto/bonus-malus")
 @RequiredArgsConstructor

@@ -13,9 +13,13 @@ import java.util.UUID;
 
 /**
  * Contrôleur REST pour la gestion des couleurs de véhicule.
+ *
+ * @deprecated Utiliser {@link VehicleColorReferenceController} à la place.
+ * Ce contrôleur sera supprimé dans une version future.
  */
+@Deprecated(since = "1.0.0", forRemoval = true)
 @RestController
-@RequestMapping("/api/v1/auto/reference/vehicle-colors")
+@RequestMapping("/api/v1/auto/reference/vehicle-colors-management")
 @RequiredArgsConstructor
 public class VehicleColorController {
 

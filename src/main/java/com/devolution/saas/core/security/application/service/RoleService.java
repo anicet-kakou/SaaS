@@ -6,7 +6,9 @@ import com.devolution.saas.common.annotation.TenantRequired;
 import com.devolution.saas.core.security.application.command.CreateRoleCommand;
 import com.devolution.saas.core.security.application.command.UpdateRoleCommand;
 import com.devolution.saas.core.security.application.dto.RoleDTO;
+import com.devolution.saas.core.security.application.mapper.RoleMapper;
 import com.devolution.saas.core.security.application.usecase.*;
+import com.devolution.saas.core.security.domain.model.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class RoleService extends AbstractCrudService<RoleDTO, UUID, CreateRoleCo
     private final GetRole getRole;
     private final ListRoles listRoles;
     private final DeleteRole deleteRole;
+    private final RoleMapper roleMapper;
 
     /**
      * Implémentation des méthodes abstraites de AbstractCrudService
@@ -144,6 +147,18 @@ public class RoleService extends AbstractCrudService<RoleDTO, UUID, CreateRoleCo
     public List<RoleDTO> listRolesBySystemDefined(boolean systemDefined) {
         log.debug("Listage des rôles système: {}", systemDefined);
         return listRoles.executeBySystemDefined(systemDefined);
+    }
+
+    /**
+     * Convertit une entité Role en DTO.
+     * Cette méthode est utilisée par les services qui manipulent directement les entités Role.
+     *
+     * @param role Entité Role à convertir
+     * @return DTO du rôle
+     */
+    @Transactional(readOnly = true)
+    public RoleDTO mapToDTO(Role role) {
+        return roleMapper.toDTO(role);
     }
 
 

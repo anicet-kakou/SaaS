@@ -58,4 +58,16 @@ public class AutoResourceNotFoundException extends ResourceNotFoundException {
     public static AutoResourceNotFoundException forCode(String resourceName, String code) {
         return new AutoResourceNotFoundException(DEFAULT_CODE, resourceName + " non trouvé avec le code: " + code);
     }
+
+    /**
+     * Crée une exception pour une ressource auto non trouvée par identifiant personnalisé.
+     *
+     * @param resourceName Le nom de la ressource
+     * @param identifier   Le nom de l'identifiant
+     * @param value        La valeur de l'identifiant
+     * @return L'exception créée
+     */
+    public static AutoResourceNotFoundException forIdentifier(String resourceName, String identifier, String value) {
+        return new AutoResourceNotFoundException(DEFAULT_CODE, resourceName + " non trouvé avec " + identifier + ": " + value);
+    }
 }

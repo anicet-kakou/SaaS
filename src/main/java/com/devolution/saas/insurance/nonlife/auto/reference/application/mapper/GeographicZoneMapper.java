@@ -21,15 +21,14 @@ public class GeographicZoneMapper {
             return null;
         }
 
-        return GeographicZoneDTO.builder()
-                .id(geographicZone.getId())
-                .code(geographicZone.getCode())
-                .name(geographicZone.getName())
-                .description(geographicZone.getDescription())
-                .tariffCoefficient(geographicZone.getTariffCoefficient())
-                .isActive(geographicZone.isActive())
-                .organizationId(geographicZone.getOrganizationId())
-                .build();
+        return new GeographicZoneDTO(
+                geographicZone.getId(),
+                geographicZone.getCode(),
+                geographicZone.getName(),
+                geographicZone.getDescription(),
+                geographicZone.getTariffCoefficient(),
+                geographicZone.isActive(),
+                geographicZone.getOrganizationId());
     }
 
     /**
@@ -44,13 +43,13 @@ public class GeographicZoneMapper {
         }
 
         return GeographicZone.builder()
-                .id(geographicZoneDTO.getId())
-                .code(geographicZoneDTO.getCode())
-                .name(geographicZoneDTO.getName())
-                .description(geographicZoneDTO.getDescription())
-                .tariffCoefficient(geographicZoneDTO.getTariffCoefficient())
+                .id(geographicZoneDTO.id())
+                .code(geographicZoneDTO.code())
+                .name(geographicZoneDTO.name())
+                .description(geographicZoneDTO.description())
+                .tariffCoefficient(geographicZoneDTO.tariffCoefficient())
                 .isActive(geographicZoneDTO.isActive())
-                .organizationId(geographicZoneDTO.getOrganizationId())
+                .organizationId(geographicZoneDTO.organizationId())
                 .build();
     }
 }

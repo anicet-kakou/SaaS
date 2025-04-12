@@ -151,28 +151,32 @@ public class VehicleServiceImpl implements VehicleService {
      * @return L'entité correspondante
      */
     private Vehicle mapCommandToEntity(CreateVehicleCommand command) {
-        return Vehicle.builder()
+        Vehicle vehicle = Vehicle.builder()
                 .registrationNumber(command.getRegistrationNumber())
-                .makeId(command.getMakeId())
-                .modelId(command.getModelId())
-                .version(command.getVersion())
+                .modelVariant(command.getModelVariant())
                 .year(command.getYear())
                 .enginePower(command.getEnginePower())
                 .engineSize(command.getEngineSize())
-                .fuelTypeId(command.getFuelTypeId())
-                .categoryId(command.getCategoryId())
-                .subcategoryId(command.getSubcategoryId())
-                .usageId(command.getUsageId())
-                .geographicZoneId(command.getGeographicZoneId())
                 .purchaseDate(command.getPurchaseDate())
                 .purchaseValue(command.getPurchaseValue())
                 .currentValue(command.getCurrentValue())
                 .mileage(command.getMileage())
                 .vin(command.getVin())
-                .colorId(command.getColorId())
                 .ownerId(command.getOwnerId())
                 .organizationId(command.getOrganizationId())
                 .build();
+
+        // Utiliser les setters pour définir les IDs
+        vehicle.setManufacturerId(command.getMakeId());
+        vehicle.setModelId(command.getModelId());
+        vehicle.setFuelTypeId(command.getFuelTypeId());
+        vehicle.setCategoryId(command.getCategoryId());
+        vehicle.setSubcategoryId(command.getSubcategoryId());
+        vehicle.setUsageId(command.getUsageId());
+        vehicle.setGeographicZoneId(command.getGeographicZoneId());
+        vehicle.setColorId(command.getColorId());
+
+        return vehicle;
     }
 
     /**
@@ -185,7 +189,7 @@ public class VehicleServiceImpl implements VehicleService {
         return VehicleDTO.builder()
                 .id(vehicle.getId())
                 .registrationNumber(vehicle.getRegistrationNumber())
-                .makeId(vehicle.getMakeId())
+                .manufacturerId(vehicle.getManufacturerId())
                 .modelId(vehicle.getModelId())
                 .version(vehicle.getVersion())
                 .year(vehicle.getYear())

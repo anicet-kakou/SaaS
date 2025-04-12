@@ -21,15 +21,14 @@ public class CirculationZoneMapper {
             return null;
         }
 
-        return CirculationZoneDTO.builder()
-                .id(circulationZone.getId())
-                .code(circulationZone.getCode())
-                .name(circulationZone.getName())
-                .description(circulationZone.getDescription())
-                .riskCoefficient(circulationZone.getRiskCoefficient())
-                .isActive(circulationZone.isActive())
-                .organizationId(circulationZone.getOrganizationId())
-                .build();
+        return new CirculationZoneDTO(
+                circulationZone.getId(),
+                circulationZone.getCode(),
+                circulationZone.getName(),
+                circulationZone.getDescription(),
+                circulationZone.getRiskCoefficient(),
+                circulationZone.isActive(),
+                circulationZone.getOrganizationId());
     }
 
     /**
@@ -44,13 +43,13 @@ public class CirculationZoneMapper {
         }
 
         return CirculationZone.builder()
-                .id(circulationZoneDTO.getId())
-                .code(circulationZoneDTO.getCode())
-                .name(circulationZoneDTO.getName())
-                .description(circulationZoneDTO.getDescription())
-                .riskCoefficient(circulationZoneDTO.getRiskCoefficient())
+                .id(circulationZoneDTO.id())
+                .code(circulationZoneDTO.code())
+                .name(circulationZoneDTO.name())
+                .description(circulationZoneDTO.description())
+                .riskCoefficient(circulationZoneDTO.riskCoefficient())
                 .isActive(circulationZoneDTO.isActive())
-                .organizationId(circulationZoneDTO.getOrganizationId())
+                .organizationId(circulationZoneDTO.organizationId())
                 .build();
     }
 }

@@ -73,4 +73,14 @@ public interface GeographicZoneService {
      * @return true si la suppression a réussi, false sinon
      */
     boolean deleteGeographicZone(UUID id, UUID organizationId);
+
+    /**
+     * Active ou désactive une zone géographique.
+     *
+     * @param id             L'ID de la zone géographique
+     * @param active         Le statut d'activation
+     * @param organizationId L'ID de l'organisation
+     * @return La zone géographique mise à jour, ou empty si non trouvée
+     */
+    Optional<GeographicZoneDTO> setGeographicZoneActive(UUID id, boolean active, UUID organizationId);
 }

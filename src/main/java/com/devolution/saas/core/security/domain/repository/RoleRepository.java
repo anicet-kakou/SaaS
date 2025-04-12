@@ -88,4 +88,27 @@ public interface RoleRepository {
      * @return Nombre de rôles
      */
     long count();
+
+    /**
+     * Trouve tous les rôles qui n'ont pas de parent (rôles racines).
+     *
+     * @return Liste des rôles racines
+     */
+    List<Role> findByParentIsNull();
+
+    /**
+     * Trouve tous les rôles enfants directs d'un rôle parent.
+     *
+     * @param parent Rôle parent
+     * @return Liste des rôles enfants
+     */
+    List<Role> findByParent(Role parent);
+
+    /**
+     * Trouve tous les rôles enfants directs d'un rôle parent par son ID.
+     *
+     * @param parentId ID du rôle parent
+     * @return Liste des rôles enfants
+     */
+    List<Role> findByParentId(UUID parentId);
 }

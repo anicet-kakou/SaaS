@@ -74,7 +74,7 @@ public class RoleController extends AbstractCrudController<RoleDTO, UUID, Create
     @Operation(summary = "Crée un nouveau rôle")
     @Auditable(action = "API_CREATE_ROLE")
     @TenantRequired
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('ROLE_CREATE')")
     public ResponseEntity<RoleDTO> createEntity(@Valid @RequestBody CreateRoleCommand command) {
         return super.createEntity(command);
     }
@@ -84,7 +84,7 @@ public class RoleController extends AbstractCrudController<RoleDTO, UUID, Create
     @Operation(summary = "Met à jour un rôle existant")
     @Auditable(action = "API_UPDATE_ROLE")
     @TenantRequired
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('ROLE_UPDATE') and @securityService.canManageRole(#id)")
     public ResponseEntity<RoleDTO> updateEntity(@PathVariable UUID id, @Valid @RequestBody UpdateRoleCommand command) {
         return super.updateEntity(id, command);
     }
@@ -93,7 +93,7 @@ public class RoleController extends AbstractCrudController<RoleDTO, UUID, Create
     @GetMapping("/{id}")
     @Operation(summary = "Récupère un rôle par son ID")
     @Auditable(action = "API_GET_ROLE")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('ROLE_READ')")
     public ResponseEntity<RoleDTO> getEntity(@PathVariable UUID id) {
         return super.getEntity(id);
     }
@@ -102,7 +102,7 @@ public class RoleController extends AbstractCrudController<RoleDTO, UUID, Create
     @GetMapping
     @Operation(summary = "Liste tous les rôles")
     @Auditable(action = "API_LIST_ROLES")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('ROLE_LIST')")
     public ResponseEntity<List<RoleDTO>> listEntities() {
         return super.listEntities();
     }
@@ -112,7 +112,7 @@ public class RoleController extends AbstractCrudController<RoleDTO, UUID, Create
     @Operation(summary = "Supprime un rôle")
     @Auditable(action = "API_DELETE_ROLE")
     @TenantRequired
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasPermission('ROLE_DELETE') and @securityService.canManageRole(#id)")
     public ResponseEntity<Void> deleteEntity(@PathVariable UUID id) {
         return super.deleteEntity(id);
     }

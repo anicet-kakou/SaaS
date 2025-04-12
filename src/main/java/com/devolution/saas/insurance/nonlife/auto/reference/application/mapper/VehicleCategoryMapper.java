@@ -44,13 +44,13 @@ public class VehicleCategoryMapper {
         }
 
         return VehicleCategory.builder()
-                .id(vehicleCategoryDTO.getId())
-                .code(vehicleCategoryDTO.getCode())
-                .name(vehicleCategoryDTO.getName())
-                .description(vehicleCategoryDTO.getDescription())
-                .tariffCoefficient(vehicleCategoryDTO.getTariffCoefficient())
+                .id(vehicleCategoryDTO.id())
+                .code(vehicleCategoryDTO.code())
+                .name(vehicleCategoryDTO.name())
+                .description(vehicleCategoryDTO.description())
+                .tariffCoefficient(vehicleCategoryDTO.tariffCoefficient())
                 .isActive(vehicleCategoryDTO.isActive())
-                .organizationId(vehicleCategoryDTO.getOrganizationId())
+                .organizationId(vehicleCategoryDTO.organizationId())
                 .build();
     }
 }

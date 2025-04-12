@@ -81,4 +81,15 @@ public class GeographicZoneServiceImpl implements GeographicZoneService {
                 })
                 .orElse(false);
     }
+
+    @Override
+    public Optional<GeographicZoneDTO> setGeographicZoneActive(UUID id, boolean active, UUID organizationId) {
+        return geographicZoneRepository.findById(id)
+                .filter(zone -> zone.getOrganizationId().equals(organizationId))
+                .map(zone -> {
+                    zone.setActive(active);
+                    GeographicZone updatedZone = geographicZoneRepository.save(zone);
+                    return geographicZoneMapper.toDto(updatedZone);
+                });
+    }
 }

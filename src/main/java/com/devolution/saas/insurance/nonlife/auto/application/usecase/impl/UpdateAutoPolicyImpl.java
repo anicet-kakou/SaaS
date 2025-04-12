@@ -82,7 +82,7 @@ public class UpdateAutoPolicyImpl implements UpdateAutoPolicy {
         );
 
         // Mapper la commande en entité
-        AutoPolicy policy = mapCommandToEntity(command, premiumCalculation.getFinalPremium());
+        AutoPolicy policy = mapCommandToEntity(command, premiumCalculation.finalPremium());
         policy.setId(id);
         policy.setStatus(existingPolicy.getStatus()); // Conserver le statut existant
         policy.setProductId(existingPolicy.getProductId()); // Conserver l'ID du produit
@@ -109,13 +109,11 @@ public class UpdateAutoPolicyImpl implements UpdateAutoPolicy {
      * @return L'entité AutoPolicy correspondante
      */
     private AutoPolicy mapCommandToEntity(CreateAutoPolicyCommand command, java.math.BigDecimal premiumAmount) {
-        return AutoPolicy.builder()
+        AutoPolicy policy = AutoPolicy.builder()
                 .policyNumber(command.getPolicyNumber())
                 .startDate(command.getStartDate())
                 .endDate(command.getEndDate())
                 .premiumAmount(premiumAmount)
-                .vehicleId(command.getVehicleId())
-                .primaryDriverId(command.getPrimaryDriverId())
                 .coverageType(command.getCoverageType())
                 .bonusMalusCoefficient(command.getBonusMalusCoefficient())
                 .annualMileage(command.getAnnualMileage())
@@ -124,5 +122,11 @@ public class UpdateAutoPolicyImpl implements UpdateAutoPolicy {
                 .claimHistoryCategoryId(command.getClaimHistoryCategoryId())
                 .organizationId(command.getOrganizationId())
                 .build();
+
+        // Utiliser les setters pour définir les IDs
+        policy.setVehicleId(command.getVehicleId());
+        policy.setPrimaryDriverId(command.getPrimaryDriverId());
+
+        return policy;
     }
 }

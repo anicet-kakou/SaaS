@@ -3,7 +3,9 @@ package com.devolution.saas.common.domain.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Entité qui peut être définie par le système.
@@ -11,6 +13,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
 @MappedSuperclass
 public abstract class SystemDefinedEntity extends TenantAwareEntity {
 

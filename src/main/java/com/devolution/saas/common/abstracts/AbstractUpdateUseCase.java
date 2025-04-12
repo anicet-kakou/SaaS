@@ -3,6 +3,7 @@ package com.devolution.saas.common.abstracts;
 import com.devolution.saas.common.domain.exception.BusinessException;
 import com.devolution.saas.common.domain.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -63,7 +64,7 @@ public abstract class AbstractUpdateUseCase<T, U, E, ID> {
      * @param command Commande de mise à jour
      * @return DTO de l'entité mise à jour
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public T execute(U command) {
         log.debug("Exécution du cas d'utilisation de mise à jour de {}", getEntityName());
 

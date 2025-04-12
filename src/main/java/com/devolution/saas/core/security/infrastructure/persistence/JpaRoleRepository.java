@@ -44,4 +44,22 @@ public interface JpaRoleRepository extends JpaRepository<Role, UUID>, RoleReposi
      */
     @Override
     boolean existsByNameAndOrganizationId(String name, UUID organizationId);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    List<Role> findByParentIsNull();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    List<Role> findByParent(Role parent);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    List<Role> findByParentId(UUID parentId);
 }

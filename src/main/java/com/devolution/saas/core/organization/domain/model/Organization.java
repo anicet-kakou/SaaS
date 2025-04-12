@@ -13,7 +13,16 @@ import java.util.Set;
  * Une organisation peut être une compagnie d'assurance, un courtier, un agent, etc.
  */
 @Entity
-@Table(name = "organizations")
+@Table(
+        name = "organizations",
+        indexes = {
+                @Index(name = "idx_organizations_code", columnList = "code"),
+                @Index(name = "idx_organizations_name", columnList = "name"),
+                @Index(name = "idx_organizations_type", columnList = "type"),
+                @Index(name = "idx_organizations_status", columnList = "status"),
+                @Index(name = "idx_organizations_parent_id", columnList = "parent_id")
+        }
+)
 @Getter
 @Setter
 public class Organization extends AuditableEntity {
@@ -23,13 +32,13 @@ public class Organization extends AuditableEntity {
     /**
      * Nom de l'organisation.
      */
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
     /**
      * Code unique de l'organisation.
      */
-    @Column(name = "code", nullable = false, unique = true)
+    @Column(name = "code", nullable = false, unique = true, length = 50)
     private String code;
 
     /**
@@ -50,61 +59,66 @@ public class Organization extends AuditableEntity {
      * Organisation parente dans la hiérarchie.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(
+            name = "parent_id",
+            foreignKey = @ForeignKey(name = "fk_organization_parent")
+    )
     private Organization parent;
 
     /**
      * Adresse de l'organisation.
      */
-    @Column(name = "address")
+    @Column(name = "address", length = 255)
     private String address;
 
     /**
      * Numéro de téléphone de l'organisation.
      */
-    @Column(name = "phone")
+    @Column(name = "phone", length = 20)
     private String phone;
 
     /**
      * Email de l'organisation.
      */
-    @Column(name = "email")
+    @Column(name = "email", length = 100)
     private String email;
 
     /**
      * Site web de l'organisation.
      */
-    @Column(name = "website")
+    @Column(name = "website", length = 255)
     private String website;
 
     /**
      * URL du logo de l'organisation.
      */
-    @Column(name = "logo_url")
+    @Column(name = "logo_url", length = 255)
     private String logoUrl;
 
     /**
      * Nom du contact principal de l'organisation.
      */
-    @Column(name = "primary_contact_name")
+    @Column(name = "primary_contact_name", length = 100)
     private String primaryContactName;
 
     /**
      * Description de l'organisation.
      */
-    @Column(name = "description")
+    @Column(name = "description", length = 1000)
     private String description;
 
     /**
      * Paramètres de l'organisation au format JSON.
      */
     @Column(name = "settings", columnDefinition = "jsonb")
+    // Note: Using columnDefinition="jsonb" is PostgreSQL-specific.
+    // Consider using a more portable approach for database independence.
     private String settings;
 
     /**
      * Organisations enfants dans la hiérarchie.
      */
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Organization> children = new HashSet<>();
 
     /**

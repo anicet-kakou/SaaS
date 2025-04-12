@@ -21,15 +21,14 @@ public class VehicleGenreMapper {
             return null;
         }
 
-        return VehicleGenreDTO.builder()
-                .id(vehicleGenre.getId())
-                .code(vehicleGenre.getCode())
-                .name(vehicleGenre.getName())
-                .description(vehicleGenre.getDescription())
-                .riskCoefficient(vehicleGenre.getRiskCoefficient())
-                .isActive(vehicleGenre.isActive())
-                .organizationId(vehicleGenre.getOrganizationId())
-                .build();
+        return new VehicleGenreDTO(
+                vehicleGenre.getId(),
+                vehicleGenre.getCode(),
+                vehicleGenre.getName(),
+                vehicleGenre.getDescription(),
+                vehicleGenre.getRiskCoefficient(),
+                vehicleGenre.isActive(),
+                vehicleGenre.getOrganizationId());
     }
 
     /**
@@ -44,13 +43,13 @@ public class VehicleGenreMapper {
         }
 
         return VehicleGenre.builder()
-                .id(vehicleGenreDTO.getId())
-                .code(vehicleGenreDTO.getCode())
-                .name(vehicleGenreDTO.getName())
-                .description(vehicleGenreDTO.getDescription())
-                .riskCoefficient(vehicleGenreDTO.getRiskCoefficient())
+                .id(vehicleGenreDTO.id())
+                .code(vehicleGenreDTO.code())
+                .name(vehicleGenreDTO.name())
+                .description(vehicleGenreDTO.description())
+                .riskCoefficient(vehicleGenreDTO.riskCoefficient())
                 .isActive(vehicleGenreDTO.isActive())
-                .organizationId(vehicleGenreDTO.getOrganizationId())
+                .organizationId(vehicleGenreDTO.organizationId())
                 .build();
     }
 }

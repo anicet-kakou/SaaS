@@ -1,283 +1,407 @@
-# Tâches d'implémentation du module Auto
+# Implementation Tasks
 
-## Partie I: Données de référence (Terminé ✅)
+This document outlines the specific tasks needed to address the code quality and consistency issues identified in the
+code review. Each major area is broken down into smaller, actionable tasks.
 
-## 1. Implémentation des interfaces de repository
+## 1. Controller Layer Standardization
 
-- [x] 1.1. Créer VehicleCategoryRepository
-- [x] 1.2. Créer VehicleSubcategoryRepository
-- [x] 1.3. Créer VehicleMakeRepository
-- [x] 1.4. Créer VehicleModelRepository
-- [x] 1.5. Créer FuelTypeRepository
-- [x] 1.6. Créer VehicleBodyTypeRepository
-- [x] 1.7. Créer VehicleGenreRepository
-- [x] 1.8. Créer CirculationZoneRepository
-- [x] 1.9. Créer GeographicZoneRepository
-- [x] 1.10. Créer VehicleUsageRepository
-- [x] 1.11. Créer VehicleColorRepository
+### 1.1 Controller Naming and Structure
 
-## 2. Implémentation des services spécifiques
+- [ ] **1.1.1** Create a naming convention document for controllers
+- [ ] **1.1.2** Rename all controllers to follow the pattern `EntityController` (remove `-Management` suffix)
+- [ ] **1.1.3** Update request mappings to follow consistent URL pattern:
+    - [ ] Auto module controllers
+    - [ ] Organization module controllers
+    - [ ] Security module controllers
+    - [ ] Reference data controllers
 
-- [x] 2.1. Créer VehicleCategoryService et son implémentation
-- [x] 2.2. Créer VehicleSubcategoryService et son implémentation
-- [x] 2.3. Créer VehicleMakeService et son implémentation
-- [x] 2.4. Créer VehicleModelService et son implémentation
-- [x] 2.5. Créer FuelTypeService et son implémentation
-- [x] 2.6. Créer VehicleBodyTypeService et son implémentation
-- [x] 2.7. Créer VehicleGenreService et son implémentation
-- [x] 2.8. Créer CirculationZoneService et son implémentation
-- [x] 2.9. Créer GeographicZoneService et son implémentation
-- [x] 2.10. Créer VehicleUsageService et son implémentation
-- [x] 2.11. Créer VehicleColorService et son implémentation
+### 1.2 Request/Response Standardization
 
-## 3. Implémentation des DTOs
+- [ ] **1.2.1** Standardize all controller methods to return `ResponseEntity<T>`
+- [ ] **1.2.2** Create consistent approach for organization ID:
+    - [ ] Decide between `@PathVariable` vs `@RequestParam`
+    - [ ] Update all controllers to use the chosen approach
+- [ ] **1.2.3** Standardize request validation:
+    - [ ] Ensure all DTOs have proper validation annotations
+    - [ ] Implement consistent validation error handling
 
-- [x] 3.1. Créer VehicleCategoryDTO comme record
-- [x] 3.2. Créer VehicleSubcategoryDTO comme record
-- [x] 3.3. Créer VehicleMakeDTO comme record
-- [x] 3.4. Créer VehicleModelDTO comme record
-- [x] 3.5. Créer FuelTypeDTO comme record
-- [x] 3.6. Créer VehicleBodyTypeDTO comme record
-- [x] 3.7. Créer VehicleGenreDTO comme record
-- [x] 3.8. Créer CirculationZoneDTO comme record
-- [x] 3.9. Créer GeographicZoneDTO comme record
-- [x] 3.10. Créer VehicleUsageDTO comme record
-- [x] 3.11. Créer VehicleColorDTO comme record
+### 1.3 API Documentation
 
-## 4. Implémentation des mappers
+- [ ] **1.3.1** Add OpenAPI annotations to all controllers
+- [ ] **1.3.2** Document request/response models
+- [ ] **1.3.3** Add example requests and responses
 
-- [x] 4.1. Créer VehicleCategoryMapper
-- [x] 4.2. Créer VehicleSubcategoryMapper
-- [x] 4.3. Créer VehicleMakeMapper
-- [x] 4.4. Créer VehicleModelMapper
-- [x] 4.5. Créer FuelTypeMapper
-- [x] 4.6. Créer VehicleBodyTypeMapper
-- [x] 4.7. Créer VehicleGenreMapper
-- [x] 4.8. Créer CirculationZoneMapper
-- [x] 4.9. Créer GeographicZoneMapper
-- [x] 4.10. Créer VehicleUsageMapper
-- [x] 4.11. Créer VehicleColorMapper
+## 2. Service Layer Refactoring
 
-## 5. Mise à jour de ReferenceDataService
+### 2.1 Service Interface Standardization
 
-- [x] 5.1. Ajouter les méthodes pour VehicleCategory
-- [x] 5.2. Ajouter les méthodes pour VehicleSubcategory
-- [x] 5.3. Ajouter les méthodes pour VehicleMake
-- [x] 5.4. Ajouter les méthodes pour VehicleModel
-- [x] 5.5. Ajouter les méthodes pour VehicleBodyType
-- [x] 5.6. Ajouter les méthodes pour VehicleGenre
-- [x] 5.7. Ajouter les méthodes pour CirculationZone
-- [x] 5.8. Ajouter les méthodes pour GeographicZone
-- [x] 5.9. Ajouter les méthodes pour VehicleUsage
-- [x] 5.10. Ajouter les méthodes pour VehicleColor
+- [ ] **2.1.1** Ensure all services have corresponding interfaces
+- [ ] **2.1.2** Refactor services without interfaces:
+    - [ ] Auto module services
+    - [ ] Reference data services
+    - [ ] Security services
 
-## 6. Mise à jour de ReferenceDataServiceImpl
+### 2.2 Transaction Management
 
-- [x] 6.1. Implémenter les méthodes pour VehicleCategory
-- [x] 6.2. Implémenter les méthodes pour VehicleSubcategory
-- [x] 6.3. Implémenter les méthodes pour VehicleMake
-- [x] 6.4. Implémenter les méthodes pour VehicleModel
-- [x] 6.5. Implémenter les méthodes pour VehicleBodyType
-- [x] 6.6. Implémenter les méthodes pour VehicleGenre
-- [x] 6.7. Implémenter les méthodes pour CirculationZone
-- [x] 6.8. Implémenter les méthodes pour GeographicZone
-- [x] 6.9. Implémenter les méthodes pour VehicleUsage
-- [x] 6.10. Implémenter les méthodes pour VehicleColor
+- [ ] **2.2.1** Review and standardize `@Transactional` usage:
+    - [ ] Apply at method level consistently
+    - [ ] Set appropriate `readOnly` flag for query methods
+    - [ ] Set appropriate isolation levels where needed
+- [ ] **2.2.2** Document transaction management approach
 
-## 7. Implémentation des contrôleurs REST
+### 2.3 Error Handling in Services
 
-- [x] 7.1. Créer AutoReferenceDataController
-- [x] 7.2. Ajouter les endpoints pour VehicleCategory
-- [x] 7.3. Ajouter les endpoints pour VehicleSubcategory
-- [x] 7.4. Ajouter les endpoints pour VehicleMake
-- [x] 7.5. Ajouter les endpoints pour VehicleModel
-- [x] 7.6. Ajouter les endpoints pour VehicleBodyType
-- [x] 7.7. Ajouter les endpoints pour VehicleGenre
-- [x] 7.8. Ajouter les endpoints pour CirculationZone
-- [x] 7.9. Ajouter les endpoints pour GeographicZone
-- [x] 7.10. Ajouter les endpoints pour VehicleUsage
-- [x] 7.11. Ajouter les endpoints pour VehicleColor
-- [x] 7.12. Ajouter les endpoints pour FuelType
+- [ ] **2.3.1** Standardize exception throwing:
+    - [ ] Create domain-specific exceptions where needed
+    - [ ] Ensure consistent error messages
+- [ ] **2.3.2** Improve logging in service methods:
+    - [ ] Add debug logs for method entry/exit
+    - [ ] Add appropriate error logs
 
-## 8. Ajout des validations
+## 3. Domain Model Cleanup
 
-- [x] 8.1. Ajouter des validations pour VehicleCategoryDTO
-- [x] 8.2. Ajouter des validations pour VehicleSubcategoryDTO
-- [x] 8.3. Ajouter des validations pour VehicleMakeDTO
-- [x] 8.4. Ajouter des validations pour VehicleModelDTO
-- [x] 8.5. Ajouter des validations pour FuelTypeDTO
-- [x] 8.6. Ajouter des validations pour VehicleBodyTypeDTO
-- [x] 8.7. Ajouter des validations pour VehicleGenreDTO
-- [x] 8.8. Ajouter des validations pour CirculationZoneDTO
-- [x] 8.9. Ajouter des validations pour GeographicZoneDTO
-- [x] 8.10. Ajouter des validations pour VehicleUsageDTO
-- [x] 8.11. Ajouter des validations pour VehicleColorDTO
+### 3.1 Entity Inheritance Review
 
-## 9. Documentation des API
+- [x] **3.1.1** Audit all entity classes for duplicate fields from parent classes:
+    - [x] Auto module entities
+    - [x] Organization module entities
+    - [x] Security module entities
+- [x] **3.1.2** Remove duplicate fields (like the `version` field in `Vehicle`)
+- [ ] **3.1.3** Create test cases to verify entity inheritance
 
-- [x] 9.1. Ajouter la documentation Swagger pour AutoReferenceDataController
-- [x] 9.2. Ajouter la documentation Swagger pour VehicleCategoryController
-- [x] 9.3. Ajouter la documentation Swagger pour VehicleSubcategoryController
-- [x] 9.4. Ajouter la documentation Swagger pour VehicleMakeController
-- [x] 9.5. Ajouter la documentation Swagger pour VehicleModelController
-- [x] 9.6. Ajouter la documentation Swagger pour VehicleBodyTypeController
-- [x] 9.7. Ajouter la documentation Swagger pour VehicleGenreController
-- [x] 9.8. Ajouter la documentation Swagger pour CirculationZoneController
-- [x] 9.9. Ajouter la documentation Swagger pour GeographicZoneController
-- [x] 9.10. Ajouter la documentation Swagger pour VehicleUsageController
-- [x] 9.11. Ajouter la documentation Swagger pour VehicleColorController
-- [x] 9.12. Ajouter la documentation Swagger pour FuelTypeController
+### 3.2 JPA Annotation Standardization
 
-## Partie II: Fonctionnalités principales (En cours 🔄)
+- [x] **3.2.1** Review and fix entity annotations:
+    - [x] Ensure all entities have `@Entity` and `@Table` annotations
+    - [x] Standardize column definitions
+    - [x] Add appropriate indexes
+- [x] **3.2.2** Standardize relationship mappings:
+    - [x] Use consistent cascade types
+    - [x] Set appropriate fetch types
+    - [x] Add proper join column definitions
 
-## 10. Implémentation des cas d'utilisation principaux
+### 3.3 Validation Rules
 
-- [x] 10.1. Implémenter l'interface ApplyBonusMalus
-- [x] 10.2. Implémenter ApplyBonusMalusImpl
-- [x] 10.3. Implémenter l'interface CalculateAutoPremium
-- [x] 10.4. Implémenter CalculateAutoPremiumImpl
-- [x] 10.5. Implémenter l'interface CreateVehicle
-- [x] 10.6. Implémenter CreateVehicleImpl
-- [x] 10.7. Implémenter l'interface UpdateVehicle
-- [x] 10.8. Implémenter UpdateVehicleImpl
-- [x] 10.9. Implémenter l'interface CreateAutoPolicy
-- [x] 10.10. Implémenter CreateAutoPolicyImpl
-- [x] 10.11. Implémenter l'interface UpdateAutoPolicy
-- [x] 10.12. Implémenter UpdateAutoPolicyImpl
+- [ ] **3.3.1** Implement consistent validation in domain models:
+    - [ ] Add Bean Validation annotations
+    - [ ] Create custom validators where needed
+- [ ] **3.3.2** Document validation rules for each entity
 
-## 11. Implémentation des services de domaine
+## 4. Repository Layer Standardization
 
-- [x] 11.1. Implémenter BonusMalusCalculator
-- [x] 11.2. Implémenter BonusMalusCalculatorImpl
-- [x] 11.3. Implémenter VehicleValidator
-- [x] 11.4. Implémenter VehicleValidatorImpl
-- [x] 11.5. Implémenter PolicyValidator
-- [x] 11.6. Implémenter PolicyValidatorImpl
-- [x] 11.7. Implémenter PremiumCalculator
-- [x] 11.8. Implémenter PremiumCalculatorImpl
+### 4.1 Repository Interface Consistency
 
-## 12. Implémentation des services d'application
+- [x] **4.1.1** Standardize repository interfaces:
+    - [x] Decide on extending Spring Data JPA vs custom interfaces
+    - [x] Apply the chosen approach consistently
+- [x] **4.1.2** Standardize method naming:
+    - [x] Use consistent prefixes (`findBy`, `getBy`, etc.)
+    - [x] Use consistent parameter ordering
 
-- [x] 12.1. Implémenter VehicleService
-- [x] 12.2. Implémenter VehicleServiceImpl
-- [x] 12.3. Implémenter AutoPricingService
-- [x] 12.4. Implémenter AutoPricingServiceImpl
-- [ ] 12.5. Implémenter DriverService
-- [ ] 12.6. Implémenter DriverServiceImpl
-- [ ] 12.7. Implémenter AutoPolicyService
-- [ ] 12.8. Implémenter AutoPolicyServiceImpl
+### 4.2 Query Methods
 
-## 13. Implémentation des contrôleurs REST principaux
+- [x] **4.2.1** Review and optimize query methods:
+    - [x] Replace complex queries with named queries where appropriate
+    - [x] Add query hints for performance where needed
+- [x] **4.2.2** Add appropriate indexes to support queries
 
-- [x] 13.1. Implémenter VehicleController
-- [x] 13.2. Implémenter AutoPolicyController
-- [x] 13.3. Implémenter BonusMalusController
-- [ ] 13.4. Implémenter DriverController
-- [ ] 13.5. Ajouter la documentation Swagger pour VehicleController
-- [ ] 13.6. Ajouter la documentation Swagger pour AutoPolicyController
-- [ ] 13.7. Ajouter la documentation Swagger pour BonusMalusController
-- [ ] 13.8. Ajouter la documentation Swagger pour DriverController
+### 4.3 Multi-tenant Filtering
 
-## 14. Implémentation des repositories JPA
+- [x] **4.3.1** Ensure consistent organization ID filtering:
+    - [x] Review all repository methods
+    - [x] Add organization ID filtering where missing
+- [x] **4.3.2** Implement or improve tenant filter aspect
 
-- [x] 14.1. Implémenter JpaVehicleRepository
-- [x] 14.2. Implémenter JpaBonusMalusRepository
-- [ ] 14.3. Implémenter JpaDriverRepository
-- [ ] 14.4. Implémenter JpaAutoPolicyRepository
-- [ ] 14.5. Compléter l'implémentation de JpaVehicleRepository
-- [ ] 14.6. Compléter l'implémentation de JpaBonusMalusRepository
+## 5. Configuration and Security Enhancements
 
-## 15. Tests unitaires
+### 5.1 Configuration Externalization
 
-- [ ] 15.1. Ajouter des tests pour VehicleCategoryService
-- [ ] 15.2. Ajouter des tests pour VehicleSubcategoryService
-- [ ] 15.3. Ajouter des tests pour VehicleMakeService
-- [ ] 15.4. Ajouter des tests pour VehicleModelService
-- [ ] 15.5. Ajouter des tests pour FuelTypeService
-- [ ] 15.6. Ajouter des tests pour VehicleBodyTypeService
-- [ ] 15.7. Ajouter des tests pour VehicleGenreService
-- [ ] 15.8. Ajouter des tests pour CirculationZoneService
-- [ ] 15.9. Ajouter des tests pour GeographicZoneService
-- [ ] 15.10. Ajouter des tests pour VehicleUsageService
-- [ ] 15.11. Ajouter des tests pour VehicleColorService
-- [ ] 15.12. Ajouter des tests pour ReferenceDataService
-- [ ] 15.13. Ajouter des tests pour VehicleService
-- [ ] 15.14. Ajouter des tests pour AutoPricingService
-- [ ] 15.15. Ajouter des tests pour BonusMalusCalculator
-- [ ] 15.16. Ajouter des tests pour ApplyBonusMalus
+- [ ] **5.1.1** Identify and externalize hardcoded values:
+    - [ ] Security settings
+    - [ ] Business rules
+    - [ ] Default values
+- [ ] **5.1.2** Create environment-specific configuration profiles:
+    - [ ] Development
+    - [ ] Testing
+    - [ ] Production
 
-## 16. Tests d'intégration
+### 5.2 Security Hardening
 
-- [ ] 16.1. Ajouter des tests pour AutoReferenceDataController
-- [ ] 16.2. Ajouter des tests pour VehicleCategoryController
-- [ ] 16.3. Ajouter des tests pour VehicleSubcategoryController
-- [ ] 16.4. Ajouter des tests pour VehicleMakeController
-- [ ] 16.5. Ajouter des tests pour VehicleModelController
-- [ ] 16.6. Ajouter des tests pour VehicleBodyTypeController
-- [ ] 16.7. Ajouter des tests pour VehicleGenreController
-- [ ] 16.8. Ajouter des tests pour CirculationZoneController
-- [ ] 16.9. Ajouter des tests pour GeographicZoneController
-- [ ] 16.10. Ajouter des tests pour VehicleUsageController
-- [ ] 16.11. Ajouter des tests pour VehicleColorController
-- [ ] 16.12. Ajouter des tests pour FuelTypeController
-- [ ] 16.13. Ajouter des tests pour VehicleController
-- [ ] 16.14. Ajouter des tests pour AutoPolicyController
-- [ ] 16.15. Ajouter des tests pour BonusMalusController
+- [x] **5.2.1** Review and enhance JWT implementation:
+    - [x] Ensure secure token generation
+    - [x] Implement proper token validation
+    - [x] Add token refresh mechanism
+- [x] **5.2.2** Enhance CORS configuration:
+    - [x] Restrict allowed origins
+    - [x] Set appropriate headers
+- [ ] **5.2.3** Implement proper role-based access control:
+    - [ ] Review and update method security annotations
+    - [ ] Implement fine-grained permission checks
 
-## 17. Résolution des erreurs de compilation
+### 5.3 Rate Limiting and API Protection
 
-- [ ] 17.1. Identifier et corriger les erreurs de compilation
-- [ ] 17.2. Vérifier la compatibilité des versions des dépendances
-- [ ] 17.3. Tester la compilation complète du projet
+- [x] **5.3.1** Enhance rate limiting:
+    - [x] Configure per-endpoint limits
+    - [x] Implement tenant-specific limits
+- [x] **5.3.2** Add API key validation:
+    - [x] Implement key rotation
+    - [x] Add usage tracking
 
-## 18. Implémentation des repositories manquants
+## 6. Error Handling Standardization
 
-- [ ] 18.1. Créer DriverRepository
-- [ ] 18.2. Créer AutoPolicyRepository
-- [ ] 18.3. Créer JpaDriverRepository
-- [ ] 18.4. Créer JpaAutoPolicyRepository
+### 6.1 Global Exception Handler
 
-## 19. Implémentation des DTOs manquants
+- [x] **6.1.1** Enhance global exception handler:
+    - [x] Add handling for all custom exceptions
+    - [x] Standardize error response format
+- [ ] **6.1.2** Create consistent error codes:
+    - [ ] Define error code format
+    - [ ] Document error codes
 
-- [ ] 19.1. Créer DriverDTO comme record
-- [ ] 19.2. Créer AutoPolicyDTO comme record
-- [ ] 19.3. Ajouter des validations pour DriverDTO
-- [ ] 19.4. Ajouter des validations pour AutoPolicyDTO
+### 6.2 Logging Enhancements
 
-## 20. Implémentation des mappers manquants
+- [x] **6.2.1** Standardize logging:
+    - [x] Define log levels for different scenarios
+    - [x] Add correlation IDs to logs
+    - [x] Mask sensitive data in logs
+- [ ] **6.2.2** Implement centralized logging:
+    - [ ] Configure log aggregation
+    - [ ] Set up log monitoring
 
-- [ ] 20.1. Créer DriverMapper
-- [ ] 20.2. Créer AutoPolicyMapper
+## 7. Testing Improvements
 
-## 21. Implémentation des validateurs de domaine
+### 7.1 Unit Testing
 
-- [x] 21.1. Créer VehicleValidator
-- [x] 21.2. Créer VehicleValidatorImpl
-- [x] 21.3. Créer PolicyValidator
-- [x] 21.4. Créer PolicyValidatorImpl
-- [x] 21.5. Créer DriverValidator
-- [x] 21.6. Créer DriverValidatorImpl
+- [ ] **7.1.1** Increase unit test coverage:
+    - [ ] Service layer tests
+    - [ ] Repository layer tests
+    - [ ] Domain model tests
+- [ ] **7.1.2** Standardize test naming and structure
 
-## 22. Implémentation du calculateur de prime
+### 7.2 Integration Testing
 
-- [x] 22.1. Créer PremiumCalculator
-- [x] 22.2. Créer PremiumCalculatorImpl
-- [x] 22.3. Implémenter CalculateAutoPremiumImpl
+- [ ] **7.2.1** Implement integration tests:
+    - [ ] API endpoint tests
+    - [ ] Database integration tests
+- [ ] **7.2.2** Set up test data management
 
-## 23. Gestion des erreurs
+### 7.3 Performance Testing
 
-- [ ] 23.1. Créer des exceptions métier spécifiques
-- [ ] 23.2. Implémenter un gestionnaire d'exceptions global
-- [ ] 23.3. Standardiser les messages d'erreur
+- [ ] **7.3.1** Implement performance tests:
+    - [ ] Load testing
+    - [ ] Stress testing
+- [ ] **7.3.2** Establish performance baselines and thresholds
 
-## 24. Optimisation des performances
+### 7.4 Code Quality
 
-- [ ] 24.1. Optimiser les requêtes de base de données
-- [ ] 24.2. Optimiser les algorithmes de calcul
-- [ ] 24.3. Ajouter du caching pour les données de référence
+- [ ] **7.4.1** Implement code quality checks:
+    - [ ] Add SonarQube integration
+    - [ ] Configure code style checks
+    - [ ] Set up code coverage thresholds
+- [ ] **7.4.2** Reduce code duplication:
+    - [ ] Create `ReferenceDataEntity` base class
+    - [ ] Implement `TenantAwareRepository` interface
+    - [ ] Create `AbstractReferenceDataService` class
+    - [ ] Refactor reference data controllers
 
-## 25. Intégrations externes
+## 8. Documentation Enhancements
 
-- [ ] 25.1. Intégrer avec le service DIOTALI
-- [ ] 25.2. Intégrer avec les services nationaux d'immatriculation
-- [ ] 25.3. Mettre en place les webhooks pour les notifications
+### 8.1 Code Documentation
+
+- [ ] **8.1.1** Standardize Javadoc:
+    - [ ] Ensure all public methods have Javadoc
+    - [ ] Document parameters and return values
+- [ ] **8.1.2** Add architectural documentation:
+    - [ ] Update module diagrams
+    - [ ] Document design decisions
+
+### 8.2 API Documentation
+
+- [ ] **8.2.1** Enhance OpenAPI documentation:
+    - [ ] Add detailed descriptions
+    - [ ] Document error responses
+- [ ] **8.2.2** Create API usage examples
+
+### 8.3 Developer Documentation
+
+- [ ] **8.3.1** Create developer onboarding guide
+- [ ] **8.3.2** Document development workflows:
+    - [ ] Local setup
+    - [ ] Testing procedures
+    - [ ] Deployment process
+
+## 9. Build and Deployment
+
+### 9.1 Build Process
+
+- [ ] **9.1.1** Enhance Gradle build:
+    - [ ] Add code quality plugins
+    - [ ] Configure build profiles
+- [ ] **9.1.2** Set up continuous integration:
+    - [ ] Configure automated builds
+    - [ ] Set up test execution
+
+### 9.2 Deployment Automation
+
+- [ ] **9.2.1** Create deployment scripts:
+    - [ ] Development environment
+    - [ ] Staging environment
+    - [ ] Production environment
+- [ ] **9.2.2** Implement database migration strategy:
+    - [ ] Review and organize Flyway migrations
+    - [ ] Create migration testing process
+
+## 10. Monitoring and Operations
+
+### 10.1 Application Monitoring
+
+- [ ] **10.1.1** Implement health checks:
+    - [ ] Database connectivity
+    - [ ] External service connectivity
+- [ ] **10.1.2** Set up metrics collection:
+    - [ ] Performance metrics
+    - [ ] Business metrics
+
+### 10.2 Alerting
+
+- [ ] **10.2.1** Configure alerts:
+    - [ ] Error rate thresholds
+    - [ ] Performance degradation
+- [ ] **10.2.2** Set up notification channels
+
+## Priority Order
+
+1. **Critical Fixes**:
+    - Entity inheritance issues (3.1)
+    - JPA annotation standardization (3.2)
+    - Transaction management (2.2)
+    - Security hardening (5.2)
+
+2. **High Priority**:
+    - Controller standardization (1.1, 1.2)
+    - Error handling standardization (6.1)
+    - Repository layer standardization (4.1, 4.3)
+
+3. **Medium Priority**:
+    - Service layer refactoring (2.1, 2.3)
+    - Configuration externalization (5.1)
+    - Testing improvements (7.1, 7.2)
+
+4. **Lower Priority**:
+    - Documentation enhancements (8.1, 8.2, 8.3)
+    - Build and deployment (9.1, 9.2)
+    - Monitoring and operations (10.1, 10.2)
+
+## Completed Tasks
+
+### April 11, 2025
+
+1. **Fixed compilation errors in VehicleController**:
+    - Changed `versionName(request.getVersion())` to `modelVariant(request.getVersion())` to match the field name in the
+      `CreateVehicleCommand` class.
+
+2. **Fixed compilation errors in AutoPolicyController**:
+    - Modified the approach for setting ID fields in entity builders. Instead of using builder methods for ID fields
+      that are used for relationships, we used a two-step approach:
+        - First, create the entity using the builder with only the fields that are directly accessible
+        - Then, use setter methods to set the ID fields that are used for relationships
+    - Applied this pattern to several classes:
+        - `AutoPolicyController`
+        - `AutoPolicyMapper`
+        - `CreateAutoPolicyImpl`
+        - `UpdateAutoPolicyImpl`
+        - `DriverController`
+        - `DriverMapper`
+        - `VehicleMapper`
+        - `VehicleServiceImpl`
+        - `CreateVehicleImpl`
+        - `UpdateVehicleImpl`
+
+3. **Fixed runtime errors in JpaAutoPolicyRepository**:
+    - Updated the JPQL queries to use the correct field names:
+        - Changed `p.vehicleId` to `p.vehicle.id`
+        - Changed `p.primaryDriverId` to `p.primaryDriver.id`
+
+4. **Fixed entity relationship issues**:
+    - Fixed the `Vehicle` class to use the correct `VehicleUsage` class from the reference domain model package.
+
+5. **Fixed bean conflict issues**:
+    - Renamed `AuthController` in the `application.controller` package to `DeprecatedAuthController` to avoid conflict
+      with `AuthController` in the `api` package.
+    - Commented out `@RestController` and `@RequestMapping` annotations in the deprecated controller.
+
+6. **Fixed JwtBlacklistService initialization**:
+    - Removed Redis import that was causing compilation errors.
+    - Refactored the service to use `@PostConstruct` and `@PreDestroy` annotations for proper initialization and
+      cleanup.
+    - Fixed the issue with `cleanupIntervalSeconds` being null during constructor execution.
+
+7. **Migrated from Java EE to Jakarta EE**:
+    - Updated imports in `SecureSpecifications.java` from `javax.persistence.criteria` to
+      `jakarta.persistence.criteria`.
+    - Fixed compilation errors related to the migration from Java EE to Jakarta EE.
+    - Ensured consistent use of Jakarta EE APIs throughout the codebase.
+
+### April 12, 2025
+
+**Code Review and Recommendations**:
+
+1. **Architecture Hexagonale**:
+    - L'architecture hexagonale est bien implémentée avec une séparation claire entre les couches API, application,
+      domaine et infrastructure.
+    - Chaque module respecte les principes DDD avec une organisation cohérente.
+
+2. **Prochaines étapes recommandées**:
+    - Compléter la standardisation des contrôleurs (tâche 1.1)
+    - Améliorer la gestion des transactions (tâche 2.2)
+    - Implémenter un contrôle d'accès basé sur les rôles plus fin (tâche 5.2.3)
+    - Augmenter la couverture des tests unitaires (tâche 7.1)
+
+3. **Points d'attention**:
+    - Vérifier la cohérence des annotations JPA dans les nouvelles entités
+    - S'assurer que tous les services utilisent les interfaces appropriées
+    - Standardiser la gestion des erreurs dans l'ensemble de l'application
+    - Réduire la duplication de code dans les contrôleurs et services de référence
+
+### April 13, 2025
+
+**Analyse des Duplications de Code**:
+
+1. **Duplication dans les Contrôleurs**:
+    - Identification de structures similaires dans les contrôleurs de référence (`VehicleModelController`,
+      `VehicleMakeController`, etc.)
+    - Recommandation: Utiliser `AbstractCrudController` et créer une interface générique `ReferenceDataController`
+
+2. **Duplication dans les Services**:
+    - Identification de méthodes similaires dans les services d'implémentation (`VehicleModelServiceImpl`,
+      `VehicleMakeServiceImpl`, etc.)
+    - Recommandation: Créer une classe abstraite `AbstractReferenceDataService` pour factoriser le code commun
+
+3. **Duplication dans les Repositories**:
+    - Identification de méthodes similaires dans les repositories JPA
+    - Recommandation: Créer une interface `TenantAwareRepository` et une implémentation `BaseTenantAwareRepository`
+
+4. **Duplication dans les Entités**:
+    - Identification de champs communs dans les entités de référence
+    - Recommandation: Créer une classe abstraite `ReferenceDataEntity` qui étend `TenantAwareEntity`
+
+Un rapport détaillé a été créé dans `doc/code-duplication-analysis.md` avec des exemples d'implémentation et un plan d'
+action.
+
+### April 14, 2025
+
+**Refactorisation pour plus de cohérence**:
+
+1. **Renommage des entités**:
+    - `FuelType` renommé en `VehicleFuelType` pour une meilleure cohérence avec les autres entités de référence
+    - `VehicleMake` renommé en `VehicleManufacturer` pour une terminologie plus précise
+
+2. **Mise à jour des références**:
+    - Création de nouvelles classes, DTOs, repositories, services et contrôleurs
+    - Mise à jour des références dans la classe `Vehicle`
+    - Création de scripts de migration pour renommer les tables et colonnes
+
+3. **Amélioration de la cohérence**:
+    - Standardisation des noms d'entités avec le préfixe "Vehicle" pour toutes les entités de référence liées aux
+      véhicules
+    - Utilisation du terme "Manufacturer" au lieu de "Make" pour une terminologie plus précise

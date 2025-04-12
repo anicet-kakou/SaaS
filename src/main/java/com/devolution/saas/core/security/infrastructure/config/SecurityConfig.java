@@ -4,6 +4,7 @@ import com.devolution.saas.common.filter.RateLimitFilter;
 import com.devolution.saas.common.filter.RequestLoggingFilter;
 import com.devolution.saas.core.security.infrastructure.filter.ApiKeyAuthenticationFilter;
 import com.devolution.saas.core.security.infrastructure.filter.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +22,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,11 +32,25 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-    private ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
-    private RequestLoggingFilter requestLoggingFilter;
-    private RateLimitFilter rateLimitFilter;
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Value("${cors.allowed-origins}")
+    private List<String> allowedOrigins;
+
+    @Value("${cors.allowed-methods}")
+    private List<String> allowedMethods;
+
+    @Value("${cors.allowed-headers}")
+    private List<String> allowedHeaders;
+
+    @Value("${cors.exposed-headers}")
+    private List<String> exposedHeaders;
+
+    @Value("${cors.allow-credentials:false}")
+    private boolean allowCredentials;
+
+    @Value("${cors.max-age:3600}")
+    private long maxAge;
+
+    // Les filtres sont injectés via les paramètres de la méthode securityFilterChain
 
     /**
      * Configure la chaîne de filtres de sécurité.
@@ -57,11 +71,7 @@ public class SecurityConfig {
                                                    RequestLoggingFilter requestLoggingFilter,
                                                    RateLimitFilter rateLimitFilter,
                                                    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) throws Exception {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.apiKeyAuthenticationFilter = apiKeyAuthenticationFilter;
-        this.requestLoggingFilter = requestLoggingFilter;
-        this.rateLimitFilter = rateLimitFilter;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        // Configuration de la chaîne de filtres de sécurité
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -104,18 +114,36 @@ public class SecurityConfig {
 
     /**
      * Configure la source de configuration CORS.
+     * Utilise les propriétés définies dans les fichiers de configuration.
      *
      * @return Source de configuration CORS
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(List.of("x-auth-token"));
+
+        // Configurer les origines autorisées
+        configuration.setAllowedOrigins(allowedOrigins);
+
+        // Configurer les méthodes autorisées
+        configuration.setAllowedMethods(allowedMethods);
+
+        // Configurer les en-têtes autorisés
+        configuration.setAllowedHeaders(allowedHeaders);
+
+        // Configurer les en-têtes exposés
+        configuration.setExposedHeaders(exposedHeaders);
+
+        // Configurer l'autorisation des cookies
+        configuration.setAllowCredentials(allowCredentials);
+
+        // Configurer la durée de mise en cache des résultats de pré-vérification
+        configuration.setMaxAge(maxAge);
+
+        // Enregistrer la configuration pour tous les chemins
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 }

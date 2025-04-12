@@ -1,10 +1,14 @@
 package com.devolution.saas.insurance.nonlife.auto.domain.model;
 
-import com.devolution.saas.common.domain.model.BaseEntity;
+import com.devolution.saas.common.domain.model.TenantAwareEntity;
 import com.devolution.saas.insurance.common.domain.model.Coverage;
 import com.devolution.saas.insurance.common.domain.model.InsuranceProduct;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,11 +22,11 @@ import java.util.UUID;
 @Entity
 @Table(name = "auto_insurance_products")
 @Data
-@Builder
+@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class AutoInsuranceProduct extends BaseEntity implements InsuranceProduct {
+public class AutoInsuranceProduct extends TenantAwareEntity implements InsuranceProduct {
 
     /**
      * Code unique du produit.
@@ -47,7 +51,7 @@ public class AutoInsuranceProduct extends BaseEntity implements InsuranceProduct
      */
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private ProductStatus status;
+    private InsuranceProduct.ProductStatus status;
 
     /**
      * Date d'effet du produit.
@@ -61,11 +65,7 @@ public class AutoInsuranceProduct extends BaseEntity implements InsuranceProduct
     @Column(name = "expiry_date")
     private LocalDate expiryDate;
 
-    /**
-     * ID de l'organisation.
-     */
-    @Column(name = "organization_id", nullable = false)
-    private UUID organizationId;
+    // The organizationId field is inherited from TenantAwareEntity
 
     /**
      * Calcule la prime d'assurance auto.
@@ -122,15 +122,7 @@ public class AutoInsuranceProduct extends BaseEntity implements InsuranceProduct
         ));
     }
 
-    /**
-     * Statut d'un produit d'assurance.
-     */
-    public enum ProductStatus {
-        DRAFT,
-        ACTIVE,
-        INACTIVE,
-        ARCHIVED
-    }
+    // ProductStatus enum is now used from InsuranceProduct interface
 
     @Override
     @Transient
@@ -143,7 +135,7 @@ public class AutoInsuranceProduct extends BaseEntity implements InsuranceProduct
      * Contexte de calcul de police.
      */
     @Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PolicyCalculationContext {
@@ -159,7 +151,7 @@ public class AutoInsuranceProduct extends BaseEntity implements InsuranceProduct
      * Contexte de souscription.
      */
     @Data
-    @Builder
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SubscriptionContext {

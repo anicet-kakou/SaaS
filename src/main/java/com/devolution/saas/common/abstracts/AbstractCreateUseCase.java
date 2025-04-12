@@ -2,6 +2,7 @@ package com.devolution.saas.common.abstracts;
 
 import com.devolution.saas.common.domain.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -58,7 +59,7 @@ public abstract class AbstractCreateUseCase<T, C, E> {
      * @param command Commande de création
      * @return DTO de l'entité créée
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public T execute(C command) {
         log.debug("Exécution du cas d'utilisation de création de {}", getEntityName());
 

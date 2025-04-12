@@ -1,6 +1,7 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.application.mapper;
 
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.VehicleSubcategoryDTO;
+import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleCategory;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleSubcategory;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.repository.VehicleCategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,22 +27,25 @@ public class VehicleSubcategoryMapper {
             return null;
         }
 
-        VehicleSubcategoryDTO dto = VehicleSubcategoryDTO.builder()
-                .id(vehicleSubcategory.getId())
-                .categoryId(vehicleSubcategory.getCategoryId())
-                .code(vehicleSubcategory.getCode())
-                .name(vehicleSubcategory.getName())
-                .description(vehicleSubcategory.getDescription())
-                .tariffCoefficient(vehicleSubcategory.getTariffCoefficient())
-                .isActive(vehicleSubcategory.isActive())
-                .organizationId(vehicleSubcategory.getOrganizationId())
-                .build();
+        // Get category name if available
+        String categoryName = null;
+        if (vehicleSubcategory.getCategoryId() != null) {
+            categoryName = vehicleCategoryRepository.findById(vehicleSubcategory.getCategoryId())
+                    .map(VehicleCategory::getName)
+                    .orElse(null);
+        }
 
-        // Ajouter le nom de la catégorie si disponible
-        vehicleCategoryRepository.findById(vehicleSubcategory.getCategoryId())
-                .ifPresent(category -> dto.setCategoryName(category.getName()));
-
-        return dto;
+        // Create the DTO with all values
+        return new VehicleSubcategoryDTO(
+                vehicleSubcategory.getId(),
+                vehicleSubcategory.getCategoryId(),
+                categoryName,
+                vehicleSubcategory.getCode(),
+                vehicleSubcategory.getName(),
+                vehicleSubcategory.getDescription(),
+                vehicleSubcategory.getTariffCoefficient(),
+                vehicleSubcategory.isActive(),
+                vehicleSubcategory.getOrganizationId());
     }
 
     /**
@@ -56,14 +60,14 @@ public class VehicleSubcategoryMapper {
         }
 
         return VehicleSubcategory.builder()
-                .id(vehicleSubcategoryDTO.getId())
-                .categoryId(vehicleSubcategoryDTO.getCategoryId())
-                .code(vehicleSubcategoryDTO.getCode())
-                .name(vehicleSubcategoryDTO.getName())
-                .description(vehicleSubcategoryDTO.getDescription())
-                .tariffCoefficient(vehicleSubcategoryDTO.getTariffCoefficient())
+                .id(vehicleSubcategoryDTO.id())
+                .categoryId(vehicleSubcategoryDTO.categoryId())
+                .code(vehicleSubcategoryDTO.code())
+                .name(vehicleSubcategoryDTO.name())
+                .description(vehicleSubcategoryDTO.description())
+                .tariffCoefficient(vehicleSubcategoryDTO.tariffCoefficient())
                 .isActive(vehicleSubcategoryDTO.isActive())
-                .organizationId(vehicleSubcategoryDTO.getOrganizationId())
+                .organizationId(vehicleSubcategoryDTO.organizationId())
                 .build();
     }
 }
