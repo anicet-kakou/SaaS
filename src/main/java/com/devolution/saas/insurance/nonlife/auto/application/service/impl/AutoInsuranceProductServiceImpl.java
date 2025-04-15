@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Implémentation du service d'application pour la gestion des produits d'assurance auto.
@@ -40,11 +39,19 @@ public class AutoInsuranceProductServiceImpl implements AutoInsuranceProductServ
                     throw AutoResourceAlreadyExistsException.forCode("Produit d'assurance auto", product.getCode());
                 });
 
-        // Définir l'organisation
-        product.setOrganizationId(organizationId);
+        // Créer une nouvelle instance avec l'ID de l'organisation
+        AutoInsuranceProduct productWithOrg = AutoInsuranceProduct.builder()
+                .code(product.getCode())
+                .name(product.getName())
+                .description(product.getDescription())
+                .status(product.getStatus())
+                .effectiveDate(product.getEffectiveDate())
+                .expiryDate(product.getExpiryDate())
+                .organizationId(organizationId) // Définir l'organisation ici
+                .build();
 
         // Sauvegarder le produit
-        AutoInsuranceProduct savedProduct = autoInsuranceProductRepository.save(product);
+        AutoInsuranceProduct savedProduct = autoInsuranceProductRepository.save(productWithOrg);
 
         return autoInsuranceProductMapper.toDto(savedProduct);
     }
@@ -68,12 +75,20 @@ public class AutoInsuranceProductServiceImpl implements AutoInsuranceProductServ
                     });
         }
 
-        // Mettre à jour les propriétés du produit
-        product.setId(id);
-        product.setOrganizationId(organizationId);
+        // Créer une nouvelle instance avec l'ID existant et les nouvelles propriétés
+        AutoInsuranceProduct updatedProduct = AutoInsuranceProduct.builder()
+                .id(id) // Conserver l'ID existant
+                .code(product.getCode())
+                .name(product.getName())
+                .description(product.getDescription())
+                .status(product.getStatus())
+                .effectiveDate(product.getEffectiveDate())
+                .expiryDate(product.getExpiryDate())
+                .organizationId(organizationId) // Définir l'organisation
+                .build();
 
-        AutoInsuranceProduct updatedProduct = autoInsuranceProductRepository.save(product);
-        return Optional.of(autoInsuranceProductMapper.toDto(updatedProduct));
+        AutoInsuranceProduct savedProduct = autoInsuranceProductRepository.save(updatedProduct);
+        return Optional.of(autoInsuranceProductMapper.toDto(savedProduct));
     }
 
     @Override
@@ -136,7 +151,7 @@ public class AutoInsuranceProductServiceImpl implements AutoInsuranceProductServ
         return autoInsuranceProductRepository.findAllByOrganizationId(organizationId)
                 .stream()
                 .map(autoInsuranceProductMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -147,7 +162,7 @@ public class AutoInsuranceProductServiceImpl implements AutoInsuranceProductServ
         return autoInsuranceProductRepository.findAllActiveByOrganizationId(organizationId)
                 .stream()
                 .map(autoInsuranceProductMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -158,7 +173,7 @@ public class AutoInsuranceProductServiceImpl implements AutoInsuranceProductServ
         return autoInsuranceProductRepository.findAllActiveAtDateByOrganizationId(date, organizationId)
                 .stream()
                 .map(autoInsuranceProductMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

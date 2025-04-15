@@ -1,6 +1,6 @@
 package com.devolution.saas.insurance.nonlife.auto.api.controller;
 
-import com.devolution.saas.insurance.nonlife.auto.api.request.CreateAutoPolicyRequest;
+import com.devolution.saas.insurance.nonlife.auto.api.dto.request.CreateAutoPolicyRequest;
 import com.devolution.saas.insurance.nonlife.auto.application.dto.AutoPolicyDTO;
 import com.devolution.saas.insurance.nonlife.auto.application.service.AutoPolicyService;
 import com.devolution.saas.insurance.nonlife.auto.domain.model.AutoPolicy;
@@ -219,23 +219,23 @@ public class AutoPolicyController {
     private AutoPolicy mapRequestToEntity(CreateAutoPolicyRequest request) {
         // Créer l'objet AutoPolicy avec le builder
         AutoPolicy policy = AutoPolicy.builder()
-                .policyNumber(request.getPolicyNumber())
+                .policyNumber(request.policyNumber())
                 .status(AutoPolicy.PolicyStatus.ACTIVE) // Par défaut, la police est active
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
-                .premiumAmount(request.getPremiumAmount())
-                .coverageType(request.getCoverageType())
-                .bonusMalusCoefficient(request.getBonusMalusCoefficient())
-                .annualMileage(request.getAnnualMileage())
-                .parkingType(request.getParkingType())
-                .hasAntiTheftDevice(request.isHasAntiTheftDevice())
-                .claimHistoryCategoryId(request.getClaimHistoryCategoryId())
+                .startDate(request.startDate())
+                .endDate(request.endDate())
+                .premiumAmount(request.premiumAmount())
+                .coverageType(request.coverageType())
+                .bonusMalusCoefficient(request.bonusMalusCoefficient())
+                .annualMileage(request.annualMileage())
+                .parkingType(request.parkingType())
+                .hasAntiTheftDevice(request.hasAntiTheftDevice())
+                .claimHistoryCategoryId(request.claimHistoryCategoryId())
                 .build();
 
         // Utiliser les setters pour définir les IDs
         // Note: Ces setters ne font rien actuellement, mais sont nécessaires pour la compatibilité
-        policy.setVehicleId(request.getVehicleId());
-        policy.setPrimaryDriverId(request.getPrimaryDriverId());
+        policy.setVehicleId(request.vehicleId());
+        policy.setPrimaryDriverId(request.primaryDriverId());
 
         return policy;
     }

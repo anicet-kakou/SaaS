@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 
 /**
  * Implémentation du service d'application pour la gestion des conducteurs.
@@ -39,11 +39,19 @@ public class DriverServiceImpl implements DriverService {
                     throw AutoResourceAlreadyExistsException.forIdentifier("Conducteur", "numéro de permis", driver.getLicenseNumber());
                 });
 
-        // Définir l'organisation
-        driver.setOrganizationId(organizationId);
+        // Créer une nouvelle instance de Driver avec l'organisation
+        Driver driverWithOrg = new Driver();
+        driverWithOrg.setCustomerId(driver.getCustomerId());
+        driverWithOrg.setLicenseNumber(driver.getLicenseNumber());
+        driverWithOrg.setLicenseTypeId(driver.getLicenseTypeId());
+        driverWithOrg.setLicenseIssueDate(driver.getLicenseIssueDate());
+        driverWithOrg.setLicenseExpiryDate(driver.getLicenseExpiryDate());
+        driverWithOrg.setPrimaryDriver(driver.isPrimaryDriver());
+        driverWithOrg.setYearsOfDrivingExperience(driver.getYearsOfDrivingExperience());
+        driverWithOrg.setOrganizationId(organizationId); // Définir l'organisation ici
 
         // Sauvegarder le conducteur
-        Driver savedDriver = driverRepository.save(driver);
+        Driver savedDriver = driverRepository.save(driverWithOrg);
 
         return driverMapper.toDto(savedDriver);
     }
@@ -67,12 +75,20 @@ public class DriverServiceImpl implements DriverService {
                     });
         }
 
-        // Mettre à jour les propriétés du conducteur
-        driver.setId(id);
-        driver.setOrganizationId(organizationId);
+        // Créer une nouvelle instance de Driver avec l'ID existant et les nouvelles propriétés
+        Driver updatedDriver = new Driver();
+        updatedDriver.setId(id); // Conserver l'ID existant
+        updatedDriver.setCustomerId(driver.getCustomerId());
+        updatedDriver.setLicenseNumber(driver.getLicenseNumber());
+        updatedDriver.setLicenseTypeId(driver.getLicenseTypeId());
+        updatedDriver.setLicenseIssueDate(driver.getLicenseIssueDate());
+        updatedDriver.setLicenseExpiryDate(driver.getLicenseExpiryDate());
+        updatedDriver.setPrimaryDriver(driver.isPrimaryDriver());
+        updatedDriver.setYearsOfDrivingExperience(driver.getYearsOfDrivingExperience());
+        updatedDriver.setOrganizationId(organizationId); // Définir l'organisation
 
-        Driver updatedDriver = driverRepository.save(driver);
-        return Optional.of(driverMapper.toDto(updatedDriver));
+        Driver savedDriver = driverRepository.save(updatedDriver);
+        return Optional.of(driverMapper.toDto(savedDriver));
     }
 
     @Override
@@ -102,7 +118,7 @@ public class DriverServiceImpl implements DriverService {
         return driverRepository.findAllByOrganizationId(organizationId)
                 .stream()
                 .map(driverMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -113,7 +129,7 @@ public class DriverServiceImpl implements DriverService {
         return driverRepository.findAllByCustomerIdAndOrganizationId(customerId, organizationId)
                 .stream()
                 .map(driverMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

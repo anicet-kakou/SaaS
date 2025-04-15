@@ -1,5 +1,6 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.application.service;
 
+import com.devolution.saas.common.abstracts.TenantAwareCrudService;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.VehicleGenreDTO;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleGenre;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 /**
  * Service pour la gestion des genres de véhicule.
  */
-public interface VehicleGenreService {
+public interface VehicleGenreService extends TenantAwareCrudService<VehicleGenreDTO, VehicleGenre> {
 
     /**
      * Crée un nouveau genre de véhicule.

@@ -1,5 +1,6 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.application.service;
 
+import com.devolution.saas.common.abstracts.TenantAwareCrudService;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.VehicleBodyTypeDTO;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleBodyType;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 /**
  * Service pour la gestion des types de carrosserie de véhicule.
  */
-public interface VehicleBodyTypeService {
+public interface VehicleBodyTypeService extends TenantAwareCrudService<VehicleBodyTypeDTO, VehicleBodyType> {
 
     /**
      * Crée un nouveau type de carrosserie de véhicule.

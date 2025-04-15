@@ -1,8 +1,7 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.api;
 
-import com.devolution.saas.common.abstracts.AbstractReferenceController;
-import com.devolution.saas.common.annotation.Auditable;
-import com.devolution.saas.common.annotation.TenantRequired;
+import com.devolution.saas.common.abstracts.TenantAwareCrudController;
+import com.devolution.saas.common.exception.ResourceNotFoundException;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.VehicleModelDTO;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.service.VehicleModelService;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleModel;
@@ -11,7 +10,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,24 +20,35 @@ import java.util.UUID;
 /**
  * Contrôleur REST pour la gestion des modèles de véhicule.
  */
-@RestController
-@RequestMapping("/api/v1/auto/reference/vehicle-models")
+// @RestController - Disabled to avoid ambiguous mapping issues
+// @RequestMapping("/api/v1/auto/reference/vehicle-models")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Vehicle Models", description = "API pour la gestion des modèles de véhicule")
-public class VehicleModelReferenceController extends AbstractReferenceController<VehicleModelDTO, VehicleModel, VehicleModel> {
+@Tag(name = "Vehicle Models", description = "API pour la gestion des modèles de véhicule (Deprecated)")
+public class VehicleModelReferenceController extends TenantAwareCrudController<VehicleModelDTO, VehicleModel, VehicleModel> {
 
     private final VehicleModelService vehicleModelService;
 
     @Override
-    protected List<VehicleModelDTO> getAllActive(UUID organizationId) {
+    protected List<VehicleModelDTO> listActive(UUID organizationId) {
         return vehicleModelService.getAllActiveVehicleModels(organizationId);
     }
 
     @Override
-    protected VehicleModelDTO getById(UUID id, UUID organizationId) {
+    protected List<VehicleModelDTO> list(UUID organizationId) {
+        return vehicleModelService.getAllVehicleModels(organizationId);
+    }
+
+    @Override
+    protected VehicleModelDTO get(UUID id, UUID organizationId) {
         return vehicleModelService.getVehicleModelById(id, organizationId)
-                .orElseThrow(() -> new RuntimeException("Modèle de véhicule non trouvé avec ID: " + id));
+                .orElseThrow(() -> ResourceNotFoundException.forId("Modèle de véhicule", id));
+    }
+
+    @Override
+    protected VehicleModelDTO getByCode(String code, UUID organizationId) {
+        return vehicleModelService.getVehicleModelByCode(code, organizationId)
+                .orElseThrow(() -> ResourceNotFoundException.forCode("Modèle de véhicule", code));
     }
 
     @Override
@@ -47,35 +59,26 @@ public class VehicleModelReferenceController extends AbstractReferenceController
     @Override
     protected VehicleModelDTO update(UUID id, VehicleModel command, UUID organizationId) {
         return vehicleModelService.updateVehicleModel(id, command, organizationId)
-                .orElseThrow(() -> new RuntimeException("Modèle de véhicule non trouvé avec ID: " + id));
+                .orElseThrow(() -> ResourceNotFoundException.forId("Modèle de véhicule", id));
     }
 
     @Override
     protected VehicleModelDTO setActive(UUID id, boolean active, UUID organizationId) {
-        // Cette méthode n'est pas implémentée dans le service existant
-        // Nous devons l'implémenter ou lancer une exception
-        throw new UnsupportedOperationException("Méthode non implémentée");
+        return vehicleModelService.setActive(id, active, organizationId)
+                .orElseThrow(() -> ResourceNotFoundException.forId("Modèle de véhicule", id));
+    }
+
+    @Override
+    protected void delete(UUID id, UUID organizationId) {
+        boolean deleted = vehicleModelService.deleteVehicleModel(id, organizationId);
+        if (!deleted) {
+            throw ResourceNotFoundException.forId("Modèle de véhicule", id);
+        }
     }
 
     @Override
     protected String getEntityName() {
         return "modèle de véhicule";
-    }
-
-    /**
-     * Récupère tous les modèles de véhicule (actifs et inactifs).
-     *
-     * @param organizationId L'ID de l'organisation
-     * @return La liste des modèles de véhicule
-     */
-    @GetMapping("/all")
-    @Operation(summary = "Récupère tous les modèles de véhicule (actifs et inactifs)")
-    @Auditable(action = "API_GET_ALL_VEHICLE_MODELS")
-    @TenantRequired
-    public ResponseEntity<List<VehicleModelDTO>> getAllVehicleModels(@RequestParam UUID organizationId) {
-        log.debug("REST request pour récupérer tous les modèles de véhicule pour l'organisation: {}", organizationId);
-        List<VehicleModelDTO> models = vehicleModelService.getAllVehicleModels(organizationId);
-        return ResponseEntity.ok(models);
     }
 
     /**
@@ -87,8 +90,6 @@ public class VehicleModelReferenceController extends AbstractReferenceController
      */
     @GetMapping("/make/{makeId}")
     @Operation(summary = "Récupère tous les modèles de véhicule actifs pour une marque")
-    @Auditable(action = "API_GET_ACTIVE_VEHICLE_MODELS_BY_MAKE")
-    @TenantRequired
     public ResponseEntity<List<VehicleModelDTO>> getAllActiveVehicleModelsByMake(
             @PathVariable UUID makeId,
             @RequestParam UUID organizationId) {
@@ -107,8 +108,6 @@ public class VehicleModelReferenceController extends AbstractReferenceController
      */
     @GetMapping("/make/{makeId}/all")
     @Operation(summary = "Récupère tous les modèles de véhicule pour une marque")
-    @Auditable(action = "API_GET_ALL_VEHICLE_MODELS_BY_MAKE")
-    @TenantRequired
     public ResponseEntity<List<VehicleModelDTO>> getAllVehicleModelsByMake(
             @PathVariable UUID makeId,
             @RequestParam UUID organizationId) {
@@ -128,8 +127,6 @@ public class VehicleModelReferenceController extends AbstractReferenceController
      */
     @GetMapping("/code/{code}/make/{makeId}")
     @Operation(summary = "Récupère un modèle de véhicule par son code et sa marque")
-    @Auditable(action = "API_GET_VEHICLE_MODEL_BY_CODE_AND_MAKE")
-    @TenantRequired
     public ResponseEntity<VehicleModelDTO> getVehicleModelByCodeAndMake(
             @PathVariable String code,
             @PathVariable UUID makeId,

@@ -50,9 +50,52 @@ public class GeographicZoneServiceImpl implements GeographicZoneService {
     }
 
     @Override
-    public Optional<GeographicZoneDTO> getGeographicZoneByCode(String code, UUID organizationId) {
+    public Optional<GeographicZoneDTO> getByCode(String code, UUID organizationId) {
         return geographicZoneRepository.findByCodeAndOrganizationId(code, organizationId)
                 .map(geographicZoneMapper::toDto);
+    }
+
+    @Override
+    public String getEntityName() {
+        return "GeographicZone";
+    }
+
+    @Override
+    public List<GeographicZoneDTO> getAllActive(UUID organizationId) {
+        return geographicZoneRepository.findAllByIsActiveAndOrganizationId(true, organizationId).stream()
+                .map(geographicZoneMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean delete(UUID id, UUID organizationId) {
+        return geographicZoneRepository.findById(id)
+                .filter(zone -> zone.getOrganizationId().equals(organizationId))
+                .map(zone -> {
+                    geographicZoneRepository.deleteById(id);
+                    return true;
+                })
+                .orElse(false);
+    }
+
+    @Override
+    public Optional<GeographicZoneDTO> update(UUID id, GeographicZone entity, UUID organizationId) {
+        return updateGeographicZone(id, entity, organizationId);
+    }
+
+    @Override
+    public GeographicZoneDTO create(GeographicZone entity, UUID organizationId) {
+        return createGeographicZone(entity, organizationId);
+    }
+
+    @Override
+    public Optional<GeographicZoneDTO> getById(UUID id, UUID organizationId) {
+        return getGeographicZoneById(id, organizationId);
+    }
+
+    @Override
+    public List<GeographicZoneDTO> getAll(UUID organizationId) {
+        return getAllGeographicZones(organizationId);
     }
 
     @Override
@@ -82,8 +125,9 @@ public class GeographicZoneServiceImpl implements GeographicZoneService {
                 .orElse(false);
     }
 
+
     @Override
-    public Optional<GeographicZoneDTO> setGeographicZoneActive(UUID id, boolean active, UUID organizationId) {
+    public Optional<GeographicZoneDTO> setActive(UUID id, boolean active, UUID organizationId) {
         return geographicZoneRepository.findById(id)
                 .filter(zone -> zone.getOrganizationId().equals(organizationId))
                 .map(zone -> {

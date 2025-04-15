@@ -73,6 +73,11 @@ public class VehicleCategoryServiceImpl implements VehicleCategoryService {
 
     @Override
     public boolean deleteVehicleCategory(UUID id, UUID organizationId) {
+        return delete(id, organizationId);
+    }
+
+    @Override
+    public boolean delete(UUID id, UUID organizationId) {
         return vehicleCategoryRepository.findById(id)
                 .filter(category -> category.getOrganizationId().equals(organizationId))
                 .map(category -> {
@@ -80,5 +85,51 @@ public class VehicleCategoryServiceImpl implements VehicleCategoryService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    @Override
+    public Optional<VehicleCategoryDTO> setActive(UUID id, boolean active, UUID organizationId) {
+        return vehicleCategoryRepository.findById(id)
+                .filter(category -> category.getOrganizationId().equals(organizationId))
+                .map(category -> {
+                    category.setActive(active);
+                    VehicleCategory updatedCategory = vehicleCategoryRepository.save(category);
+                    return vehicleCategoryMapper.toDto(updatedCategory);
+                });
+    }
+
+    @Override
+    public Optional<VehicleCategoryDTO> getById(UUID id, UUID organizationId) {
+        return getVehicleCategoryById(id, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleCategoryDTO> getByCode(String code, UUID organizationId) {
+        return getVehicleCategoryByCode(code, organizationId);
+    }
+
+    @Override
+    public VehicleCategoryDTO create(VehicleCategory entity, UUID organizationId) {
+        return createVehicleCategory(entity, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleCategoryDTO> update(UUID id, VehicleCategory entity, UUID organizationId) {
+        return updateVehicleCategory(id, entity, organizationId);
+    }
+
+    @Override
+    public List<VehicleCategoryDTO> getAll(UUID organizationId) {
+        return getAllVehicleCategories(organizationId);
+    }
+
+    @Override
+    public List<VehicleCategoryDTO> getAllActive(UUID organizationId) {
+        return getAllActiveVehicleCategories(organizationId);
+    }
+
+    @Override
+    public String getEntityName() {
+        return "catégorie de véhicule";
     }
 }

@@ -31,19 +31,19 @@ public class CreateVehicleImpl implements CreateVehicle {
     @Override
     @Transactional
     public VehicleDTO execute(CreateVehicleCommand command) {
-        log.debug("Création d'un véhicule avec immatriculation: {}", command.getRegistrationNumber());
+        log.debug("Création d'un véhicule avec immatriculation: {}", command.registrationNumber());
 
         // Vérifier si un véhicule avec la même immatriculation existe déjà
-        vehicleRepository.findByRegistrationNumber(command.getRegistrationNumber(), command.getOrganizationId())
+        vehicleRepository.findByRegistrationNumber(command.registrationNumber(), command.organizationId())
                 .ifPresent(v -> {
-                    throw AutoResourceAlreadyExistsException.forIdentifier("Véhicule", "immatriculation", command.getRegistrationNumber());
+                    throw AutoResourceAlreadyExistsException.forIdentifier("Véhicule", "immatriculation", command.registrationNumber());
                 });
 
         // Mapper la commande en entité
         Vehicle vehicle = mapCommandToEntity(command);
 
         // Valider le véhicule
-        List<String> validationErrors = vehicleValidator.validateForCreation(vehicle, command.getOrganizationId());
+        List<String> validationErrors = vehicleValidator.validateForCreation(vehicle, command.organizationId());
         if (!validationErrors.isEmpty()) {
             throw new BusinessRuleViolationException("Erreurs de validation: " + String.join(", ", validationErrors));
         }
@@ -63,29 +63,29 @@ public class CreateVehicleImpl implements CreateVehicle {
      */
     private Vehicle mapCommandToEntity(CreateVehicleCommand command) {
         Vehicle vehicle = Vehicle.builder()
-                .registrationNumber(command.getRegistrationNumber())
-                .modelVariant(command.getModelVariant())
-                .year(command.getYear())
-                .enginePower(command.getEnginePower())
-                .engineSize(command.getEngineSize())
-                .purchaseDate(command.getPurchaseDate())
-                .purchaseValue(command.getPurchaseValue())
-                .currentValue(command.getCurrentValue())
-                .mileage(command.getMileage())
-                .vin(command.getVin())
-                .ownerId(command.getOwnerId())
-                .organizationId(command.getOrganizationId())
+                .registrationNumber(command.registrationNumber())
+                .modelVariant(command.modelVariant())
+                .year(command.year())
+                .enginePower(command.enginePower())
+                .engineSize(command.engineSize())
+                .purchaseDate(command.purchaseDate())
+                .purchaseValue(command.purchaseValue())
+                .currentValue(command.currentValue())
+                .mileage(command.mileage())
+                .vin(command.vin())
+                .ownerId(command.ownerId())
+                .organizationId(command.organizationId())
                 .build();
 
         // Utiliser les setters pour définir les IDs
-        vehicle.setManufacturerId(command.getMakeId());
-        vehicle.setModelId(command.getModelId());
-        vehicle.setFuelTypeId(command.getFuelTypeId());
-        vehicle.setCategoryId(command.getCategoryId());
-        vehicle.setSubcategoryId(command.getSubcategoryId());
-        vehicle.setUsageId(command.getUsageId());
-        vehicle.setGeographicZoneId(command.getGeographicZoneId());
-        vehicle.setColorId(command.getColorId());
+        vehicle.setManufacturerId(command.makeId());
+        vehicle.setModelId(command.modelId());
+        vehicle.setFuelTypeId(command.fuelTypeId());
+        vehicle.setCategoryId(command.categoryId());
+        vehicle.setSubcategoryId(command.subcategoryId());
+        vehicle.setUsageId(command.usageId());
+        vehicle.setGeographicZoneId(command.geographicZoneId());
+        vehicle.setColorId(command.colorId());
 
         return vehicle;
     }

@@ -1,5 +1,6 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.application.service;
 
+import com.devolution.saas.common.abstracts.TenantAwareCrudService;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.GeographicZoneDTO;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.GeographicZone;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 /**
  * Service pour la gestion des zones géographiques.
  */
-public interface GeographicZoneService {
+public interface GeographicZoneService extends TenantAwareCrudService<GeographicZoneDTO, GeographicZone> {
 
     /**
      * Crée une nouvelle zone géographique.
@@ -40,14 +41,7 @@ public interface GeographicZoneService {
      */
     Optional<GeographicZoneDTO> getGeographicZoneById(UUID id, UUID organizationId);
 
-    /**
-     * Récupère une zone géographique par son code.
-     *
-     * @param code           Le code de la zone géographique
-     * @param organizationId L'ID de l'organisation
-     * @return La zone géographique trouvée, ou empty si non trouvée
-     */
-    Optional<GeographicZoneDTO> getGeographicZoneByCode(String code, UUID organizationId);
+
 
     /**
      * Liste toutes les zones géographiques d'une organisation.
@@ -82,5 +76,5 @@ public interface GeographicZoneService {
      * @param organizationId L'ID de l'organisation
      * @return La zone géographique mise à jour, ou empty si non trouvée
      */
-    Optional<GeographicZoneDTO> setGeographicZoneActive(UUID id, boolean active, UUID organizationId);
+    Optional<GeographicZoneDTO> setActive(UUID id, boolean active, UUID organizationId);
 }

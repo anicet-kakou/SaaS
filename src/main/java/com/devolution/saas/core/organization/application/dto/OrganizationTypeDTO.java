@@ -1,44 +1,40 @@
 package com.devolution.saas.core.organization.application.dto;
 
 import com.devolution.saas.core.organization.domain.model.OrganizationType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * DTO pour les types d'organisations.
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class OrganizationTypeDTO {
-
+public record OrganizationTypeDTO(
     /**
      * Code du type d'organisation.
      */
-    private String code;
+    String code,
 
     /**
      * Nom du type d'organisation.
      */
-    private String name;
+    String name,
 
     /**
      * Description du type d'organisation.
      */
-    private String description;
-
+    String description
+) {
     /**
      * Constructeur à partir de l'énumération OrganizationType.
      *
      * @param type Type d'organisation
      */
     public OrganizationTypeDTO(OrganizationType type) {
-        this.code = type.name();
-        this.name = formatName(type.name());
-        this.description = generateDescription(type);
+        this(type.name(), formatName(type.name()), generateDescription(type));
+    }
+
+    /**
+     * Builder pour OrganizationTypeDTO.
+     */
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -47,7 +43,7 @@ public class OrganizationTypeDTO {
      * @param name Nom à formater
      * @return Nom formaté
      */
-    private String formatName(String name) {
+    private static String formatName(String name) {
         return name.replace("_", " ");
     }
 
@@ -57,7 +53,7 @@ public class OrganizationTypeDTO {
      * @param type Type d'organisation
      * @return Description
      */
-    private String generateDescription(OrganizationType type) {
+    private static String generateDescription(OrganizationType type) {
         switch (type) {
             case INSURANCE_COMPANY:
                 return "Compagnie d'assurance qui souscrit des polices d'assurance et assume les risques.";
@@ -81,6 +77,34 @@ public class OrganizationTypeDTO {
                 return "Autre type d'organisation non spécifié.";
             default:
                 return "";
+        }
+    }
+
+    /**
+     * Classe Builder pour OrganizationTypeDTO.
+     */
+    public static class Builder {
+        private String code;
+        private String name;
+        private String description;
+
+        public Builder code(String code) {
+            this.code = code;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public OrganizationTypeDTO build() {
+            return new OrganizationTypeDTO(code, name, description);
         }
     }
 }

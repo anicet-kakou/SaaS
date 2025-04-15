@@ -1,5 +1,6 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.application.service;
 
+import com.devolution.saas.common.abstracts.TenantAwareCrudService;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.VehicleColorDTO;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleColor;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 /**
  * Service pour la gestion des couleurs de véhicule.
  */
-public interface VehicleColorService {
+public interface VehicleColorService extends TenantAwareCrudService<VehicleColorDTO, VehicleColor> {
 
     /**
      * Crée une nouvelle couleur de véhicule.

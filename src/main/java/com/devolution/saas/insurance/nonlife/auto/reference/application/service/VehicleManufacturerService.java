@@ -1,5 +1,6 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.application.service;
 
+import com.devolution.saas.common.abstracts.TenantAwareCrudService;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.VehicleManufacturerDTO;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleManufacturer;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 /**
  * Service pour la gestion des fabricants de véhicule.
  */
-public interface VehicleManufacturerService {
+public interface VehicleManufacturerService extends TenantAwareCrudService<VehicleManufacturerDTO, VehicleManufacturer> {
 
     /**
      * Crée un nouveau fabricant de véhicule.

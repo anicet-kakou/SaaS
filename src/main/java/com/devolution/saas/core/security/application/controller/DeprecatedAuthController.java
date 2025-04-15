@@ -37,7 +37,7 @@ public class DeprecatedAuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<JwtAuthenticationResponse> login(@Valid @RequestBody LoginCommand command) {
-        log.debug("Demande de connexion pour l'utilisateur: {}", command.getUsernameOrEmail());
+        log.debug("Demande de connexion pour l'utilisateur: {}", command.usernameOrEmail());
         return ResponseEntity.ok(authenticationService.login(command));
     }
 
@@ -102,7 +102,7 @@ public class DeprecatedAuthController {
     public ResponseEntity<Map<String, String>> logoutWithRefreshToken(@Valid @RequestBody RefreshTokenCommand command) {
         log.debug("Demande de déconnexion avec jeton de rafraîchissement");
 
-        boolean success = authenticationService.logoutWithRefreshToken(command.getRefreshToken());
+        boolean success = authenticationService.logoutWithRefreshToken(command.refreshToken());
 
         if (success) {
             return ResponseEntity.ok(Map.of("message", "Déconnexion réussie"));

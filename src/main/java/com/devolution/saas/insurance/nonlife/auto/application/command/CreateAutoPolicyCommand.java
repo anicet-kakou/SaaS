@@ -2,10 +2,6 @@ package com.devolution.saas.insurance.nonlife.auto.application.command;
 
 import com.devolution.saas.insurance.nonlife.auto.domain.model.AutoPolicy.CoverageType;
 import com.devolution.saas.insurance.nonlife.auto.domain.model.AutoPolicy.ParkingType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,69 +10,156 @@ import java.util.UUID;
 /**
  * Commande pour la création d'une police d'assurance automobile.
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class CreateAutoPolicyCommand {
-
+public record CreateAutoPolicyCommand(
     /**
      * Numéro de police.
      */
-    private String policyNumber;
+    String policyNumber,
 
     /**
      * Date de début de la police.
      */
-    private LocalDate startDate;
+    LocalDate startDate,
 
     /**
      * Date de fin de la police.
      */
-    private LocalDate endDate;
+    LocalDate endDate,
 
     /**
      * ID du véhicule assuré.
      */
-    private UUID vehicleId;
+    UUID vehicleId,
 
     /**
      * ID du conducteur principal.
      */
-    private UUID primaryDriverId;
+    UUID primaryDriverId,
 
     /**
      * Type de couverture.
      */
-    private CoverageType coverageType;
+    CoverageType coverageType,
 
     /**
      * Coefficient de bonus-malus.
      */
-    private BigDecimal bonusMalusCoefficient;
+    BigDecimal bonusMalusCoefficient,
 
     /**
      * Kilométrage annuel.
      */
-    private Integer annualMileage;
+    Integer annualMileage,
 
     /**
      * Type de stationnement.
      */
-    private ParkingType parkingType;
+    ParkingType parkingType,
 
     /**
      * Indique si le véhicule est équipé d'un dispositif antivol.
      */
-    private boolean hasAntiTheftDevice;
+    boolean hasAntiTheftDevice,
 
     /**
      * ID de la catégorie d'historique de sinistres.
      */
-    private UUID claimHistoryCategoryId;
+    UUID claimHistoryCategoryId,
 
     /**
      * ID de l'organisation.
      */
-    private UUID organizationId;
+    UUID organizationId
+) {
+    /**
+     * Builder pour CreateAutoPolicyCommand.
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Classe Builder pour CreateAutoPolicyCommand.
+     */
+    public static class Builder {
+        private String policyNumber;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private UUID vehicleId;
+        private UUID primaryDriverId;
+        private CoverageType coverageType;
+        private BigDecimal bonusMalusCoefficient;
+        private Integer annualMileage;
+        private ParkingType parkingType;
+        private boolean hasAntiTheftDevice;
+        private UUID claimHistoryCategoryId;
+        private UUID organizationId;
+
+        public Builder policyNumber(String policyNumber) {
+            this.policyNumber = policyNumber;
+            return this;
+        }
+
+        public Builder startDate(LocalDate startDate) {
+            this.startDate = startDate;
+            return this;
+        }
+
+        public Builder endDate(LocalDate endDate) {
+            this.endDate = endDate;
+            return this;
+        }
+
+        public Builder vehicleId(UUID vehicleId) {
+            this.vehicleId = vehicleId;
+            return this;
+        }
+
+        public Builder primaryDriverId(UUID primaryDriverId) {
+            this.primaryDriverId = primaryDriverId;
+            return this;
+        }
+
+        public Builder coverageType(CoverageType coverageType) {
+            this.coverageType = coverageType;
+            return this;
+        }
+
+        public Builder bonusMalusCoefficient(BigDecimal bonusMalusCoefficient) {
+            this.bonusMalusCoefficient = bonusMalusCoefficient;
+            return this;
+        }
+
+        public Builder annualMileage(Integer annualMileage) {
+            this.annualMileage = annualMileage;
+            return this;
+        }
+
+        public Builder parkingType(ParkingType parkingType) {
+            this.parkingType = parkingType;
+            return this;
+        }
+
+        public Builder hasAntiTheftDevice(boolean hasAntiTheftDevice) {
+            this.hasAntiTheftDevice = hasAntiTheftDevice;
+            return this;
+        }
+
+        public Builder claimHistoryCategoryId(UUID claimHistoryCategoryId) {
+            this.claimHistoryCategoryId = claimHistoryCategoryId;
+            return this;
+        }
+
+        public Builder organizationId(UUID organizationId) {
+            this.organizationId = organizationId;
+            return this;
+        }
+
+        public CreateAutoPolicyCommand build() {
+            return new CreateAutoPolicyCommand(
+                    policyNumber, startDate, endDate, vehicleId, primaryDriverId, coverageType,
+                    bonusMalusCoefficient, annualMileage, parkingType, hasAntiTheftDevice,
+                    claimHistoryCategoryId, organizationId);
+        }
+    }
 }

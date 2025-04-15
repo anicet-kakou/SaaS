@@ -1,5 +1,6 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.application.service;
 
+import com.devolution.saas.common.abstracts.TenantAwareCrudService;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.VehicleModelDTO;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleModel;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 /**
  * Service pour la gestion des modèles de véhicule.
  */
-public interface VehicleModelService {
+public interface VehicleModelService extends TenantAwareCrudService<VehicleModelDTO, VehicleModel> {
 
     /**
      * Crée un nouveau modèle de véhicule.
@@ -49,6 +50,15 @@ public interface VehicleModelService {
      * @return Le modèle de véhicule trouvé, ou empty si non trouvé
      */
     Optional<VehicleModelDTO> getVehicleModelByCodeAndMake(String code, UUID makeId, UUID organizationId);
+
+    /**
+     * Récupère un modèle de véhicule par son code.
+     *
+     * @param code           Le code du modèle de véhicule
+     * @param organizationId L'ID de l'organisation
+     * @return Le modèle de véhicule trouvé, ou empty si non trouvé
+     */
+    Optional<VehicleModelDTO> getVehicleModelByCode(String code, UUID organizationId);
 
     /**
      * Liste tous les modèles de véhicule d'une organisation.

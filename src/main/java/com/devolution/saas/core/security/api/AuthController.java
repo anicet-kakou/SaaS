@@ -36,7 +36,7 @@ public class AuthController {
     @Operation(summary = "Authentifie un utilisateur et génère un jeton JWT")
     @Auditable(action = "API_LOGIN")
     public ResponseEntity<JwtAuthenticationResponse> login(@Valid @RequestBody LoginCommand command) {
-        log.debug("REST request pour authentifier un utilisateur: {}", command.getUsernameOrEmail());
+        log.debug("REST request pour authentifier un utilisateur: {}", command.usernameOrEmail());
         JwtAuthenticationResponse response = authenticationService.login(command);
         return ResponseEntity.ok(response);
     }

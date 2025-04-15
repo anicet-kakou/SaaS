@@ -50,9 +50,14 @@ public class VehicleBodyTypeServiceImpl implements VehicleBodyTypeService {
     }
 
     @Override
-    public Optional<VehicleBodyTypeDTO> getVehicleBodyTypeByCode(String code, UUID organizationId) {
+    public Optional<VehicleBodyTypeDTO> getByCode(String code, UUID organizationId) {
         return vehicleBodyTypeRepository.findByCodeAndOrganizationId(code, organizationId)
                 .map(vehicleBodyTypeMapper::toDto);
+    }
+
+    @Override
+    public Optional<VehicleBodyTypeDTO> getVehicleBodyTypeByCode(String code, UUID organizationId) {
+        return getByCode(code, organizationId);
     }
 
     @Override
@@ -72,7 +77,42 @@ public class VehicleBodyTypeServiceImpl implements VehicleBodyTypeService {
     }
 
     @Override
+    public List<VehicleBodyTypeDTO> getAllActive(UUID organizationId) {
+        return getAllActiveVehicleBodyTypes(organizationId);
+    }
+
+    @Override
+    public String getEntityName() {
+        return "VehicleBodyType";
+    }
+
+    @Override
+    public Optional<VehicleBodyTypeDTO> update(UUID id, VehicleBodyType entity, UUID organizationId) {
+        return updateVehicleBodyType(id, entity, organizationId);
+    }
+
+    @Override
+    public VehicleBodyTypeDTO create(VehicleBodyType entity, UUID organizationId) {
+        return createVehicleBodyType(entity, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleBodyTypeDTO> getById(UUID id, UUID organizationId) {
+        return getVehicleBodyTypeById(id, organizationId);
+    }
+
+    @Override
+    public List<VehicleBodyTypeDTO> getAll(UUID organizationId) {
+        return getAllVehicleBodyTypes(organizationId);
+    }
+
+    @Override
     public boolean deleteVehicleBodyType(UUID id, UUID organizationId) {
+        return delete(id, organizationId);
+    }
+
+    @Override
+    public boolean delete(UUID id, UUID organizationId) {
         return vehicleBodyTypeRepository.findById(id)
                 .filter(bodyType -> bodyType.getOrganizationId().equals(organizationId))
                 .map(bodyType -> {
@@ -80,5 +120,16 @@ public class VehicleBodyTypeServiceImpl implements VehicleBodyTypeService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    @Override
+    public Optional<VehicleBodyTypeDTO> setActive(UUID id, boolean active, UUID organizationId) {
+        return vehicleBodyTypeRepository.findById(id)
+                .filter(bodyType -> bodyType.getOrganizationId().equals(organizationId))
+                .map(bodyType -> {
+                    bodyType.setActive(active);
+                    VehicleBodyType updatedBodyType = vehicleBodyTypeRepository.save(bodyType);
+                    return vehicleBodyTypeMapper.toDto(updatedBodyType);
+                });
     }
 }

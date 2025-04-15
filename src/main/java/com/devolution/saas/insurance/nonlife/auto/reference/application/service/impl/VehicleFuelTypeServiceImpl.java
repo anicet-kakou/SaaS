@@ -73,6 +73,11 @@ public class VehicleFuelTypeServiceImpl implements VehicleFuelTypeService {
 
     @Override
     public boolean deleteVehicleFuelType(UUID id, UUID organizationId) {
+        return delete(id, organizationId);
+    }
+
+    @Override
+    public boolean delete(UUID id, UUID organizationId) {
         return vehicleFuelTypeRepository.findById(id)
                 .filter(fuelType -> fuelType.getOrganizationId().equals(organizationId))
                 .map(fuelType -> {
@@ -80,5 +85,51 @@ public class VehicleFuelTypeServiceImpl implements VehicleFuelTypeService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    @Override
+    public Optional<VehicleFuelTypeDTO> setActive(UUID id, boolean active, UUID organizationId) {
+        return vehicleFuelTypeRepository.findById(id)
+                .filter(fuelType -> fuelType.getOrganizationId().equals(organizationId))
+                .map(fuelType -> {
+                    fuelType.setActive(active);
+                    VehicleFuelType updatedFuelType = vehicleFuelTypeRepository.save(fuelType);
+                    return vehicleFuelTypeMapper.toDto(updatedFuelType);
+                });
+    }
+
+    @Override
+    public Optional<VehicleFuelTypeDTO> getById(UUID id, UUID organizationId) {
+        return getVehicleFuelTypeById(id, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleFuelTypeDTO> getByCode(String code, UUID organizationId) {
+        return getVehicleFuelTypeByCode(code, organizationId);
+    }
+
+    @Override
+    public VehicleFuelTypeDTO create(VehicleFuelType entity, UUID organizationId) {
+        return createVehicleFuelType(entity, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleFuelTypeDTO> update(UUID id, VehicleFuelType entity, UUID organizationId) {
+        return updateVehicleFuelType(id, entity, organizationId);
+    }
+
+    @Override
+    public List<VehicleFuelTypeDTO> getAll(UUID organizationId) {
+        return getAllVehicleFuelTypes(organizationId);
+    }
+
+    @Override
+    public List<VehicleFuelTypeDTO> getAllActive(UUID organizationId) {
+        return getAllActiveVehicleFuelTypes(organizationId);
+    }
+
+    @Override
+    public String getEntityName() {
+        return "type de carburant de véhicule";
     }
 }

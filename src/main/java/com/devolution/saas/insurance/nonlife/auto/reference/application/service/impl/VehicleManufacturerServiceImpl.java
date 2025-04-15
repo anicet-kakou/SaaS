@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Implémentation du service de gestion des fabricants de véhicule.
@@ -25,8 +24,16 @@ public class VehicleManufacturerServiceImpl implements VehicleManufacturerServic
 
     @Override
     public VehicleManufacturerDTO createVehicleManufacturer(VehicleManufacturer vehicleManufacturer, UUID organizationId) {
-        vehicleManufacturer.setOrganizationId(organizationId);
-        VehicleManufacturer savedManufacturer = vehicleManufacturerRepository.save(vehicleManufacturer);
+        // Créer une nouvelle instance avec l'ID de l'organisation
+        VehicleManufacturer manufacturerWithOrg = VehicleManufacturer.builder()
+                .code(vehicleManufacturer.getCode())
+                .name(vehicleManufacturer.getName())
+                .description(vehicleManufacturer.getDescription())
+                .active(vehicleManufacturer.isActive())
+                .organizationId(organizationId) // Définir l'organisation ici
+                .build();
+
+        VehicleManufacturer savedManufacturer = vehicleManufacturerRepository.save(manufacturerWithOrg);
         return vehicleManufacturerMapper.toDto(savedManufacturer);
     }
 
@@ -35,10 +42,18 @@ public class VehicleManufacturerServiceImpl implements VehicleManufacturerServic
         return vehicleManufacturerRepository.findById(id)
                 .filter(manufacturer -> manufacturer.getOrganizationId().equals(organizationId))
                 .map(existingManufacturer -> {
-                    vehicleManufacturer.setId(id);
-                    vehicleManufacturer.setOrganizationId(organizationId);
-                    VehicleManufacturer updatedManufacturer = vehicleManufacturerRepository.save(vehicleManufacturer);
-                    return vehicleManufacturerMapper.toDto(updatedManufacturer);
+                    // Créer une nouvelle instance avec l'ID existant et les nouvelles propriétés
+                    VehicleManufacturer updatedManufacturer = VehicleManufacturer.builder()
+                            .id(id) // Conserver l'ID existant
+                            .code(vehicleManufacturer.getCode())
+                            .name(vehicleManufacturer.getName())
+                            .description(vehicleManufacturer.getDescription())
+                            .active(vehicleManufacturer.isActive())
+                            .organizationId(organizationId) // Définir l'organisation
+                            .build();
+
+                    VehicleManufacturer savedManufacturer = vehicleManufacturerRepository.save(updatedManufacturer);
+                    return vehicleManufacturerMapper.toDto(savedManufacturer);
                 });
     }
 
@@ -60,7 +75,7 @@ public class VehicleManufacturerServiceImpl implements VehicleManufacturerServic
         return vehicleManufacturerRepository.findAllByOrganizationId(organizationId)
                 .stream()
                 .map(vehicleManufacturerMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -68,11 +83,16 @@ public class VehicleManufacturerServiceImpl implements VehicleManufacturerServic
         return vehicleManufacturerRepository.findAllActiveByOrganizationId(organizationId)
                 .stream()
                 .map(vehicleManufacturerMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public boolean deleteVehicleManufacturer(UUID id, UUID organizationId) {
+        return delete(id, organizationId);
+    }
+
+    @Override
+    public boolean delete(UUID id, UUID organizationId) {
         return vehicleManufacturerRepository.findById(id)
                 .filter(manufacturer -> manufacturer.getOrganizationId().equals(organizationId))
                 .map(manufacturer -> {
@@ -80,5 +100,60 @@ public class VehicleManufacturerServiceImpl implements VehicleManufacturerServic
                     return true;
                 })
                 .orElse(false);
+    }
+
+    @Override
+    public Optional<VehicleManufacturerDTO> setActive(UUID id, boolean active, UUID organizationId) {
+        return vehicleManufacturerRepository.findById(id)
+                .filter(manufacturer -> manufacturer.getOrganizationId().equals(organizationId))
+                .map(existingManufacturer -> {
+                    // Créer une nouvelle instance avec l'active mis à jour
+                    VehicleManufacturer updatedManufacturer = VehicleManufacturer.builder()
+                            .id(existingManufacturer.getId())
+                            .code(existingManufacturer.getCode())
+                            .name(existingManufacturer.getName())
+                            .description(existingManufacturer.getDescription())
+                            .active(active) // Mettre à jour l'active
+                            .organizationId(existingManufacturer.getOrganizationId())
+                            .build();
+
+                    VehicleManufacturer savedManufacturer = vehicleManufacturerRepository.save(updatedManufacturer);
+                    return vehicleManufacturerMapper.toDto(savedManufacturer);
+                });
+    }
+
+    @Override
+    public Optional<VehicleManufacturerDTO> getByCode(String code, UUID organizationId) {
+        return getVehicleManufacturerByCode(code, organizationId);
+    }
+
+    @Override
+    public VehicleManufacturerDTO create(VehicleManufacturer entity, UUID organizationId) {
+        return createVehicleManufacturer(entity, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleManufacturerDTO> update(UUID id, VehicleManufacturer entity, UUID organizationId) {
+        return updateVehicleManufacturer(id, entity, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleManufacturerDTO> getById(UUID id, UUID organizationId) {
+        return getVehicleManufacturerById(id, organizationId);
+    }
+
+    @Override
+    public List<VehicleManufacturerDTO> getAll(UUID organizationId) {
+        return getAllVehicleManufacturers(organizationId);
+    }
+
+    @Override
+    public List<VehicleManufacturerDTO> getAllActive(UUID organizationId) {
+        return getAllActiveVehicleManufacturers(organizationId);
+    }
+
+    @Override
+    public String getEntityName() {
+        return "fabricant de véhicule";
     }
 }

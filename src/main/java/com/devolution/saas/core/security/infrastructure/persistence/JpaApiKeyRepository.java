@@ -27,6 +27,12 @@ public interface JpaApiKeyRepository extends JpaRepository<ApiKey, UUID>, ApiKey
      * {@inheritDoc}
      */
     @Override
+    Optional<ApiKey> findByPrefixAndStatus(String prefix, ApiKeyStatus status);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     List<ApiKey> findAllByOrganizationId(UUID organizationId);
 
     /**

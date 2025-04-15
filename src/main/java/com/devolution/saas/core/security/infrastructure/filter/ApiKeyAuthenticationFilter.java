@@ -1,8 +1,8 @@
 package com.devolution.saas.core.security.infrastructure.filter;
 
 import com.devolution.saas.common.util.HttpRequestUtils;
-import com.devolution.saas.core.security.application.service.ApiKeyService;
 import com.devolution.saas.core.security.domain.model.ApiKey;
+import com.devolution.saas.core.security.infrastructure.service.ApiKeyValidator;
 import com.devolution.saas.core.security.infrastructure.service.TenantContextHolder;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,7 +30,7 @@ import java.util.Optional;
 @Slf4j
 public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 
-    private final @Lazy ApiKeyService apiKeyService;
+    private final ApiKeyValidator apiKeyValidator;
     private final TenantContextHolder tenantContextHolder;
 
     /**
@@ -43,13 +42,13 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
         try {
             String apiKey = resolveApiKey(request);
             if (StringUtils.hasText(apiKey)) {
-                Optional<ApiKey> apiKeyOpt = apiKeyService.validateApiKey(apiKey);
+                Optional<ApiKey> apiKeyOpt = apiKeyValidator.validateApiKey(apiKey);
                 if (apiKeyOpt.isPresent()) {
                     ApiKey validApiKey = apiKeyOpt.get();
 
                     // Vérification de l'adresse IP si des restrictions sont définies
                     String clientIp = getClientIp(request);
-                    if (!validApiKey.isIpAllowed(clientIp)) {
+                    if (!apiKeyValidator.isIpAllowed(validApiKey, clientIp)) {
                         log.warn("Tentative d'utilisation d'une clé API depuis une adresse IP non autorisée: {}", clientIp);
                         filterChain.doFilter(request, response);
                         return;

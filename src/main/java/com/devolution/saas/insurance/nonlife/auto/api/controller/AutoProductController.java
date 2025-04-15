@@ -2,7 +2,8 @@ package com.devolution.saas.insurance.nonlife.auto.api.controller;
 
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
-import com.devolution.saas.insurance.nonlife.auto.api.request.CreateAutoInsuranceProductRequest;
+import com.devolution.saas.insurance.nonlife.auto.api.dto.request.CreateAutoInsuranceProductRequest;
+import com.devolution.saas.insurance.nonlife.auto.api.mapper.ProductApiMapper;
 import com.devolution.saas.insurance.nonlife.auto.application.dto.AutoInsuranceProductDTO;
 import com.devolution.saas.insurance.nonlife.auto.application.service.AutoInsuranceProductService;
 import com.devolution.saas.insurance.nonlife.auto.domain.model.AutoInsuranceProduct;
@@ -31,6 +32,7 @@ import java.util.UUID;
 public class AutoProductController {
 
     private final AutoInsuranceProductService autoInsuranceProductService;
+    private final ProductApiMapper productApiMapper;
 
     /**
      * Crée un nouveau produit d'assurance auto.
@@ -48,7 +50,7 @@ public class AutoProductController {
             @RequestParam UUID organizationId) {
         log.debug("REST request pour créer un nouveau produit d'assurance auto pour l'organisation: {}", organizationId);
 
-        AutoInsuranceProduct product = mapRequestToEntity(request);
+        AutoInsuranceProduct product = productApiMapper.toEntity(request);
         AutoInsuranceProductDTO createdProduct = autoInsuranceProductService.createProduct(product, organizationId);
 
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
@@ -179,7 +181,7 @@ public class AutoProductController {
         log.debug("REST request pour mettre à jour le produit d'assurance auto avec ID: {} pour l'organisation: {}",
                 id, organizationId);
 
-        AutoInsuranceProduct product = mapRequestToEntity(request);
+        AutoInsuranceProduct product = productApiMapper.toEntity(request);
         AutoInsuranceProductDTO updatedProduct = autoInsuranceProductService.updateProduct(id, product, organizationId)
                 .orElseThrow(() -> com.devolution.saas.insurance.nonlife.auto.application.exception.AutoResourceNotFoundException
                         .forId("Produit d'assurance auto", id));
@@ -213,20 +215,5 @@ public class AutoProductController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Convertit une requête en entité.
-     *
-     * @param request La requête à convertir
-     * @return L'entité correspondante
-     */
-    private AutoInsuranceProduct mapRequestToEntity(CreateAutoInsuranceProductRequest request) {
-        return AutoInsuranceProduct.builder()
-                .code(request.getCode())
-                .name(request.getName())
-                .description(request.getDescription())
-                .status(request.getStatus())
-                .effectiveDate(request.getEffectiveDate())
-                .expiryDate(request.getExpiryDate())
-                .build();
-    }
+
 }

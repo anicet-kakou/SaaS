@@ -18,15 +18,17 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RoleController.class)
 class RoleControllerTest {
@@ -57,20 +59,20 @@ class RoleControllerTest {
         when(tenantContextHolder.hasTenant()).thenReturn(true);
 
         // Set up role DTO
-        roleDTO = new RoleDTO();
-        roleDTO.setId(roleId);
-        roleDTO.setName("Test Role");
-        roleDTO.setCode("TEST_ROLE");
-        roleDTO.setDescription("Test role description");
-        roleDTO.setSystemDefined(false);
+        roleDTO = RoleDTO.builder()
+                .id(roleId)
+                .name("Test Role")
+                .description("Test role description")
+                .systemDefined(false)
+                .build();
 
         // Set up create command
-        createCommand = new CreateRoleCommand();
-        createCommand.setName("Test Role");
-        createCommand.setCode("TEST_ROLE");
-        createCommand.setDescription("Test role description");
-        createCommand.setSystemDefined(false);
-        createCommand.setPermissionIds(Arrays.asList(UUID.randomUUID()));
+        createCommand = CreateRoleCommand.builder()
+                .name("Test Role")
+                .description("Test role description")
+                .organizationId(UUID.randomUUID())
+                .permissionIds(new HashSet<>(Arrays.asList(UUID.randomUUID())))
+                .build();
 
         // Set up update command
         updateCommand = new UpdateRoleCommand();
@@ -135,11 +137,11 @@ class RoleControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void updateRole_Success() throws Exception {
-        RoleDTO updatedDTO = new RoleDTO();
-        updatedDTO.setId(roleId);
-        updatedDTO.setName("Updated Role");
-        updatedDTO.setCode("TEST_ROLE");
-        updatedDTO.setDescription("Updated role description");
+        RoleDTO updatedDTO = RoleDTO.builder()
+                .id(roleId)
+                .name("Updated Role")
+                .description("Updated role description")
+                .build();
 
         when(roleService.updateRole(any(UpdateRoleCommand.class)))
                 .thenReturn(updatedDTO);
@@ -158,7 +160,7 @@ class RoleControllerTest {
     void listRoles_Success() throws Exception {
         List<RoleDTO> roles = Arrays.asList(
                 roleDTO,
-                new RoleDTO()
+                RoleDTO.builder().build()
         );
 
         when(roleService.listRoles())
@@ -178,7 +180,7 @@ class RoleControllerTest {
         UUID organizationId = UUID.randomUUID();
         List<RoleDTO> roles = Arrays.asList(
                 roleDTO,
-                new RoleDTO()
+                RoleDTO.builder().build()
         );
 
         when(roleService.listRolesByOrganization(any(UUID.class)))
@@ -196,7 +198,7 @@ class RoleControllerTest {
     void listRolesBySystemDefined_Success() throws Exception {
         List<RoleDTO> roles = Arrays.asList(
                 roleDTO,
-                new RoleDTO()
+                RoleDTO.builder().build()
         );
 
         when(roleService.listRolesBySystemDefined(anyBoolean()))

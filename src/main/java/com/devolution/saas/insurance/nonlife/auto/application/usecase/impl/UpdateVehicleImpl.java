@@ -40,16 +40,16 @@ public class UpdateVehicleImpl implements UpdateVehicle {
                 .orElseThrow(() -> AutoResourceNotFoundException.forId("Véhicule", id));
 
         // Vérifier que le véhicule appartient à l'organisation
-        if (!existingVehicle.getOrganizationId().equals(command.getOrganizationId())) {
+        if (!existingVehicle.getOrganizationId().equals(command.organizationId())) {
             throw AutoResourceNotFoundException.forId("Véhicule", id);
         }
 
         // Si le numéro d'immatriculation a changé, vérifier qu'il n'est pas déjà utilisé
-        if (!existingVehicle.getRegistrationNumber().equals(command.getRegistrationNumber())) {
-            vehicleRepository.findByRegistrationNumber(command.getRegistrationNumber(), command.getOrganizationId())
+        if (!existingVehicle.getRegistrationNumber().equals(command.registrationNumber())) {
+            vehicleRepository.findByRegistrationNumber(command.registrationNumber(), command.organizationId())
                     .ifPresent(v -> {
                         if (!v.getId().equals(id)) {
-                            throw AutoResourceAlreadyExistsException.forIdentifier("Véhicule", "immatriculation", command.getRegistrationNumber());
+                            throw AutoResourceAlreadyExistsException.forIdentifier("Véhicule", "immatriculation", command.registrationNumber());
                         }
                     });
         }
@@ -59,7 +59,7 @@ public class UpdateVehicleImpl implements UpdateVehicle {
         vehicle.setId(id);
 
         // Valider le véhicule
-        List<String> validationErrors = vehicleValidator.validateForUpdate(vehicle, existingVehicle, command.getOrganizationId());
+        List<String> validationErrors = vehicleValidator.validateForUpdate(vehicle, existingVehicle, command.organizationId());
         if (!validationErrors.isEmpty()) {
             throw new BusinessRuleViolationException("Erreurs de validation: " + String.join(", ", validationErrors));
         }
@@ -79,29 +79,29 @@ public class UpdateVehicleImpl implements UpdateVehicle {
      */
     private Vehicle mapCommandToEntity(CreateVehicleCommand command) {
         Vehicle vehicle = Vehicle.builder()
-                .registrationNumber(command.getRegistrationNumber())
-                .modelVariant(command.getModelVariant())
-                .year(command.getYear())
-                .enginePower(command.getEnginePower())
-                .engineSize(command.getEngineSize())
-                .purchaseDate(command.getPurchaseDate())
-                .purchaseValue(command.getPurchaseValue())
-                .currentValue(command.getCurrentValue())
-                .mileage(command.getMileage())
-                .vin(command.getVin())
-                .ownerId(command.getOwnerId())
-                .organizationId(command.getOrganizationId())
+                .registrationNumber(command.registrationNumber())
+                .modelVariant(command.modelVariant())
+                .year(command.year())
+                .enginePower(command.enginePower())
+                .engineSize(command.engineSize())
+                .purchaseDate(command.purchaseDate())
+                .purchaseValue(command.purchaseValue())
+                .currentValue(command.currentValue())
+                .mileage(command.mileage())
+                .vin(command.vin())
+                .ownerId(command.ownerId())
+                .organizationId(command.organizationId())
                 .build();
 
         // Utiliser les setters pour définir les IDs
-        vehicle.setManufacturerId(command.getMakeId());
-        vehicle.setModelId(command.getModelId());
-        vehicle.setFuelTypeId(command.getFuelTypeId());
-        vehicle.setCategoryId(command.getCategoryId());
-        vehicle.setSubcategoryId(command.getSubcategoryId());
-        vehicle.setUsageId(command.getUsageId());
-        vehicle.setGeographicZoneId(command.getGeographicZoneId());
-        vehicle.setColorId(command.getColorId());
+        vehicle.setManufacturerId(command.makeId());
+        vehicle.setModelId(command.modelId());
+        vehicle.setFuelTypeId(command.fuelTypeId());
+        vehicle.setCategoryId(command.categoryId());
+        vehicle.setSubcategoryId(command.subcategoryId());
+        vehicle.setUsageId(command.usageId());
+        vehicle.setGeographicZoneId(command.geographicZoneId());
+        vehicle.setColorId(command.colorId());
 
         return vehicle;
     }

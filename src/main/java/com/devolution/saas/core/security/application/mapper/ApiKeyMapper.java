@@ -47,10 +47,26 @@ public class ApiKeyMapper {
      * @return DTO ApiKeyDTO
      */
     public ApiKeyDTO toDTOWithKey(ApiKey apiKey, String fullKey) {
-        ApiKeyDTO dto = toDTO(apiKey);
-        if (dto != null) {
-            dto.setKey(fullKey);
+        if (apiKey == null) {
+            return null;
         }
-        return dto;
+
+        return ApiKeyDTO.builder()
+                .id(apiKey.getId())
+                .name(apiKey.getName())
+                .prefix(apiKey.getPrefix())
+                .key(fullKey) // Set the full key here
+                .organizationId(apiKey.getOrganizationId())
+                .status(apiKey.getStatus())
+                .expiresAt(apiKey.getExpiresAt())
+                .lastUsedAt(apiKey.getLastUsedAt())
+                .permissions(apiKey.getPermissions())
+                .allowedIps(apiKey.getAllowedIps())
+                .rateLimit(apiKey.getRateLimit())
+                .description(apiKey.getDescription())
+                .createdAt(apiKey.getCreatedAt())
+                .updatedAt(apiKey.getUpdatedAt())
+                .active(apiKey.isActive())
+                .build();
     }
 }

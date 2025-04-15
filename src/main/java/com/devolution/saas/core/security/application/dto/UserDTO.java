@@ -170,13 +170,81 @@ public record UserDTO(
             return this;
         }
 
+        /**
+         * Définit l'ensemble des rôles de l'utilisateur.
+         *
+         * @param roles Ensemble des rôles
+         * @return Cette instance du Builder pour chaînage
+         */
         public Builder roles(Set<RoleDTO> roles) {
-            this.roles = roles;
+            if (roles != null) {
+                this.roles = new HashSet<>(roles);
+            }
             return this;
         }
 
+        /**
+         * Ajoute un rôle à l'utilisateur.
+         *
+         * @param role Rôle à ajouter
+         * @return Cette instance du Builder pour chaînage
+         */
+        public Builder addRole(RoleDTO role) {
+            if (role != null) {
+                this.roles.add(role);
+            }
+            return this;
+        }
+
+        /**
+         * Ajoute plusieurs rôles à l'utilisateur.
+         *
+         * @param roles Rôles à ajouter
+         * @return Cette instance du Builder pour chaînage
+         */
+        public Builder addRoles(Set<RoleDTO> roles) {
+            if (roles != null) {
+                this.roles.addAll(roles);
+            }
+            return this;
+        }
+
+        /**
+         * Définit l'ensemble des organisations de l'utilisateur.
+         *
+         * @param organizations Ensemble des organisations
+         * @return Cette instance du Builder pour chaînage
+         */
         public Builder organizations(Set<UserOrganizationDTO> organizations) {
-            this.organizations = organizations;
+            if (organizations != null) {
+                this.organizations = new HashSet<>(organizations);
+            }
+            return this;
+        }
+
+        /**
+         * Ajoute une organisation à l'utilisateur.
+         *
+         * @param organization Organisation à ajouter
+         * @return Cette instance du Builder pour chaînage
+         */
+        public Builder addOrganization(UserOrganizationDTO organization) {
+            if (organization != null) {
+                this.organizations.add(organization);
+            }
+            return this;
+        }
+
+        /**
+         * Ajoute plusieurs organisations à l'utilisateur.
+         *
+         * @param organizations Organisations à ajouter
+         * @return Cette instance du Builder pour chaînage
+         */
+        public Builder addOrganizations(Set<UserOrganizationDTO> organizations) {
+            if (organizations != null) {
+                this.organizations.addAll(organizations);
+            }
             return this;
         }
 

@@ -32,7 +32,7 @@ public class PermissionController extends AbstractCrudController<PermissionDTO, 
     @Override
     @PreAuthorize("hasPermission('PERMISSION_CREATE')")
     protected PermissionDTO create(CreatePermissionCommand command) {
-        log.debug("REST request pour créer une permission: {}", command.getResourceType() + "_" + command.getAction());
+        log.debug("REST request pour créer une permission: {}", command.resourceType() + "_" + command.action());
         return permissionService.createPermission(command);
     }
 

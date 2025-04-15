@@ -25,8 +25,16 @@ public class CirculationZoneServiceImpl implements CirculationZoneService {
 
     @Override
     public CirculationZoneDTO createCirculationZone(CirculationZone circulationZone, UUID organizationId) {
-        circulationZone.setOrganizationId(organizationId);
-        CirculationZone savedZone = circulationZoneRepository.save(circulationZone);
+        // Créer une nouvelle instance avec l'ID de l'organisation
+        CirculationZone zoneWithOrg = CirculationZone.builder()
+                .code(circulationZone.getCode())
+                .name(circulationZone.getName())
+                .description(circulationZone.getDescription())
+                .active(circulationZone.isActive())
+                .organizationId(organizationId) // Définir l'organisation ici
+                .build();
+
+        CirculationZone savedZone = circulationZoneRepository.save(zoneWithOrg);
         return circulationZoneMapper.toDto(savedZone);
     }
 
@@ -35,10 +43,18 @@ public class CirculationZoneServiceImpl implements CirculationZoneService {
         return circulationZoneRepository.findById(id)
                 .filter(zone -> zone.getOrganizationId().equals(organizationId))
                 .map(existingZone -> {
-                    circulationZone.setId(id);
-                    circulationZone.setOrganizationId(organizationId);
-                    CirculationZone updatedZone = circulationZoneRepository.save(circulationZone);
-                    return circulationZoneMapper.toDto(updatedZone);
+                    // Créer une nouvelle instance avec l'ID existant et les nouvelles propriétés
+                    CirculationZone updatedZone = CirculationZone.builder()
+                            .id(id) // Conserver l'ID existant
+                            .code(circulationZone.getCode())
+                            .name(circulationZone.getName())
+                            .description(circulationZone.getDescription())
+                            .active(circulationZone.isActive())
+                            .organizationId(organizationId) // Définir l'organisation
+                            .build();
+
+                    CirculationZone savedZone = circulationZoneRepository.save(updatedZone);
+                    return circulationZoneMapper.toDto(savedZone);
                 });
     }
 
@@ -50,9 +66,52 @@ public class CirculationZoneServiceImpl implements CirculationZoneService {
     }
 
     @Override
-    public Optional<CirculationZoneDTO> getCirculationZoneByCode(String code, UUID organizationId) {
+    public Optional<CirculationZoneDTO> getByCode(String code, UUID organizationId) {
         return circulationZoneRepository.findByCodeAndOrganizationId(code, organizationId)
                 .map(circulationZoneMapper::toDto);
+    }
+
+    @Override
+    public String getEntityName() {
+        return "CirculationZone";
+    }
+
+    @Override
+    public List<CirculationZoneDTO> getAllActive(UUID organizationId) {
+        return circulationZoneRepository.findAllByIsActiveAndOrganizationId(true, organizationId).stream()
+                .map(circulationZoneMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean delete(UUID id, UUID organizationId) {
+        return circulationZoneRepository.findById(id)
+                .filter(zone -> zone.getOrganizationId().equals(organizationId))
+                .map(zone -> {
+                    circulationZoneRepository.deleteById(id);
+                    return true;
+                })
+                .orElse(false);
+    }
+
+    @Override
+    public Optional<CirculationZoneDTO> update(UUID id, CirculationZone entity, UUID organizationId) {
+        return updateCirculationZone(id, entity, organizationId);
+    }
+
+    @Override
+    public CirculationZoneDTO create(CirculationZone entity, UUID organizationId) {
+        return createCirculationZone(entity, organizationId);
+    }
+
+    @Override
+    public Optional<CirculationZoneDTO> getById(UUID id, UUID organizationId) {
+        return getCirculationZoneById(id, organizationId);
+    }
+
+    @Override
+    public List<CirculationZoneDTO> getAll(UUID organizationId) {
+        return getAllCirculationZones(organizationId);
     }
 
     @Override
@@ -82,14 +141,24 @@ public class CirculationZoneServiceImpl implements CirculationZoneService {
                 .orElse(false);
     }
 
+
     @Override
-    public Optional<CirculationZoneDTO> setCirculationZoneActive(UUID id, boolean active, UUID organizationId) {
+    public Optional<CirculationZoneDTO> setActive(UUID id, boolean active, UUID organizationId) {
         return circulationZoneRepository.findById(id)
                 .filter(zone -> zone.getOrganizationId().equals(organizationId))
-                .map(zone -> {
-                    zone.setActive(active);
-                    CirculationZone updatedZone = circulationZoneRepository.save(zone);
-                    return circulationZoneMapper.toDto(updatedZone);
+                .map(existingZone -> {
+                    // Créer une nouvelle instance avec l'active mis à jour
+                    CirculationZone updatedZone = CirculationZone.builder()
+                            .id(existingZone.getId())
+                            .code(existingZone.getCode())
+                            .name(existingZone.getName())
+                            .description(existingZone.getDescription())
+                            .active(active) // Mettre à jour l'active
+                            .organizationId(existingZone.getOrganizationId())
+                            .build();
+
+                    CirculationZone savedZone = circulationZoneRepository.save(updatedZone);
+                    return circulationZoneMapper.toDto(savedZone);
                 });
     }
 }

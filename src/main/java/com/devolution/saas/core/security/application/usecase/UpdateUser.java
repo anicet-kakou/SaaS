@@ -48,63 +48,62 @@ public class UpdateUser extends AbstractUpdateUseCase<UserDTO, UpdateUserCommand
             throw new ValidationException("L'adresse email est déjà utilisée");
         }
 
-        // Mise à jour des champs
-        if (command.getEmail() != null) {
-            user.setEmail(command.getEmail());
-        }
-        if (command.getFirstName() != null) {
-            user.setFirstName(command.getFirstName());
-        }
-        if (command.getLastName() != null) {
-            user.setLastName(command.getLastName());
-        }
-        if (command.getPhone() != null) {
-            user.setPhone(command.getPhone());
-        }
-        if (command.getStatus() != null) {
-            user.setStatus(command.getStatus());
-        }
-        if (command.getProfilePictureUrl() != null) {
-            user.setProfilePictureUrl(command.getProfilePictureUrl());
-        }
+        // Créer un nouvel utilisateur avec les valeurs existantes
+        User updatedUser = new User();
+        updatedUser.setId(user.getId());
+        updatedUser.setUsername(user.getUsername());
+        updatedUser.setPasswordHash(user.getPassword());
+        updatedUser.setEnabled(user.isEnabled());
+        updatedUser.setLocked(user.isLocked());
+        updatedUser.setAccountNonExpired(!user.isAccountNonExpired());
+        updatedUser.setCredentialsNonExpired(!user.isCredentialsNonExpired());
+        updatedUser.setLastLoginAt(user.getLastLoginAt());
+        updatedUser.setCreatedAt(user.getCreatedAt());
+        updatedUser.setUpdatedAt(user.getUpdatedAt());
+
+        // Mise à jour des champs avec les valeurs de la commande ou les valeurs existantes
+        updatedUser.setEmail(command.getEmail() != null ? command.getEmail() : user.getEmail());
+        updatedUser.setFirstName(command.getFirstName() != null ? command.getFirstName() : user.getFirstName());
+        updatedUser.setLastName(command.getLastName() != null ? command.getLastName() : user.getLastName());
+        updatedUser.setPhone(command.getPhone() != null ? command.getPhone() : user.getPhone());
+        updatedUser.setStatus(command.getStatus() != null ? command.getStatus() : user.getStatus());
+        updatedUser.setProfilePictureUrl(command.getProfilePictureUrl() != null ? command.getProfilePictureUrl() : user.getProfilePictureUrl());
 
         // Mise à jour de l'organisation principale si spécifiée
+        UUID organizationId = user.getOrganizationId();
         if (command.getOrganizationId() != null && !command.getOrganizationId().equals(user.getOrganizationId())) {
             organizationRepository.findById(command.getOrganizationId())
                     .orElseThrow(() -> new ResourceNotFoundException("Organization", command.getOrganizationId()));
-            user.setOrganizationId(command.getOrganizationId());
+            organizationId = command.getOrganizationId();
         }
+        updatedUser.setOrganizationId(organizationId);
 
-        // Mise à jour des organisations si spécifiées
+        // Créer un nouvel ensemble d'organisations si spécifié
+        java.util.Set<UserOrganization> organizations = new java.util.HashSet<>(user.getOrganizations());
         if (!command.getOrganizationIds().isEmpty()) {
-            // Suppression des organisations existantes
-            user.getOrganizations().clear();
-
-            // Ajout des nouvelles organisations
+            organizations = new java.util.HashSet<>();
             for (UUID orgId : command.getOrganizationIds()) {
                 organizationRepository.findById(orgId)
                         .orElseThrow(() -> new ResourceNotFoundException("Organization", orgId));
-
-                UserOrganization userOrganization = new UserOrganization(user.getId(), orgId);
-                user.addOrganization(userOrganization);
+                organizations.add(new UserOrganization(user.getId(), orgId));
             }
         }
+        updatedUser.setOrganizations(organizations);
 
-        // Mise à jour des rôles si spécifiés
+        // Créer un nouvel ensemble de rôles si spécifié
+        java.util.Set<Role> roles = new java.util.HashSet<>(user.getRoles());
         if (!command.getRoleIds().isEmpty()) {
-            // Suppression des rôles existants
-            user.getRoles().clear();
-
-            // Ajout des nouveaux rôles
+            roles = new java.util.HashSet<>();
             for (UUID roleId : command.getRoleIds()) {
                 Role role = roleRepository.findById(roleId)
                         .orElseThrow(() -> new ResourceNotFoundException("Role", roleId));
-                user.addRole(role);
+                roles.add(role);
             }
         }
+        updatedUser.setRoles(roles);
 
-        // Sauvegarde de l'utilisateur
-        return userRepository.save(user);
+        // Sauvegarder le nouvel utilisateur
+        return userRepository.save(updatedUser);
     }
 
     @Override

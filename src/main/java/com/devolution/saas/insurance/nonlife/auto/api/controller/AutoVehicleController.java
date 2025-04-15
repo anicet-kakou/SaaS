@@ -2,7 +2,9 @@ package com.devolution.saas.insurance.nonlife.auto.api.controller;
 
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
-import com.devolution.saas.insurance.nonlife.auto.api.request.CreateVehicleRequest;
+import com.devolution.saas.insurance.nonlife.auto.api.dto.request.CreateVehicleRequest;
+import com.devolution.saas.insurance.nonlife.auto.api.dto.response.VehicleResponse;
+import com.devolution.saas.insurance.nonlife.auto.api.mapper.VehicleApiMapper;
 import com.devolution.saas.insurance.nonlife.auto.application.command.CreateVehicleCommand;
 import com.devolution.saas.insurance.nonlife.auto.application.dto.VehicleDTO;
 import com.devolution.saas.insurance.nonlife.auto.application.service.VehicleService;
@@ -29,6 +31,7 @@ import java.util.UUID;
 public class AutoVehicleController {
 
     private final VehicleService vehicleService;
+    private final VehicleApiMapper vehicleApiMapper;
 
     /**
      * Crée un nouveau véhicule.
@@ -41,15 +44,16 @@ public class AutoVehicleController {
     @Operation(summary = "Crée un nouveau véhicule")
     @Auditable(action = "API_CREATE_AUTO_VEHICLE")
     @TenantRequired
-    public ResponseEntity<VehicleDTO> createVehicle(
+    public ResponseEntity<VehicleResponse> createVehicle(
             @Valid @RequestBody CreateVehicleRequest request,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour créer un nouveau véhicule pour l'organisation: {}", organizationId);
 
-        CreateVehicleCommand command = mapRequestToCommand(request, organizationId);
-        VehicleDTO vehicle = vehicleService.createVehicle(command);
+        CreateVehicleCommand command = vehicleApiMapper.toEntity(request, organizationId);
+        VehicleDTO vehicleDTO = vehicleService.createVehicle(command);
+        VehicleResponse response = vehicleApiMapper.toResponse(vehicleDTO);
 
-        return new ResponseEntity<>(vehicle, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     /**
@@ -63,13 +67,14 @@ public class AutoVehicleController {
     @Operation(summary = "Récupère un véhicule par son ID")
     @Auditable(action = "API_GET_AUTO_VEHICLE")
     @TenantRequired
-    public ResponseEntity<VehicleDTO> getVehicleById(
+    public ResponseEntity<VehicleResponse> getVehicleById(
             @PathVariable UUID id,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour récupérer le véhicule avec ID: {} pour l'organisation: {}", id, organizationId);
 
-        VehicleDTO vehicle = vehicleService.getVehicleById(id, organizationId);
-        return ResponseEntity.ok(vehicle);
+        VehicleDTO vehicleDTO = vehicleService.getVehicleById(id, organizationId);
+        VehicleResponse response = vehicleApiMapper.toResponse(vehicleDTO);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -83,14 +88,15 @@ public class AutoVehicleController {
     @Operation(summary = "Récupère un véhicule par son numéro d'immatriculation")
     @Auditable(action = "API_GET_AUTO_VEHICLE_BY_REGISTRATION")
     @TenantRequired
-    public ResponseEntity<VehicleDTO> getVehicleByRegistrationNumber(
+    public ResponseEntity<VehicleResponse> getVehicleByRegistrationNumber(
             @PathVariable String registrationNumber,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour récupérer le véhicule avec immatriculation: {} pour l'organisation: {}",
                 registrationNumber, organizationId);
 
-        VehicleDTO vehicle = vehicleService.getVehicleByRegistrationNumber(registrationNumber, organizationId);
-        return ResponseEntity.ok(vehicle);
+        VehicleDTO vehicleDTO = vehicleService.getVehicleByRegistrationNumber(registrationNumber, organizationId);
+        VehicleResponse response = vehicleApiMapper.toResponse(vehicleDTO);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -103,12 +109,15 @@ public class AutoVehicleController {
     @Operation(summary = "Liste tous les véhicules d'une organisation")
     @Auditable(action = "API_LIST_AUTO_VEHICLES")
     @TenantRequired
-    public ResponseEntity<List<VehicleDTO>> getAllVehicles(
+    public ResponseEntity<List<VehicleResponse>> getAllVehicles(
             @RequestParam UUID organizationId) {
         log.debug("REST request pour lister tous les véhicules pour l'organisation: {}", organizationId);
 
-        List<VehicleDTO> vehicles = vehicleService.getAllVehicles(organizationId);
-        return ResponseEntity.ok(vehicles);
+        List<VehicleDTO> vehicleDTOs = vehicleService.getAllVehicles(organizationId);
+        List<VehicleResponse> responses = vehicleDTOs.stream()
+                .map(vehicleApiMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 
     /**
@@ -122,14 +131,17 @@ public class AutoVehicleController {
     @Operation(summary = "Liste tous les véhicules d'un propriétaire")
     @Auditable(action = "API_LIST_AUTO_VEHICLES_BY_OWNER")
     @TenantRequired
-    public ResponseEntity<List<VehicleDTO>> getVehiclesByOwner(
+    public ResponseEntity<List<VehicleResponse>> getVehiclesByOwner(
             @PathVariable UUID ownerId,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour lister les véhicules pour le propriétaire: {} dans l'organisation: {}",
                 ownerId, organizationId);
 
-        List<VehicleDTO> vehicles = vehicleService.getVehiclesByOwner(ownerId, organizationId);
-        return ResponseEntity.ok(vehicles);
+        List<VehicleDTO> vehicleDTOs = vehicleService.getVehiclesByOwner(ownerId, organizationId);
+        List<VehicleResponse> responses = vehicleDTOs.stream()
+                .map(vehicleApiMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 
     /**
@@ -144,17 +156,18 @@ public class AutoVehicleController {
     @Operation(summary = "Met à jour un véhicule")
     @Auditable(action = "API_UPDATE_AUTO_VEHICLE")
     @TenantRequired
-    public ResponseEntity<VehicleDTO> updateVehicle(
+    public ResponseEntity<VehicleResponse> updateVehicle(
             @PathVariable UUID id,
             @Valid @RequestBody CreateVehicleRequest request,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour mettre à jour le véhicule avec ID: {} pour l'organisation: {}",
                 id, organizationId);
 
-        CreateVehicleCommand command = mapRequestToCommand(request, organizationId);
-        VehicleDTO vehicle = vehicleService.updateVehicle(id, command);
+        CreateVehicleCommand command = vehicleApiMapper.toEntity(request, organizationId);
+        VehicleDTO vehicleDTO = vehicleService.updateVehicle(id, command);
+        VehicleResponse response = vehicleApiMapper.toResponse(vehicleDTO);
 
-        return ResponseEntity.ok(vehicle);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -178,35 +191,5 @@ public class AutoVehicleController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Convertit une requête en commande.
-     *
-     * @param request        La requête à convertir
-     * @param organizationId L'ID de l'organisation
-     * @return La commande correspondante
-     */
-    private CreateVehicleCommand mapRequestToCommand(CreateVehicleRequest request, UUID organizationId) {
-        return CreateVehicleCommand.builder()
-                .registrationNumber(request.getRegistrationNumber())
-                .makeId(request.getMakeId())
-                .modelId(request.getModelId())
-                .modelVariant(request.getVersion())
-                .year(request.getYear())
-                .enginePower(request.getEnginePower())
-                .engineSize(request.getEngineSize())
-                .fuelTypeId(request.getFuelTypeId())
-                .categoryId(request.getCategoryId())
-                .subcategoryId(request.getSubcategoryId())
-                .usageId(request.getUsageId())
-                .geographicZoneId(request.getGeographicZoneId())
-                .purchaseDate(request.getPurchaseDate())
-                .purchaseValue(request.getPurchaseValue())
-                .currentValue(request.getCurrentValue())
-                .mileage(request.getMileage())
-                .vin(request.getVin())
-                .colorId(request.getColorId())
-                .ownerId(request.getOwnerId())
-                .organizationId(organizationId)
-                .build();
-    }
+
 }

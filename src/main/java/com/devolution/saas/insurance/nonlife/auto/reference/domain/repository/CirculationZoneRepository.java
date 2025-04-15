@@ -53,6 +53,15 @@ public interface CirculationZoneRepository {
     List<CirculationZone> findAllActiveByOrganizationId(UUID organizationId);
 
     /**
+     * Liste toutes les zones de circulation par statut d'activité et organisation.
+     *
+     * @param isActive       Statut d'activité
+     * @param organizationId L'ID de l'organisation
+     * @return La liste des zones de circulation correspondant aux critères
+     */
+    List<CirculationZone> findAllByIsActiveAndOrganizationId(boolean isActive, UUID organizationId);
+
+    /**
      * Supprime une zone de circulation.
      *
      * @param id L'ID de la zone de circulation à supprimer

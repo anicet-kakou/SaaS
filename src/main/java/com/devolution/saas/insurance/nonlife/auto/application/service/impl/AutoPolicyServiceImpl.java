@@ -40,11 +40,34 @@ public class AutoPolicyServiceImpl implements AutoPolicyService {
                     throw AutoResourceAlreadyExistsException.forIdentifier("Police d'assurance", "numéro", policy.getPolicyNumber());
                 });
 
-        // Définir l'organisation
-        policy.setOrganizationId(organizationId);
+        // Créer une nouvelle instance avec l'ID de l'organisation
+        AutoPolicy policyWithOrg = AutoPolicy.builder()
+                .policyNumber(policy.getPolicyNumber())
+                .startDate(policy.getStartDate())
+                .endDate(policy.getEndDate())
+                .premiumAmount(policy.getPremiumAmount())
+                .coverageType(policy.getCoverageType())
+                .bonusMalusCoefficient(policy.getBonusMalusCoefficient())
+                .annualMileage(policy.getAnnualMileage())
+                .parkingType(policy.getParkingType())
+                .hasAntiTheftDevice(policy.isHasAntiTheftDevice())
+                .status(policy.getStatus())
+                .organizationId(organizationId) // Définir l'organisation ici
+                .build();
+
+        // Définir les IDs avec les setters (si nécessaire)
+        if (policy.getVehicleId() != null) {
+            policyWithOrg.setVehicleId(policy.getVehicleId());
+        }
+        if (policy.getPrimaryDriverId() != null) {
+            policyWithOrg.setPrimaryDriverId(policy.getPrimaryDriverId());
+        }
+        if (policy.getClaimHistoryCategoryId() != null) {
+            policyWithOrg.setClaimHistoryCategoryId(policy.getClaimHistoryCategoryId());
+        }
 
         // Sauvegarder la police
-        AutoPolicy savedPolicy = autoPolicyRepository.save(policy);
+        AutoPolicy savedPolicy = autoPolicyRepository.save(policyWithOrg);
 
         return autoPolicyMapper.toDto(savedPolicy);
     }
@@ -68,12 +91,35 @@ public class AutoPolicyServiceImpl implements AutoPolicyService {
                     });
         }
 
-        // Mettre à jour les propriétés de la police
-        policy.setId(id);
-        policy.setOrganizationId(organizationId);
+        // Créer une nouvelle instance avec l'ID existant et les nouvelles propriétés
+        AutoPolicy updatedPolicy = AutoPolicy.builder()
+                .id(id) // Conserver l'ID existant
+                .policyNumber(policy.getPolicyNumber())
+                .startDate(policy.getStartDate())
+                .endDate(policy.getEndDate())
+                .premiumAmount(policy.getPremiumAmount())
+                .coverageType(policy.getCoverageType())
+                .bonusMalusCoefficient(policy.getBonusMalusCoefficient())
+                .annualMileage(policy.getAnnualMileage())
+                .parkingType(policy.getParkingType())
+                .hasAntiTheftDevice(policy.isHasAntiTheftDevice())
+                .status(policy.getStatus())
+                .organizationId(organizationId) // Définir l'organisation
+                .build();
 
-        AutoPolicy updatedPolicy = autoPolicyRepository.save(policy);
-        return Optional.of(autoPolicyMapper.toDto(updatedPolicy));
+        // Définir les IDs avec les setters (si nécessaire)
+        if (policy.getVehicleId() != null) {
+            updatedPolicy.setVehicleId(policy.getVehicleId());
+        }
+        if (policy.getPrimaryDriverId() != null) {
+            updatedPolicy.setPrimaryDriverId(policy.getPrimaryDriverId());
+        }
+        if (policy.getClaimHistoryCategoryId() != null) {
+            updatedPolicy.setClaimHistoryCategoryId(policy.getClaimHistoryCategoryId());
+        }
+
+        AutoPolicy savedPolicy = autoPolicyRepository.save(updatedPolicy);
+        return Optional.of(autoPolicyMapper.toDto(savedPolicy));
     }
 
     @Override

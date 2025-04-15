@@ -1,5 +1,10 @@
 package com.devolution.saas.insurance.nonlife.auto.application.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -8,39 +13,182 @@ import java.util.UUID;
  * DTO pour les véhicules.
  */
 public record VehicleDTO(
+        /**
+         * ID du véhicule.
+         */
         UUID id,
+
+        /**
+         * Numéro d'immatriculation du véhicule.
+         */
+        @NotBlank(message = "Le numéro d'immatriculation est obligatoire")
+        @Size(min = 2, max = 20, message = "Le numéro d'immatriculation doit contenir entre 2 et 20 caractères")
+        @Pattern(regexp = "^[A-Z0-9-]+$", message = "Le numéro d'immatriculation ne doit contenir que des lettres majuscules, des chiffres et des tirets")
         String registrationNumber,
+
+        /**
+         * ID du fabricant du véhicule.
+         */
+        @NotNull(message = "L'ID du fabricant est obligatoire")
         UUID manufacturerId,
+
+        /**
+         * Nom du fabricant du véhicule.
+         */
         String manufacturerName,
+
+        /**
+         * ID du modèle du véhicule.
+         */
+        @NotNull(message = "L'ID du modèle est obligatoire")
         UUID modelId,
+
+        /**
+         * Nom du modèle du véhicule.
+         */
         String modelName,
+
+        /**
+         * Variante du modèle du véhicule.
+         */
         String modelVariant,
+
+        /**
+         * Version du véhicule (pour le contrôle de concurrence).
+         */
         Long version,
+
+        /**
+         * Année de fabrication du véhicule.
+         */
+        @NotNull(message = "L'année de fabrication est obligatoire")
         int year,
+
+        /**
+         * Puissance du moteur en chevaux.
+         */
         Integer enginePower,
+
+        /**
+         * Cylindrée du moteur en cm³.
+         */
         Integer engineSize,
+
+        /**
+         * ID du type de carburant.
+         */
         UUID fuelTypeId,
+
+        /**
+         * Nom du type de carburant.
+         */
         String fuelTypeName,
+
+        /**
+         * ID de la catégorie du véhicule.
+         */
         UUID categoryId,
+
+        /**
+         * Nom de la catégorie du véhicule.
+         */
         String categoryName,
+
+        /**
+         * ID de la sous-catégorie du véhicule.
+         */
         UUID subcategoryId,
+
+        /**
+         * Nom de la sous-catégorie du véhicule.
+         */
         String subcategoryName,
+
+        /**
+         * ID de l'usage du véhicule.
+         */
         UUID usageId,
+
+        /**
+         * Nom de l'usage du véhicule.
+         */
         String usageName,
+
+        /**
+         * ID de la zone géographique.
+         */
         UUID geographicZoneId,
+
+        /**
+         * Nom de la zone géographique.
+         */
         String geographicZoneName,
+
+        /**
+         * Date d'achat du véhicule.
+         */
         LocalDate purchaseDate,
+
+        /**
+         * Valeur d'achat du véhicule.
+         */
         BigDecimal purchaseValue,
+
+        /**
+         * Valeur actuelle du véhicule.
+         */
         BigDecimal currentValue,
+
+        /**
+         * Kilométrage du véhicule.
+         */
         Integer mileage,
+
+        /**
+         * Numéro d'identification du véhicule (VIN).
+         */
+        @Size(min = 17, max = 17, message = "Le numéro VIN doit contenir exactement 17 caractères")
+        @Pattern(regexp = "^[A-HJ-NPR-Z0-9]{17}$", message = "Le numéro VIN n'est pas valide")
         String vin,
+
+        /**
+         * ID de la couleur du véhicule.
+         */
         UUID colorId,
+
+        /**
+         * Nom de la couleur du véhicule.
+         */
         String colorName,
+
+        /**
+         * ID du propriétaire du véhicule.
+         */
         UUID ownerId,
+
+        /**
+         * Nom du propriétaire du véhicule.
+         */
         String ownerName,
+
+        /**
+         * ID de l'organisation.
+         */
         UUID organizationId,
+
+        /**
+         * ID de la police d'assurance auto associée.
+         */
         UUID autoPolicyId,
+
+        /**
+         * Indique si le véhicule est équipé d'un dispositif antivol.
+         */
         boolean hasAntiTheftDevice,
+
+        /**
+         * Type de stationnement du véhicule.
+         */
         String parkingType
 ) {
     /**

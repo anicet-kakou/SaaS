@@ -4,6 +4,8 @@ import com.devolution.saas.common.api.context.CorrelationIdContext;
 import com.devolution.saas.common.api.dto.ErrorResponse;
 import com.devolution.saas.common.domain.exception.*;
 import com.devolution.saas.common.domain.exception.SecurityException;
+import com.devolution.saas.common.i18n.MessageService;
+import com.devolution.saas.common.util.ExceptionUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
@@ -31,9 +33,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -46,14 +46,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final String PROD_PROFILE = "prod";
     private final Environment environment;
+    private final MessageService messageService;
 
     /**
      * Constructeur.
      *
-     * @param environment Environnement Spring
+     * @param environment   Environnement Spring
+     * @param messageService Service de messages
      */
-    public GlobalExceptionHandler(Environment environment) {
+    public GlobalExceptionHandler(Environment environment, MessageService messageService) {
         this.environment = environment;
+        this.messageService = messageService;
     }
 
     /**
@@ -66,8 +69,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex, HttpServletRequest request) {
         String correlationId = CorrelationIdContext.getCorrelationId();
-        log.warn("BusinessException: code={}, message={}, path={}, correlationId={}",
-                ex.getCode(), ex.getMessage(), request.getRequestURI(), correlationId);
+        Map<String, String> contextInfo = ExceptionUtils.getContextInfo(request);
+
+        // Journalisation enrichie avec le contexte
+        log.warn("BusinessException: code={}, message={}, method={}, path={}, clientIp={}, userAgent={}, username={}, correlationId={}",
+                ex.getCode(), ex.getMessage(), contextInfo.get("method"), contextInfo.get("uri"),
+                contextInfo.get("clientIp"), contextInfo.get("userAgent"), contextInfo.get("username"), correlationId);
+
+        // Récupération du message localisé si disponible
+        String localizedMessage = messageService.getMessage(ex.getCode(), ex.getArgs());
+        if (localizedMessage.equals(ex.getCode())) {
+            // Si le message n'est pas trouvé, utiliser le message de l'exception
+            localizedMessage = ex.getMessage();
+        }
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -90,7 +104,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, status);
@@ -119,7 +142,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -148,7 +180,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
@@ -177,11 +218,36 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (ex.getErrors() != null && !ex.getErrors().isEmpty()) {
-            errorResponse.addValidationErrors(ex.getErrors());
+            // Create a new list for validation errors
+            List<ErrorResponse.FieldError> validationErrorList = new ArrayList<>(errorResponse.errors());
+            ex.getErrors().forEach(error ->
+                    validationErrorList.add(new ErrorResponse.FieldError(error.getField(), error.getMessage()))
+            );
+
+            // Create a new ErrorResponse with the validation errors
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    validationErrorList,
+                    errorResponse.correlationId(),
+                    errorResponse.trace()
+            );
         }
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -215,7 +281,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
@@ -244,7 +319,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
@@ -301,7 +385,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -317,8 +410,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAllUncaughtException(Exception ex, HttpServletRequest request) {
         String correlationId = CorrelationIdContext.getCorrelationId();
-        log.error("Exception non gérée: type={}, message={}, path={}, correlationId={}",
-                ex.getClass().getName(), ex.getMessage(), request.getRequestURI(), correlationId, ex);
+        String requestMethod = request.getMethod();
+        String requestURI = request.getRequestURI();
+        String userAgent = request.getHeader("User-Agent");
+        String clientIp = ExceptionUtils.getClientIp(request);
+        String queryString = request.getQueryString();
+        String fullUrl = queryString != null ? requestURI + "?" + queryString : requestURI;
+
+        // Récupérer les informations sur l'utilisateur authentifié si disponible
+        String username = ExceptionUtils.getCurrentUsername();
+
+        log.error("Exception non gérée: type={}, message={}, method={}, url={}, clientIp={}, userAgent={}, username={}, correlationId={}",
+                ex.getClass().getName(), ex.getMessage(), requestMethod, fullUrl, clientIp, userAgent, username, correlationId, ex);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code("internal.error")
@@ -330,8 +433,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
-            errorResponse.setMessage(ex.getMessage());
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    ex.getMessage(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -367,7 +478,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, status);
@@ -403,7 +523,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, status);
@@ -435,7 +564,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, status);
@@ -465,8 +603,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
-            errorResponse.setMessage(ex.getMessage());
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    ex.getMessage(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, status);
@@ -498,12 +644,37 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .correlationId(CorrelationIdContext.getCorrelationId())
                 .build();
 
+        // Create a new list for field errors
+        List<ErrorResponse.FieldError> fieldErrorList = new ArrayList<>();
         fieldErrors.forEach(fieldError ->
-                errorResponse.addFieldError(fieldError.getField(), fieldError.getDefaultMessage())
+                fieldErrorList.add(new ErrorResponse.FieldError(fieldError.getField(), fieldError.getDefaultMessage()))
+        );
+
+        // Create a new ErrorResponse with the field errors
+        final ErrorResponse finalErrorResponse = errorResponse;
+        errorResponse = new ErrorResponse(
+                finalErrorResponse.code(),
+                finalErrorResponse.message(),
+                finalErrorResponse.status(),
+                finalErrorResponse.path(),
+                finalErrorResponse.timestamp(),
+                fieldErrorList,
+                finalErrorResponse.correlationId(),
+                finalErrorResponse.trace()
         );
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            final ErrorResponse devErrorResponse = errorResponse;
+            errorResponse = new ErrorResponse(
+                    devErrorResponse.code(),
+                    devErrorResponse.message(),
+                    devErrorResponse.status(),
+                    devErrorResponse.path(),
+                    devErrorResponse.timestamp(),
+                    devErrorResponse.errors(),
+                    devErrorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, status);
@@ -534,12 +705,37 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
 
+        // Create a new list for field errors
+        List<ErrorResponse.FieldError> fieldErrorList = new ArrayList<>();
         fieldErrors.forEach(fieldError ->
-                errorResponse.addFieldError(fieldError.getField(), fieldError.getDefaultMessage())
+                fieldErrorList.add(new ErrorResponse.FieldError(fieldError.getField(), fieldError.getDefaultMessage()))
+        );
+
+        // Create a new ErrorResponse with the field errors
+        final ErrorResponse finalErrorResponse = errorResponse;
+        errorResponse = new ErrorResponse(
+                finalErrorResponse.code(),
+                finalErrorResponse.message(),
+                finalErrorResponse.status(),
+                finalErrorResponse.path(),
+                finalErrorResponse.timestamp(),
+                fieldErrorList,
+                finalErrorResponse.correlationId(),
+                finalErrorResponse.trace()
         );
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            final ErrorResponse devErrorResponse = errorResponse;
+            errorResponse = new ErrorResponse(
+                    devErrorResponse.code(),
+                    devErrorResponse.message(),
+                    devErrorResponse.status(),
+                    devErrorResponse.path(),
+                    devErrorResponse.timestamp(),
+                    devErrorResponse.errors(),
+                    devErrorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, status);
@@ -572,7 +768,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, status);
@@ -605,7 +810,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         if (isDevEnvironment()) {
-            errorResponse.setTrace(getStackTrace(ex));
+            errorResponse = new ErrorResponse(
+                    errorResponse.code(),
+                    errorResponse.message(),
+                    errorResponse.status(),
+                    errorResponse.path(),
+                    errorResponse.timestamp(),
+                    errorResponse.errors(),
+                    errorResponse.correlationId(),
+                    getStackTrace(ex)
+            );
         }
 
         return new ResponseEntity<>(errorResponse, status);

@@ -1,8 +1,8 @@
 package com.devolution.saas.common.filter;
 
 import com.devolution.saas.common.util.HttpRequestUtils;
-import com.devolution.saas.core.security.application.service.ApiKeyService;
 import com.devolution.saas.core.security.domain.model.ApiKey;
+import com.devolution.saas.core.security.infrastructure.service.ApiKeyValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,7 +41,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private static final int DEFAULT_IP_LIMIT = 60;
     // Limite par défaut pour les requêtes par API Key (300 requêtes par minute)
     private static final int DEFAULT_API_KEY_LIMIT = 300;
-    private final @Lazy ApiKeyService apiKeyService;
+    private final ApiKeyValidator apiKeyValidator;
     private final ObjectMapper objectMapper;
     // Cache des buckets par adresse IP
     private final Map<String, Bucket> ipBuckets = new ConcurrentHashMap<>();
@@ -67,7 +66,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
         // Si une API Key est présente, utiliser la limite de l'API Key
         if (StringUtils.hasText(apiKeyValue)) {
-            Optional<ApiKey> apiKeyOpt = apiKeyService.validateApiKey(apiKeyValue);
+            Optional<ApiKey> apiKeyOpt = apiKeyValidator.validateApiKey(apiKeyValue);
             if (apiKeyOpt.isPresent()) {
                 ApiKey apiKey = apiKeyOpt.get();
 

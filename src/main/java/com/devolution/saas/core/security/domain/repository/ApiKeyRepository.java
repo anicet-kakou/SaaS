@@ -39,6 +39,15 @@ public interface ApiKeyRepository {
     Optional<ApiKey> findByPrefixAndKeyHash(String prefix, String keyHash);
 
     /**
+     * Trouve une clé API par son préfixe et son statut.
+     *
+     * @param prefix Préfixe de la clé API
+     * @param status Statut de la clé API (peut être null)
+     * @return Clé API trouvée ou Optional vide
+     */
+    Optional<ApiKey> findByPrefixAndStatus(String prefix, ApiKeyStatus status);
+
+    /**
      * Trouve toutes les clés API.
      *
      * @return Liste des clés API

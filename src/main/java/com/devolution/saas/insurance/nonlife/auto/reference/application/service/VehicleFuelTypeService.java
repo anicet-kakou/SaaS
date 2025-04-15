@@ -1,5 +1,6 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.application.service;
 
+import com.devolution.saas.common.abstracts.TenantAwareCrudService;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.VehicleFuelTypeDTO;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.VehicleFuelType;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 /**
  * Service pour la gestion des types de carburant de véhicule.
  */
-public interface VehicleFuelTypeService {
+public interface VehicleFuelTypeService extends TenantAwareCrudService<VehicleFuelTypeDTO, VehicleFuelType> {
 
     /**
      * Crée un nouveau type de carburant de véhicule.

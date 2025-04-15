@@ -30,7 +30,7 @@ public class PermissionService extends AbstractCrudService<PermissionDTO, UUID, 
 
     @Override
     protected PermissionDTO executeCreate(CreatePermissionCommand command) {
-        log.debug("Création d'une nouvelle permission: {}", command.getResourceType() + "_" + command.getAction());
+        log.debug("Création d'une nouvelle permission: {}", command.resourceType() + "_" + command.action());
         return createPermission.execute(command);
     }
 

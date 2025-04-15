@@ -18,12 +18,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthController.class)
 class AuthControllerTest {
@@ -45,9 +47,10 @@ class AuthControllerTest {
     @BeforeEach
     void setUp() {
         // Set up login command
-        loginCommand = new LoginCommand();
-        loginCommand.setUsernameOrEmail("testuser");
-        loginCommand.setPassword("password123");
+        loginCommand = LoginCommand.builder()
+                .usernameOrEmail("testuser")
+                .password("password123")
+                .build();
 
         // Set up register command
         registerCommand = new RegisterCommand();
@@ -58,8 +61,9 @@ class AuthControllerTest {
         registerCommand.setLastName("User");
 
         // Set up refresh token command
-        refreshTokenCommand = new RefreshTokenCommand();
-        refreshTokenCommand.setRefreshToken("refresh-token-value");
+        refreshTokenCommand = RefreshTokenCommand.builder()
+                .refreshToken("refresh-token-value")
+                .build();
 
         // Set up authentication response
         authResponse = new JwtAuthenticationResponse();

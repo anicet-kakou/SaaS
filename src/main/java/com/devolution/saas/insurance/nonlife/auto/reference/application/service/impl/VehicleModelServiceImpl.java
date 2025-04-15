@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 
 /**
  * Implémentation du service de gestion des modèles de véhicule.
@@ -25,8 +25,16 @@ public class VehicleModelServiceImpl implements VehicleModelService {
 
     @Override
     public VehicleModelDTO createVehicleModel(VehicleModel vehicleModel, UUID organizationId) {
-        vehicleModel.setOrganizationId(organizationId);
-        VehicleModel savedModel = vehicleModelRepository.save(vehicleModel);
+        // Créer une nouvelle instance avec l'ID de l'organisation
+        VehicleModel modelWithOrg = new VehicleModel();
+        modelWithOrg.setCode(vehicleModel.getCode());
+        modelWithOrg.setName(vehicleModel.getName());
+        modelWithOrg.setDescription(vehicleModel.getDescription());
+        modelWithOrg.setManufacturerId(vehicleModel.getManufacturerId());
+        modelWithOrg.setActive(vehicleModel.isActive());
+        modelWithOrg.setOrganizationId(organizationId); // Définir l'organisation ici
+
+        VehicleModel savedModel = vehicleModelRepository.save(modelWithOrg);
         return vehicleModelMapper.toDto(savedModel);
     }
 
@@ -35,10 +43,18 @@ public class VehicleModelServiceImpl implements VehicleModelService {
         return vehicleModelRepository.findById(id)
                 .filter(model -> model.getOrganizationId().equals(organizationId))
                 .map(existingModel -> {
-                    vehicleModel.setId(id);
-                    vehicleModel.setOrganizationId(organizationId);
-                    VehicleModel updatedModel = vehicleModelRepository.save(vehicleModel);
-                    return vehicleModelMapper.toDto(updatedModel);
+                    // Créer une nouvelle instance avec l'ID existant et les nouvelles propriétés
+                    VehicleModel updatedModel = new VehicleModel();
+                    updatedModel.setId(id); // Conserver l'ID existant
+                    updatedModel.setCode(vehicleModel.getCode());
+                    updatedModel.setName(vehicleModel.getName());
+                    updatedModel.setDescription(vehicleModel.getDescription());
+                    updatedModel.setManufacturerId(vehicleModel.getManufacturerId());
+                    updatedModel.setActive(vehicleModel.isActive());
+                    updatedModel.setOrganizationId(organizationId); // Définir l'organisation
+
+                    VehicleModel savedModel = vehicleModelRepository.save(updatedModel);
+                    return vehicleModelMapper.toDto(savedModel);
                 });
     }
 
@@ -60,7 +76,7 @@ public class VehicleModelServiceImpl implements VehicleModelService {
         return vehicleModelRepository.findAllByOrganizationId(organizationId)
                 .stream()
                 .map(vehicleModelMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -68,7 +84,7 @@ public class VehicleModelServiceImpl implements VehicleModelService {
         return vehicleModelRepository.findAllActiveByOrganizationId(organizationId)
                 .stream()
                 .map(vehicleModelMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -76,7 +92,7 @@ public class VehicleModelServiceImpl implements VehicleModelService {
         return vehicleModelRepository.findAllByMakeIdAndOrganizationId(makeId, organizationId)
                 .stream()
                 .map(vehicleModelMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -84,11 +100,16 @@ public class VehicleModelServiceImpl implements VehicleModelService {
         return vehicleModelRepository.findAllActiveByMakeIdAndOrganizationId(makeId, organizationId)
                 .stream()
                 .map(vehicleModelMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public boolean deleteVehicleModel(UUID id, UUID organizationId) {
+        return delete(id, organizationId);
+    }
+
+    @Override
+    public boolean delete(UUID id, UUID organizationId) {
         return vehicleModelRepository.findById(id)
                 .filter(model -> model.getOrganizationId().equals(organizationId))
                 .map(model -> {
@@ -96,5 +117,69 @@ public class VehicleModelServiceImpl implements VehicleModelService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    @Override
+    public Optional<VehicleModelDTO> getByCode(String code, UUID organizationId) {
+        // Since we don't have a direct method to get by code without makeId,
+        // we'll return the first model with this code regardless of make
+        return vehicleModelRepository.findAllByOrganizationId(organizationId).stream()
+                .filter(model -> model.getCode().equals(code))
+                .findFirst()
+                .map(vehicleModelMapper::toDto);
+    }
+
+    @Override
+    public Optional<VehicleModelDTO> setActive(UUID id, boolean active, UUID organizationId) {
+        return vehicleModelRepository.findById(id)
+                .filter(model -> model.getOrganizationId().equals(organizationId))
+                .map(existingModel -> {
+                    // Créer une nouvelle instance avec l'active mis à jour
+                    VehicleModel updatedModel = new VehicleModel();
+                    updatedModel.setId(existingModel.getId());
+                    updatedModel.setCode(existingModel.getCode());
+                    updatedModel.setName(existingModel.getName());
+                    updatedModel.setDescription(existingModel.getDescription());
+                    updatedModel.setManufacturerId(existingModel.getManufacturerId());
+                    updatedModel.setActive(active); // Mettre à jour l'active
+                    updatedModel.setOrganizationId(existingModel.getOrganizationId());
+
+                    VehicleModel savedModel = vehicleModelRepository.save(updatedModel);
+                    return vehicleModelMapper.toDto(savedModel);
+                });
+    }
+
+    @Override
+    public VehicleModelDTO create(VehicleModel entity, UUID organizationId) {
+        return createVehicleModel(entity, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleModelDTO> update(UUID id, VehicleModel entity, UUID organizationId) {
+        return updateVehicleModel(id, entity, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleModelDTO> getById(UUID id, UUID organizationId) {
+        return getVehicleModelById(id, organizationId);
+    }
+
+    @Override
+    public List<VehicleModelDTO> getAll(UUID organizationId) {
+        return getAllVehicleModels(organizationId);
+    }
+
+    @Override
+    public List<VehicleModelDTO> getAllActive(UUID organizationId) {
+        return getAllActiveVehicleModels(organizationId);
+    }
+
+    @Override
+    public String getEntityName() {
+        return "VehicleModel";
+    }
+
+    public Optional<VehicleModelDTO> getVehicleModelByCode(String code, UUID organizationId) {
+        return getByCode(code, organizationId);
     }
 }

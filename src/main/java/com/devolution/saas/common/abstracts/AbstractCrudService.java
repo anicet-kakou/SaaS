@@ -2,7 +2,6 @@ package com.devolution.saas.common.abstracts;
 
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +17,9 @@ import java.util.Optional;
  * @param <C>  Type de la commande de création
  * @param <U>  Type de la commande de mise à jour
  */
-@Slf4j
 public abstract class AbstractCrudService<T, ID, C, U> {
+    // Logger protégé pour être accessible aux classes filles
+    protected static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AbstractCrudService.class);
 
     /**
      * Exécute la création d'une entité.

@@ -24,21 +24,21 @@ public class CreatePermission extends AbstractCreateUseCase<PermissionDTO, Creat
 
     @Override
     protected Permission createEntity(CreatePermissionCommand command) {
-        log.debug("Création d'une nouvelle permission: {}", command.getResourceType() + "_" + command.getAction());
+        log.debug("Création d'une nouvelle permission: {}", command.resourceType() + "_" + command.action());
 
         // Génération du nom si non spécifié
-        String name = command.getName();
+        String name = command.name();
         if (!StringUtils.hasText(name)) {
-            name = command.getResourceType().toUpperCase() + "_" + command.getAction().toUpperCase();
+            name = command.resourceType().toUpperCase() + "_" + command.action().toUpperCase();
         }
 
         // Création de la permission
         Permission permission = new Permission();
         permission.setName(name);
-        permission.setDescription(command.getDescription());
-        permission.setResourceType(command.getResourceType());
-        permission.setAction(command.getAction());
-        permission.setSystemDefined(command.isSystemDefined());
+        permission.setDescription(command.description());
+        permission.setResourceType(command.resourceType());
+        permission.setAction(command.action());
+        permission.setSystemDefined(command.systemDefined());
 
         // Sauvegarde de la permission
         return permissionRepository.save(permission);
@@ -52,13 +52,13 @@ public class CreatePermission extends AbstractCreateUseCase<PermissionDTO, Creat
     @Override
     protected boolean existsByUniqueCriteria(CreatePermissionCommand command) {
         // Génération du nom si non spécifié
-        String name = command.getName();
+        String name = command.name();
         if (!StringUtils.hasText(name)) {
-            name = command.getResourceType().toUpperCase() + "_" + command.getAction().toUpperCase();
+            name = command.resourceType().toUpperCase() + "_" + command.action().toUpperCase();
         }
 
         return permissionRepository.existsByName(name) ||
-                permissionRepository.existsByResourceTypeAndAction(command.getResourceType(), command.getAction());
+                permissionRepository.existsByResourceTypeAndAction(command.resourceType(), command.action());
     }
 
     @Override

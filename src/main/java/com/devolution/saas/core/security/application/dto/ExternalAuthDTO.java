@@ -2,43 +2,81 @@ package com.devolution.saas.core.security.application.dto;
 
 import com.devolution.saas.core.security.domain.model.AuthenticationProvider;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * DTO pour l'authentification externe.
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ExternalAuthDTO {
-
+public record ExternalAuthDTO(
     /**
      * Fournisseur d'authentification.
      */
-    private AuthenticationProvider provider;
+    AuthenticationProvider provider,
 
     /**
      * Token d'authentification externe.
      */
-    private String token;
+    String token,
 
     /**
      * Code d'autorisation (flow OAuth2).
      */
-    private String code;
+    String code,
 
     /**
      * URI de redirection (flow OAuth2).
      */
-    private String redirectUri;
+    String redirectUri,
 
     /**
      * État pour la sécurité CSRF (flow OAuth2).
      */
-    private String state;
+    String state
+) {
+    /**
+     * Builder pour ExternalAuthDTO.
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Classe Builder pour ExternalAuthDTO.
+     */
+    public static class Builder {
+        private AuthenticationProvider provider;
+        private String token;
+        private String code;
+        private String redirectUri;
+        private String state;
+
+        public Builder provider(AuthenticationProvider provider) {
+            this.provider = provider;
+            return this;
+        }
+
+        public Builder token(String token) {
+            this.token = token;
+            return this;
+        }
+
+        public Builder code(String code) {
+            this.code = code;
+            return this;
+        }
+
+        public Builder redirectUri(String redirectUri) {
+            this.redirectUri = redirectUri;
+            return this;
+        }
+
+        public Builder state(String state) {
+            this.state = state;
+            return this;
+        }
+
+        public ExternalAuthDTO build() {
+            return new ExternalAuthDTO(provider, token, code, redirectUri, state);
+        }
+    }
 }

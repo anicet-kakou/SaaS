@@ -2,6 +2,7 @@ package com.devolution.saas.insurance.nonlife.auto.api.controller;
 
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
+import com.devolution.saas.common.util.Validation;
 import com.devolution.saas.insurance.nonlife.auto.application.dto.BonusMalusDTO;
 import com.devolution.saas.insurance.nonlife.auto.application.usecase.ApplyBonusMalus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +43,10 @@ public class AutoBonusMalusController {
         log.debug("REST request pour récupérer le bonus-malus du client: {} pour l'organisation: {}",
                 customerId, organizationId);
 
+        // Validate input parameters
+        Validation.validateNotNull(customerId, "ID du client");
+        Validation.validateNotNull(organizationId, "ID de l'organisation");
+
         // Récupère le bonus-malus actuel (0 sinistre)
         BonusMalusDTO bonusMalus = applyBonusMalus.execute(customerId, 0, organizationId);
         return ResponseEntity.ok(bonusMalus);
@@ -65,6 +70,11 @@ public class AutoBonusMalusController {
             @RequestParam UUID organizationId) {
         log.debug("REST request pour calculer le bonus-malus du client: {} avec {} sinistre(s) pour l'organisation: {}",
                 customerId, claimCount, organizationId);
+
+        // Validate input parameters
+        Validation.validateNotNull(customerId, "ID du client");
+        Validation.validateNotNegative(claimCount, "nombre de sinistres");
+        Validation.validateNotNull(organizationId, "ID de l'organisation");
 
         BonusMalusDTO bonusMalus = applyBonusMalus.execute(customerId, claimCount, organizationId);
         return ResponseEntity.ok(bonusMalus);

@@ -3,7 +3,6 @@ package com.devolution.saas.common.abstracts;
 import com.devolution.saas.common.annotation.Auditable;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +17,9 @@ import java.util.List;
  * @param <C>  Type de la commande de création
  * @param <U>  Type de la commande de mise à jour
  */
-@Slf4j
 public abstract class AbstractCrudController<T, ID, C, U> {
+    // Logger protégé pour être accessible aux classes filles
+    protected static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AbstractCrudController.class);
 
     /**
      * Crée une nouvelle entité.

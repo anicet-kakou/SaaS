@@ -36,22 +36,22 @@ public class CreateRole {
      */
     @Transactional
     public RoleDTO execute(CreateRoleCommand command) {
-        log.debug("Création d'un nouveau rôle: {}", command.getName());
+        log.debug("Création d'un nouveau rôle: {}", command.name());
 
         // Vérification de l'unicité du nom du rôle dans l'organisation
-        if (roleRepository.existsByNameAndOrganizationId(command.getName(), command.getOrganizationId())) {
+        if (roleRepository.existsByNameAndOrganizationId(command.name(), command.organizationId())) {
             throw new BusinessException("role.name.duplicate", "Un rôle avec ce nom existe déjà dans cette organisation");
         }
 
         // Création du rôle
         Role role = new Role();
-        role.setName(command.getName());
-        role.setDescription(command.getDescription());
-        role.setOrganizationId(command.getOrganizationId());
+        role.setName(command.name());
+        role.setDescription(command.description());
+        role.setOrganizationId(command.organizationId());
         role.setSystemDefined(false);
 
         // Ajout des permissions
-        for (UUID permissionId : command.getPermissionIds()) {
+        for (UUID permissionId : command.permissionIds()) {
             Permission permission = permissionRepository.findById(permissionId)
                     .orElseThrow(() -> new ResourceNotFoundException("Permission", permissionId));
             role.addPermission(permission);

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -165,44 +164,7 @@ public class ApiKeyService extends AbstractCrudService<ApiKeyDTO, UUID, CreateAp
         delete(id);
     }
 
-    /**
-     * Valide une clé API.
-     *
-     * @param apiKeyValue Valeur de la clé API
-     * @return Clé API si valide, sinon Optional vide
-     */
-    @Transactional
-    public Optional<ApiKey> validateApiKey(String apiKeyValue) {
-        if (apiKeyValue == null || apiKeyValue.length() <= 8) {
-            return Optional.empty();
-        }
 
-        String prefix = apiKeyValue.substring(0, 8);
-        String key = apiKeyValue;
-
-        Optional<ApiKey> apiKeyOpt = apiKeyRepository.findByPrefixAndKeyHash(prefix, null);
-        if (apiKeyOpt.isEmpty()) {
-            return Optional.empty();
-        }
-
-        ApiKey apiKey = apiKeyOpt.get();
-
-        // Vérification du statut et de l'expiration
-        if (!apiKey.isActive()) {
-            return Optional.empty();
-        }
-
-        // Vérification de la clé
-        if (!passwordEncoder.matches(key, apiKey.getKeyHash())) {
-            return Optional.empty();
-        }
-
-        // Mise à jour de la date de dernière utilisation
-        apiKey.updateLastUsed();
-        apiKeyRepository.save(apiKey);
-
-        return Optional.of(apiKey);
-    }
 
     /**
      * Nettoie les clés API expirées.

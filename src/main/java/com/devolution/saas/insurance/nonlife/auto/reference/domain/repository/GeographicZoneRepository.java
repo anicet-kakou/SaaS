@@ -53,6 +53,15 @@ public interface GeographicZoneRepository {
     List<GeographicZone> findAllActiveByOrganizationId(UUID organizationId);
 
     /**
+     * Liste toutes les zones géographiques par statut d'activité et organisation.
+     *
+     * @param isActive       Statut d'activité
+     * @param organizationId L'ID de l'organisation
+     * @return La liste des zones géographiques correspondant aux critères
+     */
+    List<GeographicZone> findAllByIsActiveAndOrganizationId(boolean isActive, UUID organizationId);
+
+    /**
      * Supprime une zone géographique.
      *
      * @param id L'ID de la zone géographique à supprimer

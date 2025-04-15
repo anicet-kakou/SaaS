@@ -73,6 +73,11 @@ public class VehicleUsageServiceImpl implements VehicleUsageService {
 
     @Override
     public boolean deleteVehicleUsage(UUID id, UUID organizationId) {
+        return delete(id, organizationId);
+    }
+
+    @Override
+    public boolean delete(UUID id, UUID organizationId) {
         return vehicleUsageRepository.findById(id)
                 .filter(usage -> usage.getOrganizationId().equals(organizationId))
                 .map(usage -> {
@@ -80,5 +85,51 @@ public class VehicleUsageServiceImpl implements VehicleUsageService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    @Override
+    public Optional<VehicleUsageDTO> setActive(UUID id, boolean active, UUID organizationId) {
+        return vehicleUsageRepository.findById(id)
+                .filter(usage -> usage.getOrganizationId().equals(organizationId))
+                .map(usage -> {
+                    usage.setActive(active);
+                    VehicleUsage updatedUsage = vehicleUsageRepository.save(usage);
+                    return vehicleUsageMapper.toDto(updatedUsage);
+                });
+    }
+
+    @Override
+    public Optional<VehicleUsageDTO> getById(UUID id, UUID organizationId) {
+        return getVehicleUsageById(id, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleUsageDTO> getByCode(String code, UUID organizationId) {
+        return getVehicleUsageByCode(code, organizationId);
+    }
+
+    @Override
+    public VehicleUsageDTO create(VehicleUsage entity, UUID organizationId) {
+        return createVehicleUsage(entity, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleUsageDTO> update(UUID id, VehicleUsage entity, UUID organizationId) {
+        return updateVehicleUsage(id, entity, organizationId);
+    }
+
+    @Override
+    public List<VehicleUsageDTO> getAll(UUID organizationId) {
+        return getAllVehicleUsages(organizationId);
+    }
+
+    @Override
+    public List<VehicleUsageDTO> getAllActive(UUID organizationId) {
+        return getAllActiveVehicleUsages(organizationId);
+    }
+
+    @Override
+    public String getEntityName() {
+        return "type d'usage de véhicule";
     }
 }

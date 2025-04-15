@@ -100,13 +100,13 @@ public class AuthenticationService implements AuthenticationUseCase {
     @Transactional
     @Auditable(action = "USER_LOGIN")
     public JwtAuthenticationResponse login(LoginCommand command) {
-        log.debug("Tentative de connexion pour l'utilisateur: {}", command.getUsernameOrEmail());
+        log.debug("Tentative de connexion pour l'utilisateur: {}", command.usernameOrEmail());
 
         // Authentification de l'utilisateur
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        command.getUsernameOrEmail(),
-                        command.getPassword()
+                        command.usernameOrEmail(),
+                        command.password()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -120,7 +120,7 @@ public class AuthenticationService implements AuthenticationUseCase {
         }
 
         // Vérification de l'organisation si spécifiée
-        UUID organizationId = command.getOrganizationId();
+        UUID organizationId = command.organizationId();
         if (organizationId != null) {
             boolean hasOrganization = user.getOrganizations().stream()
                     .anyMatch(org -> org.getOrganizationId().equals(organizationId));
@@ -249,7 +249,7 @@ public class AuthenticationService implements AuthenticationUseCase {
         log.debug("Rafraîchissement du jeton");
 
         // Vérification du jeton de rafraîchissement
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(command.getRefreshToken())
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(command.refreshToken())
                 .orElseThrow(() -> new BusinessException("auth.refresh.token.invalid", "Jeton de rafraîchissement invalide"));
 
         // Vérification de la validité du jeton
@@ -341,9 +341,10 @@ public class AuthenticationService implements AuthenticationUseCase {
         log.debug("Authentification avec identifiants: {}", usernameOrEmail);
 
         // Utiliser la méthode login existante avec une commande
-        LoginCommand command = new LoginCommand();
-        command.setUsernameOrEmail(usernameOrEmail);
-        command.setPassword(password);
+        LoginCommand command = LoginCommand.builder()
+                .usernameOrEmail(usernameOrEmail)
+                .password(password)
+                .build();
 
         return login(command);
     }
@@ -460,8 +461,9 @@ public class AuthenticationService implements AuthenticationUseCase {
     public JwtAuthenticationResponse refreshToken(String refreshToken) {
         log.debug("Rafraîchissement du jeton avec refreshToken: {}", refreshToken);
 
-        RefreshTokenCommand command = new RefreshTokenCommand();
-        command.setRefreshToken(refreshToken);
+        RefreshTokenCommand command = RefreshTokenCommand.builder()
+                .refreshToken(refreshToken)
+                .build();
 
         return refreshToken(command);
     }

@@ -49,36 +49,36 @@ public class UpdateAutoPolicyImpl implements UpdateAutoPolicy {
                 .orElseThrow(() -> AutoResourceNotFoundException.forId("Police d'assurance", id));
 
         // Vérifier que la police appartient à l'organisation
-        if (!existingPolicy.getOrganizationId().equals(command.getOrganizationId())) {
+        if (!existingPolicy.getOrganizationId().equals(command.organizationId())) {
             throw AutoResourceNotFoundException.forId("Police d'assurance", id);
         }
 
         // Si le numéro de police a changé, vérifier qu'il n'est pas déjà utilisé
-        if (!existingPolicy.getPolicyNumber().equals(command.getPolicyNumber())) {
-            autoPolicyRepository.findByPolicyNumberAndOrganizationId(command.getPolicyNumber(), command.getOrganizationId())
+        if (!existingPolicy.getPolicyNumber().equals(command.policyNumber())) {
+            autoPolicyRepository.findByPolicyNumberAndOrganizationId(command.policyNumber(), command.organizationId())
                     .ifPresent(p -> {
                         if (!p.getId().equals(id)) {
-                            throw AutoResourceAlreadyExistsException.forIdentifier("Police d'assurance", "numéro", command.getPolicyNumber());
+                            throw AutoResourceAlreadyExistsException.forIdentifier("Police d'assurance", "numéro", command.policyNumber());
                         }
                     });
         }
 
         // Vérifier que le véhicule existe
-        Vehicle vehicle = vehicleRepository.findById(command.getVehicleId())
-                .filter(v -> v.getOrganizationId().equals(command.getOrganizationId()))
-                .orElseThrow(() -> AutoResourceNotFoundException.forId("Véhicule", command.getVehicleId()));
+        Vehicle vehicle = vehicleRepository.findById(command.vehicleId())
+                .filter(v -> v.getOrganizationId().equals(command.organizationId()))
+                .orElseThrow(() -> AutoResourceNotFoundException.forId("Véhicule", command.vehicleId()));
 
         // Vérifier que le conducteur existe
-        Driver driver = driverRepository.findById(command.getPrimaryDriverId())
-                .filter(d -> d.getOrganizationId().equals(command.getOrganizationId()))
-                .orElseThrow(() -> AutoResourceNotFoundException.forId("Conducteur", command.getPrimaryDriverId()));
+        Driver driver = driverRepository.findById(command.primaryDriverId())
+                .filter(d -> d.getOrganizationId().equals(command.organizationId()))
+                .orElseThrow(() -> AutoResourceNotFoundException.forId("Conducteur", command.primaryDriverId()));
 
         // Calculer la prime
         PremiumCalculationResultDTO premiumCalculation = calculateAutoPremium.calculate(
-                command.getVehicleId(),
-                command.getPrimaryDriverId(),
-                command.getCoverageType().name(),
-                command.getOrganizationId()
+                command.vehicleId(),
+                command.primaryDriverId(),
+                command.coverageType().name(),
+                command.organizationId()
         );
 
         // Mapper la commande en entité
@@ -89,7 +89,7 @@ public class UpdateAutoPolicyImpl implements UpdateAutoPolicy {
         policy.setCustomerId(existingPolicy.getCustomerId()); // Conserver l'ID du client
 
         // Valider la police
-        List<String> validationErrors = policyValidator.validateForUpdate(policy, existingPolicy, command.getOrganizationId());
+        List<String> validationErrors = policyValidator.validateForUpdate(policy, existingPolicy, command.organizationId());
         if (!validationErrors.isEmpty()) {
             throw InvalidPolicyException.withValidationErrors(validationErrors);
         }
@@ -110,22 +110,22 @@ public class UpdateAutoPolicyImpl implements UpdateAutoPolicy {
      */
     private AutoPolicy mapCommandToEntity(CreateAutoPolicyCommand command, java.math.BigDecimal premiumAmount) {
         AutoPolicy policy = AutoPolicy.builder()
-                .policyNumber(command.getPolicyNumber())
-                .startDate(command.getStartDate())
-                .endDate(command.getEndDate())
+                .policyNumber(command.policyNumber())
+                .startDate(command.startDate())
+                .endDate(command.endDate())
                 .premiumAmount(premiumAmount)
-                .coverageType(command.getCoverageType())
-                .bonusMalusCoefficient(command.getBonusMalusCoefficient())
-                .annualMileage(command.getAnnualMileage())
-                .parkingType(command.getParkingType())
-                .hasAntiTheftDevice(command.isHasAntiTheftDevice())
-                .claimHistoryCategoryId(command.getClaimHistoryCategoryId())
-                .organizationId(command.getOrganizationId())
+                .coverageType(command.coverageType())
+                .bonusMalusCoefficient(command.bonusMalusCoefficient())
+                .annualMileage(command.annualMileage())
+                .parkingType(command.parkingType())
+                .hasAntiTheftDevice(command.hasAntiTheftDevice())
+                .claimHistoryCategoryId(command.claimHistoryCategoryId())
+                .organizationId(command.organizationId())
                 .build();
 
         // Utiliser les setters pour définir les IDs
-        policy.setVehicleId(command.getVehicleId());
-        policy.setPrimaryDriverId(command.getPrimaryDriverId());
+        policy.setVehicleId(command.vehicleId());
+        policy.setPrimaryDriverId(command.primaryDriverId());
 
         return policy;
     }

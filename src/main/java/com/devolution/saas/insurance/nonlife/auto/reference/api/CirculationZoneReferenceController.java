@@ -1,17 +1,16 @@
 package com.devolution.saas.insurance.nonlife.auto.reference.api;
 
-import com.devolution.saas.common.abstracts.AbstractReferenceController;
-import com.devolution.saas.common.annotation.Auditable;
-import com.devolution.saas.common.annotation.TenantRequired;
+import com.devolution.saas.common.abstracts.TenantAwareCrudController;
+import com.devolution.saas.common.exception.ResourceNotFoundException;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.dto.CirculationZoneDTO;
 import com.devolution.saas.insurance.nonlife.auto.reference.application.service.CirculationZoneService;
 import com.devolution.saas.insurance.nonlife.auto.reference.domain.model.CirculationZone;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,24 +18,35 @@ import java.util.UUID;
 /**
  * Contrôleur REST pour la gestion des zones de circulation.
  */
-@RestController
-@RequestMapping("/api/v1/auto/reference/circulation-zones")
+// @RestController - Disabled to avoid ambiguous mapping issues
+// @RequestMapping("/api/v1/auto/reference/circulation-zones")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Circulation Zones", description = "API pour la gestion des zones de circulation")
-public class CirculationZoneReferenceController extends AbstractReferenceController<CirculationZoneDTO, CirculationZone, CirculationZone> {
+@Tag(name = "Circulation Zones", description = "API pour la gestion des zones de circulation (Deprecated)")
+public class CirculationZoneReferenceController extends TenantAwareCrudController<CirculationZoneDTO, CirculationZone, CirculationZone> {
 
     private final CirculationZoneService circulationZoneService;
 
     @Override
-    protected List<CirculationZoneDTO> getAllActive(UUID organizationId) {
+    protected List<CirculationZoneDTO> listActive(UUID organizationId) {
         return circulationZoneService.getAllActiveCirculationZones(organizationId);
     }
 
     @Override
-    protected CirculationZoneDTO getById(UUID id, UUID organizationId) {
+    protected List<CirculationZoneDTO> list(UUID organizationId) {
+        return circulationZoneService.getAllCirculationZones(organizationId);
+    }
+
+    @Override
+    protected CirculationZoneDTO get(UUID id, UUID organizationId) {
         return circulationZoneService.getCirculationZoneById(id, organizationId)
-                .orElseThrow(() -> new RuntimeException("Zone de circulation non trouvée avec ID: " + id));
+                .orElseThrow(() -> ResourceNotFoundException.forId("Zone de circulation", id));
+    }
+
+    @Override
+    protected CirculationZoneDTO getByCode(String code, UUID organizationId) {
+        return circulationZoneService.getByCode(code, organizationId)
+                .orElseThrow(() -> ResourceNotFoundException.forCode("Zone de circulation", code));
     }
 
     @Override
@@ -47,13 +57,21 @@ public class CirculationZoneReferenceController extends AbstractReferenceControl
     @Override
     protected CirculationZoneDTO update(UUID id, CirculationZone command, UUID organizationId) {
         return circulationZoneService.updateCirculationZone(id, command, organizationId)
-                .orElseThrow(() -> new RuntimeException("Zone de circulation non trouvée avec ID: " + id));
+                .orElseThrow(() -> ResourceNotFoundException.forId("Zone de circulation", id));
     }
 
     @Override
     protected CirculationZoneDTO setActive(UUID id, boolean active, UUID organizationId) {
-        return circulationZoneService.setCirculationZoneActive(id, active, organizationId)
-                .orElseThrow(() -> new RuntimeException("Zone de circulation non trouvée avec ID: " + id));
+        return circulationZoneService.setActive(id, active, organizationId)
+                .orElseThrow(() -> ResourceNotFoundException.forId("Zone de circulation", id));
+    }
+
+    @Override
+    protected void delete(UUID id, UUID organizationId) {
+        boolean deleted = circulationZoneService.delete(id, organizationId);
+        if (!deleted) {
+            throw ResourceNotFoundException.forId("Zone de circulation", id);
+        }
     }
 
     @Override
@@ -62,39 +80,16 @@ public class CirculationZoneReferenceController extends AbstractReferenceControl
     }
 
     /**
-     * Récupère toutes les zones de circulation (actives et inactives).
+     * Override the getEntity method from AbstractCrudController to prevent ambiguous mapping.
+     * This method should never be called directly as we're using the tenant-aware version.
      *
-     * @param organizationId L'ID de l'organisation
-     * @return La liste des zones de circulation
+     * @param id ID of the entity
+     * @return Never returns as it throws an exception
+     * @throws UnsupportedOperationException Always thrown to prevent usage
      */
-    @GetMapping("/all")
-    @Operation(summary = "Récupère toutes les zones de circulation (actives et inactives)")
-    @Auditable(action = "API_GET_ALL_CIRCULATION_ZONES")
-    @TenantRequired
-    public ResponseEntity<List<CirculationZoneDTO>> getAllCirculationZones(@RequestParam UUID organizationId) {
-        log.debug("REST request pour récupérer toutes les zones de circulation pour l'organisation: {}", organizationId);
-        List<CirculationZoneDTO> zones = circulationZoneService.getAllCirculationZones(organizationId);
-        return ResponseEntity.ok(zones);
-    }
-
-    /**
-     * Récupère une zone de circulation par son code.
-     *
-     * @param code           Le code de la zone de circulation
-     * @param organizationId L'ID de l'organisation
-     * @return La zone de circulation trouvée, ou 404 si non trouvée
-     */
-    @GetMapping("/code/{code}")
-    @Operation(summary = "Récupère une zone de circulation par son code")
-    @Auditable(action = "API_GET_CIRCULATION_ZONE_BY_CODE")
-    @TenantRequired
-    public ResponseEntity<CirculationZoneDTO> getCirculationZoneByCode(
-            @PathVariable String code,
-            @RequestParam UUID organizationId) {
-        log.debug("REST request pour récupérer la zone de circulation avec code: {} pour l'organisation: {}",
-                code, organizationId);
-        return circulationZoneService.getCirculationZoneByCode(code, organizationId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @Override
+    @GetMapping("/legacy/{id}")
+    public ResponseEntity<CirculationZoneDTO> getEntity(@PathVariable UUID id) {
+        throw new UnsupportedOperationException("Cette méthode ne devrait pas être appelée directement. Utilisez getEntity(id, organizationId) à la place.");
     }
 }

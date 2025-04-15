@@ -1,5 +1,7 @@
 package com.devolution.saas.common.util;
 
+import java.math.BigDecimal;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -15,6 +17,9 @@ public final class ValidationUtils {
 
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
             "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$");
+
+    // Pattern pour valider les types de couverture
+    public static final Pattern COVERAGE_TYPE_PATTERN = Pattern.compile("^(THIRD_PARTY|COMPREHENSIVE)$");
 
     private ValidationUtils() {
         // Constructeur privé pour empêcher l'instanciation
@@ -99,5 +104,103 @@ public final class ValidationUtils {
         }
         int length = str.length();
         return length >= minLength && length <= maxLength;
+    }
+
+    /**
+     * Valide qu'un UUID n'est pas null.
+     *
+     * @param id        L'UUID à valider
+     * @param paramName Le nom du paramètre pour le message d'erreur
+     * @throws IllegalArgumentException si l'UUID est null
+     */
+    public static void validateNotNull(UUID id, String paramName) {
+        if (id == null) {
+            throw new IllegalArgumentException("L'" + paramName + " ne peut pas être null");
+        }
+    }
+
+    /**
+     * Valide qu'une chaîne n'est pas null ou vide.
+     *
+     * @param value     La chaîne à valider
+     * @param paramName Le nom du paramètre pour le message d'erreur
+     * @throws IllegalArgumentException si la chaîne est null ou vide
+     */
+    public static void validateNotEmpty(String value, String paramName) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("Le " + paramName + " ne peut pas être null ou vide");
+        }
+    }
+
+    /**
+     * Valide qu'un nombre est positif ou zéro.
+     *
+     * @param value     Le nombre à valider
+     * @param paramName Le nom du paramètre pour le message d'erreur
+     * @throws IllegalArgumentException si le nombre est négatif
+     */
+    public static void validateNotNegative(int value, String paramName) {
+        if (value < 0) {
+            throw new IllegalArgumentException("Le " + paramName + " ne peut pas être négatif");
+        }
+    }
+
+    /**
+     * Valide qu'un BigDecimal n'est pas null.
+     *
+     * @param value     Le BigDecimal à valider
+     * @param paramName Le nom du paramètre pour le message d'erreur
+     * @throws IllegalArgumentException si le BigDecimal est null
+     */
+    public static void validateNotNull(BigDecimal value, String paramName) {
+        if (value == null) {
+            throw new IllegalArgumentException("Le " + paramName + " ne peut pas être null");
+        }
+    }
+
+    /**
+     * Valide qu'un BigDecimal est dans une plage donnée.
+     *
+     * @param value     Le BigDecimal à valider
+     * @param min       La valeur minimale (inclusive)
+     * @param max       La valeur maximale (inclusive)
+     * @param paramName Le nom du paramètre pour le message d'erreur
+     * @throws IllegalArgumentException si le BigDecimal est hors de la plage
+     */
+    public static void validateRange(BigDecimal value, BigDecimal min, BigDecimal max, String paramName) {
+        validateNotNull(value, paramName);
+        if (value.compareTo(min) < 0 || value.compareTo(max) > 0) {
+            throw new IllegalArgumentException("Le " + paramName + " doit être compris entre " + min + " et " + max);
+        }
+    }
+
+    /**
+     * Valide qu'un BigDecimal est positif ou zéro.
+     *
+     * @param value     Le BigDecimal à valider
+     * @param paramName Le nom du paramètre pour le message d'erreur
+     * @throws IllegalArgumentException si le BigDecimal est négatif
+     */
+    public static void validateNotNegative(BigDecimal value, String paramName) {
+        validateNotNull(value, paramName);
+        if (value.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Le " + paramName + " ne peut pas être négatif");
+        }
+    }
+
+    /**
+     * Valide qu'une chaîne correspond à un pattern donné.
+     *
+     * @param value       La chaîne à valider
+     * @param pattern     Le pattern à utiliser
+     * @param paramName   Le nom du paramètre pour le message d'erreur
+     * @param validValues Description des valeurs valides pour le message d'erreur
+     * @throws IllegalArgumentException si la chaîne ne correspond pas au pattern
+     */
+    public static void validatePattern(String value, Pattern pattern, String paramName, String validValues) {
+        validateNotEmpty(value, paramName);
+        if (!pattern.matcher(value).matches()) {
+            throw new IllegalArgumentException(paramName + " invalide: " + value + ". " + validValues);
+        }
     }
 }

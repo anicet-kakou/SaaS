@@ -73,6 +73,11 @@ public class VehicleGenreServiceImpl implements VehicleGenreService {
 
     @Override
     public boolean deleteVehicleGenre(UUID id, UUID organizationId) {
+        return delete(id, organizationId);
+    }
+
+    @Override
+    public boolean delete(UUID id, UUID organizationId) {
         return vehicleGenreRepository.findById(id)
                 .filter(genre -> genre.getOrganizationId().equals(organizationId))
                 .map(genre -> {
@@ -81,4 +86,52 @@ public class VehicleGenreServiceImpl implements VehicleGenreService {
                 })
                 .orElse(false);
     }
+
+    @Override
+    public Optional<VehicleGenreDTO> setActive(UUID id, boolean active, UUID organizationId) {
+        return vehicleGenreRepository.findById(id)
+                .filter(genre -> genre.getOrganizationId().equals(organizationId))
+                .map(genre -> {
+                    genre.setActive(active);
+                    VehicleGenre updatedGenre = vehicleGenreRepository.save(genre);
+                    return vehicleGenreMapper.toDto(updatedGenre);
+                });
+    }
+
+    @Override
+    public Optional<VehicleGenreDTO> getById(UUID id, UUID organizationId) {
+        return getVehicleGenreById(id, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleGenreDTO> getByCode(String code, UUID organizationId) {
+        return getVehicleGenreByCode(code, organizationId);
+    }
+
+    @Override
+    public List<VehicleGenreDTO> getAllActive(UUID organizationId) {
+        return getAllActiveVehicleGenres(organizationId);
+    }
+
+    @Override
+    public String getEntityName() {
+        return "VehicleGenre";
+    }
+
+    @Override
+    public VehicleGenreDTO create(VehicleGenre entity, UUID organizationId) {
+        return createVehicleGenre(entity, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleGenreDTO> update(UUID id, VehicleGenre entity, UUID organizationId) {
+        return updateVehicleGenre(id, entity, organizationId);
+    }
+
+    @Override
+    public List<VehicleGenreDTO> getAll(UUID organizationId) {
+        return getAllVehicleGenres(organizationId);
+    }
+
+
 }

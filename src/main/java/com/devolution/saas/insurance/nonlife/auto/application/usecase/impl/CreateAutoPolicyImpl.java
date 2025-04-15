@@ -41,37 +41,37 @@ public class CreateAutoPolicyImpl implements CreateAutoPolicy {
     @Override
     @Transactional
     public AutoPolicyDTO execute(CreateAutoPolicyCommand command) {
-        log.debug("Création d'une police d'assurance automobile avec numéro: {}", command.getPolicyNumber());
+        log.debug("Création d'une police d'assurance automobile avec numéro: {}", command.policyNumber());
 
         // Vérifier si une police avec le même numéro existe déjà
-        autoPolicyRepository.findByPolicyNumberAndOrganizationId(command.getPolicyNumber(), command.getOrganizationId())
+        autoPolicyRepository.findByPolicyNumberAndOrganizationId(command.policyNumber(), command.organizationId())
                 .ifPresent(p -> {
-                    throw AutoResourceAlreadyExistsException.forIdentifier("Police d'assurance", "numéro", command.getPolicyNumber());
+                    throw AutoResourceAlreadyExistsException.forIdentifier("Police d'assurance", "numéro", command.policyNumber());
                 });
 
         // Vérifier que le véhicule existe
-        Vehicle vehicle = vehicleRepository.findById(command.getVehicleId())
-                .filter(v -> v.getOrganizationId().equals(command.getOrganizationId()))
-                .orElseThrow(() -> AutoResourceNotFoundException.forId("Véhicule", command.getVehicleId()));
+        Vehicle vehicle = vehicleRepository.findById(command.vehicleId())
+                .filter(v -> v.getOrganizationId().equals(command.organizationId()))
+                .orElseThrow(() -> AutoResourceNotFoundException.forId("Véhicule", command.vehicleId()));
 
         // Vérifier que le conducteur existe
-        Driver driver = driverRepository.findById(command.getPrimaryDriverId())
-                .filter(d -> d.getOrganizationId().equals(command.getOrganizationId()))
-                .orElseThrow(() -> AutoResourceNotFoundException.forId("Conducteur", command.getPrimaryDriverId()));
+        Driver driver = driverRepository.findById(command.primaryDriverId())
+                .filter(d -> d.getOrganizationId().equals(command.organizationId()))
+                .orElseThrow(() -> AutoResourceNotFoundException.forId("Conducteur", command.primaryDriverId()));
 
         // Calculer la prime
         PremiumCalculationResultDTO premiumCalculation = calculateAutoPremium.calculate(
-                command.getVehicleId(),
-                command.getPrimaryDriverId(),
-                command.getCoverageType().name(),
-                command.getOrganizationId()
+                command.vehicleId(),
+                command.primaryDriverId(),
+                command.coverageType().name(),
+                command.organizationId()
         );
 
         // Mapper la commande en entité
         AutoPolicy policy = mapCommandToEntity(command, premiumCalculation.finalPremium());
 
         // Valider la police
-        List<String> validationErrors = policyValidator.validateForCreation(policy, command.getOrganizationId());
+        List<String> validationErrors = policyValidator.validateForCreation(policy, command.organizationId());
         if (!validationErrors.isEmpty()) {
             throw new BusinessRuleViolationException("Erreurs de validation: " + String.join(", ", validationErrors));
         }
@@ -92,23 +92,23 @@ public class CreateAutoPolicyImpl implements CreateAutoPolicy {
      */
     private AutoPolicy mapCommandToEntity(CreateAutoPolicyCommand command, java.math.BigDecimal premiumAmount) {
         AutoPolicy policy = AutoPolicy.builder()
-                .policyNumber(command.getPolicyNumber())
+                .policyNumber(command.policyNumber())
                 .status(AutoPolicy.PolicyStatus.ACTIVE) // Par défaut, la police est active
-                .startDate(command.getStartDate())
-                .endDate(command.getEndDate())
+                .startDate(command.startDate())
+                .endDate(command.endDate())
                 .premiumAmount(premiumAmount)
-                .coverageType(command.getCoverageType())
-                .bonusMalusCoefficient(command.getBonusMalusCoefficient())
-                .annualMileage(command.getAnnualMileage())
-                .parkingType(command.getParkingType())
-                .hasAntiTheftDevice(command.isHasAntiTheftDevice())
-                .claimHistoryCategoryId(command.getClaimHistoryCategoryId())
-                .organizationId(command.getOrganizationId())
+                .coverageType(command.coverageType())
+                .bonusMalusCoefficient(command.bonusMalusCoefficient())
+                .annualMileage(command.annualMileage())
+                .parkingType(command.parkingType())
+                .hasAntiTheftDevice(command.hasAntiTheftDevice())
+                .claimHistoryCategoryId(command.claimHistoryCategoryId())
+                .organizationId(command.organizationId())
                 .build();
 
         // Utiliser les setters pour définir les IDs
-        policy.setVehicleId(command.getVehicleId());
-        policy.setPrimaryDriverId(command.getPrimaryDriverId());
+        policy.setVehicleId(command.vehicleId());
+        policy.setPrimaryDriverId(command.primaryDriverId());
 
         return policy;
     }

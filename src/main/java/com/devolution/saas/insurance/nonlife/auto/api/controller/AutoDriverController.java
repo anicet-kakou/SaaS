@@ -2,7 +2,9 @@ package com.devolution.saas.insurance.nonlife.auto.api.controller;
 
 import com.devolution.saas.common.annotation.Auditable;
 import com.devolution.saas.common.annotation.TenantRequired;
-import com.devolution.saas.insurance.nonlife.auto.api.request.CreateDriverRequest;
+import com.devolution.saas.insurance.nonlife.auto.api.dto.request.CreateDriverRequest;
+import com.devolution.saas.insurance.nonlife.auto.api.dto.response.DriverResponse;
+import com.devolution.saas.insurance.nonlife.auto.api.mapper.DriverApiMapper;
 import com.devolution.saas.insurance.nonlife.auto.application.dto.DriverDTO;
 import com.devolution.saas.insurance.nonlife.auto.application.service.DriverService;
 import com.devolution.saas.insurance.nonlife.auto.domain.model.Driver;
@@ -29,6 +31,7 @@ import java.util.UUID;
 public class AutoDriverController {
 
     private final DriverService driverService;
+    private final DriverApiMapper driverApiMapper;
 
     /**
      * Crée un nouveau conducteur.
@@ -41,15 +44,16 @@ public class AutoDriverController {
     @Operation(summary = "Crée un nouveau conducteur")
     @Auditable(action = "API_CREATE_AUTO_DRIVER")
     @TenantRequired
-    public ResponseEntity<DriverDTO> createDriver(
+    public ResponseEntity<DriverResponse> createDriver(
             @Valid @RequestBody CreateDriverRequest request,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour créer un nouveau conducteur pour l'organisation: {}", organizationId);
 
-        Driver driver = mapRequestToEntity(request);
-        DriverDTO createdDriver = driverService.createDriver(driver, organizationId);
+        Driver driver = driverApiMapper.toEntity(request);
+        DriverDTO driverDTO = driverService.createDriver(driver, organizationId);
+        DriverResponse response = driverApiMapper.toResponse(driverDTO);
 
-        return new ResponseEntity<>(createdDriver, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     /**
@@ -63,15 +67,16 @@ public class AutoDriverController {
     @Operation(summary = "Récupère un conducteur par son ID")
     @Auditable(action = "API_GET_AUTO_DRIVER")
     @TenantRequired
-    public ResponseEntity<DriverDTO> getDriverById(
+    public ResponseEntity<DriverResponse> getDriverById(
             @PathVariable UUID id,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour récupérer le conducteur avec ID: {} pour l'organisation: {}", id, organizationId);
 
-        DriverDTO driver = driverService.getDriverById(id, organizationId)
+        DriverDTO driverDTO = driverService.getDriverById(id, organizationId)
                 .orElseThrow(() -> com.devolution.saas.insurance.nonlife.auto.application.exception.AutoResourceNotFoundException.forId("Conducteur", id));
+        DriverResponse response = driverApiMapper.toResponse(driverDTO);
 
-        return ResponseEntity.ok(driver);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -85,17 +90,18 @@ public class AutoDriverController {
     @Operation(summary = "Récupère un conducteur par son numéro de permis")
     @Auditable(action = "API_GET_AUTO_DRIVER_BY_LICENSE")
     @TenantRequired
-    public ResponseEntity<DriverDTO> getDriverByLicenseNumber(
+    public ResponseEntity<DriverResponse> getDriverByLicenseNumber(
             @PathVariable String licenseNumber,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour récupérer le conducteur avec numéro de permis: {} pour l'organisation: {}",
                 licenseNumber, organizationId);
 
-        DriverDTO driver = driverService.getDriverByLicenseNumber(licenseNumber, organizationId)
+        DriverDTO driverDTO = driverService.getDriverByLicenseNumber(licenseNumber, organizationId)
                 .orElseThrow(() -> com.devolution.saas.insurance.nonlife.auto.application.exception.AutoResourceNotFoundException
                         .forIdentifier("Conducteur", "numéro de permis", licenseNumber));
+        DriverResponse response = driverApiMapper.toResponse(driverDTO);
 
-        return ResponseEntity.ok(driver);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -108,12 +114,15 @@ public class AutoDriverController {
     @Operation(summary = "Liste tous les conducteurs d'une organisation")
     @Auditable(action = "API_LIST_AUTO_DRIVERS")
     @TenantRequired
-    public ResponseEntity<List<DriverDTO>> getAllDrivers(
+    public ResponseEntity<List<DriverResponse>> getAllDrivers(
             @RequestParam UUID organizationId) {
         log.debug("REST request pour lister tous les conducteurs pour l'organisation: {}", organizationId);
 
-        List<DriverDTO> drivers = driverService.getAllDrivers(organizationId);
-        return ResponseEntity.ok(drivers);
+        List<DriverDTO> driverDTOs = driverService.getAllDrivers(organizationId);
+        List<DriverResponse> responses = driverDTOs.stream()
+                .map(driverApiMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 
     /**
@@ -127,14 +136,17 @@ public class AutoDriverController {
     @Operation(summary = "Liste tous les conducteurs d'un client")
     @Auditable(action = "API_LIST_AUTO_DRIVERS_BY_CUSTOMER")
     @TenantRequired
-    public ResponseEntity<List<DriverDTO>> getDriversByCustomer(
+    public ResponseEntity<List<DriverResponse>> getDriversByCustomer(
             @PathVariable UUID customerId,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour lister les conducteurs pour le client: {} dans l'organisation: {}",
                 customerId, organizationId);
 
-        List<DriverDTO> drivers = driverService.getDriversByCustomer(customerId, organizationId);
-        return ResponseEntity.ok(drivers);
+        List<DriverDTO> driverDTOs = driverService.getDriversByCustomer(customerId, organizationId);
+        List<DriverResponse> responses = driverDTOs.stream()
+                .map(driverApiMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 
     /**
@@ -148,17 +160,18 @@ public class AutoDriverController {
     @Operation(summary = "Récupère le conducteur principal d'un client")
     @Auditable(action = "API_GET_PRIMARY_AUTO_DRIVER")
     @TenantRequired
-    public ResponseEntity<DriverDTO> getPrimaryDriverByCustomer(
+    public ResponseEntity<DriverResponse> getPrimaryDriverByCustomer(
             @PathVariable UUID customerId,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour récupérer le conducteur principal pour le client: {} dans l'organisation: {}",
                 customerId, organizationId);
 
-        DriverDTO driver = driverService.getPrimaryDriverByCustomer(customerId, organizationId)
+        DriverDTO driverDTO = driverService.getPrimaryDriverByCustomer(customerId, organizationId)
                 .orElseThrow(() -> com.devolution.saas.insurance.nonlife.auto.application.exception.AutoResourceNotFoundException
                         .forIdentifier("Conducteur principal", "client", customerId.toString()));
+        DriverResponse response = driverApiMapper.toResponse(driverDTO);
 
-        return ResponseEntity.ok(driver);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -173,19 +186,20 @@ public class AutoDriverController {
     @Operation(summary = "Met à jour un conducteur")
     @Auditable(action = "API_UPDATE_AUTO_DRIVER")
     @TenantRequired
-    public ResponseEntity<DriverDTO> updateDriver(
+    public ResponseEntity<DriverResponse> updateDriver(
             @PathVariable UUID id,
             @Valid @RequestBody CreateDriverRequest request,
             @RequestParam UUID organizationId) {
         log.debug("REST request pour mettre à jour le conducteur avec ID: {} pour l'organisation: {}",
                 id, organizationId);
 
-        Driver driver = mapRequestToEntity(request);
-        DriverDTO updatedDriver = driverService.updateDriver(id, driver, organizationId)
+        Driver driver = driverApiMapper.toEntity(request);
+        DriverDTO driverDTO = driverService.updateDriver(id, driver, organizationId)
                 .orElseThrow(() -> com.devolution.saas.insurance.nonlife.auto.application.exception.AutoResourceNotFoundException
                         .forId("Conducteur", id));
+        DriverResponse response = driverApiMapper.toResponse(driverDTO);
 
-        return ResponseEntity.ok(updatedDriver);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -214,26 +228,5 @@ public class AutoDriverController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Convertit une requête en entité.
-     *
-     * @param request La requête à convertir
-     * @return L'entité correspondante
-     */
-    private Driver mapRequestToEntity(CreateDriverRequest request) {
-        // Créer l'objet Driver avec le builder
-        Driver driver = Driver.builder()
-                .customerId(request.getCustomerId())
-                .licenseNumber(request.getLicenseNumber())
-                .licenseIssueDate(request.getLicenseIssueDate())
-                .licenseExpiryDate(request.getLicenseExpiryDate())
-                .isPrimaryDriver(request.isPrimaryDriver())
-                .yearsOfDrivingExperience(request.getYearsOfDrivingExperience())
-                .build();
 
-        // Utiliser les setters pour définir les IDs
-        driver.setLicenseTypeId(request.getLicenseTypeId());
-
-        return driver;
-    }
 }

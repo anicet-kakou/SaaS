@@ -73,6 +73,11 @@ public class VehicleColorServiceImpl implements VehicleColorService {
 
     @Override
     public boolean deleteVehicleColor(UUID id, UUID organizationId) {
+        return delete(id, organizationId);
+    }
+
+    @Override
+    public boolean delete(UUID id, UUID organizationId) {
         return vehicleColorRepository.findById(id)
                 .filter(color -> color.getOrganizationId().equals(organizationId))
                 .map(color -> {
@@ -80,5 +85,51 @@ public class VehicleColorServiceImpl implements VehicleColorService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    @Override
+    public Optional<VehicleColorDTO> setActive(UUID id, boolean active, UUID organizationId) {
+        return vehicleColorRepository.findById(id)
+                .filter(color -> color.getOrganizationId().equals(organizationId))
+                .map(color -> {
+                    color.setActive(active);
+                    VehicleColor updatedColor = vehicleColorRepository.save(color);
+                    return vehicleColorMapper.toDto(updatedColor);
+                });
+    }
+
+    @Override
+    public Optional<VehicleColorDTO> getById(UUID id, UUID organizationId) {
+        return getVehicleColorById(id, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleColorDTO> getByCode(String code, UUID organizationId) {
+        return getVehicleColorByCode(code, organizationId);
+    }
+
+    @Override
+    public VehicleColorDTO create(VehicleColor entity, UUID organizationId) {
+        return createVehicleColor(entity, organizationId);
+    }
+
+    @Override
+    public Optional<VehicleColorDTO> update(UUID id, VehicleColor entity, UUID organizationId) {
+        return updateVehicleColor(id, entity, organizationId);
+    }
+
+    @Override
+    public List<VehicleColorDTO> getAll(UUID organizationId) {
+        return getAllVehicleColors(organizationId);
+    }
+
+    @Override
+    public List<VehicleColorDTO> getAllActive(UUID organizationId) {
+        return getAllActiveVehicleColors(organizationId);
+    }
+
+    @Override
+    public String getEntityName() {
+        return "couleur de véhicule";
     }
 }

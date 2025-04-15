@@ -40,28 +40,28 @@ public class ListOrganizations {
         Specification<Organization> spec = Specification.where(null);
 
         // Ajout des critères de filtrage
-        if (query.getType() != null) {
+        if (query.type() != null) {
             spec = spec.and((root, criteriaQuery, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get("type"), query.getType()));
+                    criteriaBuilder.equal(root.get("type"), query.type()));
         }
 
-        if (query.getStatus() != null) {
+        if (query.status() != null) {
             spec = spec.and((root, criteriaQuery, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get("status"), query.getStatus()));
+                    criteriaBuilder.equal(root.get("status"), query.status()));
         }
 
-        if (query.getParentId() != null) {
+        if (query.parentId() != null) {
             spec = spec.and((root, criteriaQuery, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get("parent").get("id"), query.getParentId()));
+                    criteriaBuilder.equal(root.get("parent").get("id"), query.parentId()));
         }
 
-        if (query.isRootsOnly()) {
+        if (query.rootsOnly()) {
             spec = spec.and((root, criteriaQuery, criteriaBuilder) ->
                     criteriaBuilder.isNull(root.get("parent")));
         }
 
-        if (query.getSearchTerm() != null && !query.getSearchTerm().trim().isEmpty()) {
-            String searchTerm = "%" + query.getSearchTerm().toLowerCase() + "%";
+        if (query.searchTerm() != null && !query.searchTerm().trim().isEmpty()) {
+            String searchTerm = "%" + query.searchTerm().toLowerCase() + "%";
             spec = spec.and((root, criteriaQuery, criteriaBuilder) ->
                     criteriaBuilder.or(
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), searchTerm),
@@ -73,8 +73,8 @@ public class ListOrganizations {
         List<Organization> organizations = jpaOrganizationRepository.findAll(spec);
 
         // Pagination simple (à améliorer avec Spring Data Pageable)
-        int start = query.getPage() * query.getSize();
-        int end = Math.min(start + query.getSize(), organizations.size());
+        int start = query.page() * query.size();
+        int end = Math.min(start + query.size(), organizations.size());
 
         if (start < organizations.size()) {
             organizations = organizations.subList(start, end);
